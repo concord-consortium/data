@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2004-09-02 16:27:28 $
+ * $Revision: 1.5 $
+ * $Date: 2004-10-29 05:22:45 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -30,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellRenderer;
 
 
 /**
@@ -84,6 +85,11 @@ public class DataTablePanel extends JPanel
 	public void setTableModel(DataTableModel tableModel)
 	{
 		this.tableModel = tableModel;
+	}
+	
+	public void setRenderer(TableCellRenderer cellRenderer)
+	{
+		table.setDefaultRenderer(Object.class, cellRenderer);
 	}
 	
 	/**

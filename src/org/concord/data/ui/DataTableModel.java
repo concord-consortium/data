@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2004-10-28 19:01:28 $
+ * $Revision: 1.8 $
+ * $Date: 2004-10-29 05:22:45 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -269,9 +269,11 @@ public class DataTableModel extends AbstractTableModel
 			if (val instanceof Float){
 				//TEMP
 				//((Float)val).
-				double precision = Math.pow(10, channelDesc.getPrecision());
-				float retval = (float)(Math.floor(((precision) * ((Float)val).floatValue()) + 0.5) / precision);
-				val = Float.toString(retval);
+				if (channelDesc.isUsePrecision()){
+					double precision = Math.pow(10, channelDesc.getPrecision());
+					float retval = (float)(Math.floor(((precision) * ((Float)val).floatValue()) + 0.5) / precision);
+					val = Float.toString(retval);
+				}
 			}
 		} 
 		
@@ -353,8 +355,10 @@ public class DataTableModel extends AbstractTableModel
 				else{
 					try{
 						float val = Float.parseFloat(strVal);
-						double precision = Math.pow(10, channelDesc.getPrecision());
-						val = (float)(Math.floor(((precision) * val) + 0.5) / precision);
+						if (channelDesc.isUsePrecision()){
+							double precision = Math.pow(10, channelDesc.getPrecision());
+							val = (float)(Math.floor(((precision) * val) + 0.5) / precision);
+						}
 						aValue = new Float(val);
 					}
 					catch(Exception ex){

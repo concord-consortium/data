@@ -1,7 +1,7 @@
 /**
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2004-09-02 16:27:28 $
+ * $Revision: 1.2 $
+ * $Date: 2004-10-29 05:22:45 $
  * $Author: imoncada $
  *
  * Copyright 2004 The Concord Consortium
@@ -17,9 +17,7 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- * The renderer for the functionList in the table view
- * It shows the foreground according to each graphable's color
- * when the row is selected it shows a border and in BOLD
+ * A cell renderer that uses a color model
  *
  * @author Ingrid Moncada<p>
  *
@@ -27,7 +25,24 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class DataTableCellRenderer extends DefaultTableCellRenderer
 {
-	TableCellColorModel tableCellColorModel;
+	protected TableCellColorModel tableCellColorModel;
+	
+	/*
+	 * Default constructor
+	 */
+	public DataTableCellRenderer()
+	{
+		super();
+	}
+	
+	/*
+	 * Creates a table cell renderer based on the specified color model
+	 */
+	public DataTableCellRenderer(TableCellColorModel colorModel)
+	{
+		this();
+		setTableCellColorModel(colorModel);
+	}
 	
     /**
      *
@@ -110,9 +125,9 @@ public class DataTableCellRenderer extends DefaultTableCellRenderer
 	/**
 	 * @param tableCellcolorModel The tableCellcolorModel to set.
 	 */
-	public void setTableCellColorModel(TableCellColorModel model)
+	public void setTableCellColorModel(TableCellColorModel colorModel)
 	{
-		this.tableCellColorModel = model;
+		this.tableCellColorModel = colorModel;
 	}
 }
 
