@@ -11,8 +11,8 @@ package org.concord.data;
 
 import java.util.Vector;
 
-import org.concord.math.util.MathUtil;
 import org.concord.framework.data.DataDimension;
+import org.concord.math.util.MathUtil;
 
 public final class Unit implements DataDimension{
 	public int unitCategory  = UNIT_CAT_UNKNOWN;
