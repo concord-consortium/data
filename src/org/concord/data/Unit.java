@@ -326,7 +326,7 @@ public final class Unit implements DataDimension{
 							  (byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  86400f,0.0f,false,false); 
 		case UNIT_CODE_CELSIUS :
-			return new Unit("Celsius","C",false,UNIT_CAT_TEMPERATURE,UNIT_CODE_CELSIUS,UNIT_CODE_CELSIUS,
+			return new Unit("Celsius","degC",false,UNIT_CAT_TEMPERATURE,UNIT_CODE_CELSIUS,UNIT_CODE_CELSIUS,
 							  (byte)0,(byte)0,(byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1f,0.0f,false,false); 
 		case UNIT_CODE_KELVIN :
@@ -334,7 +334,7 @@ public final class Unit implements DataDimension{
 							  (byte)0,(byte)0,(byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1f,-273.15f,false,true); 
 		case UNIT_CODE_FAHRENHEIT :
-			return new Unit("Fahrenheit","F",false,UNIT_CAT_TEMPERATURE,UNIT_CODE_FAHRENHEIT,UNIT_CODE_CELSIUS,
+			return new Unit("Fahrenheit","degF",false,UNIT_CAT_TEMPERATURE,UNIT_CODE_FAHRENHEIT,UNIT_CODE_CELSIUS,
 							  (byte)0,(byte)0,(byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,
 							  .55555555556f,-17.777777778f,false,false); 
 		case UNIT_CODE_M2 :
