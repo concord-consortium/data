@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2005-03-10 03:15:50 $
+ * $Revision: 1.8 $
+ * $Date: 2005-03-10 04:26:12 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -238,7 +238,8 @@ public class OTDataStore extends ProducerDataStore
 	public void setDataChannelDescription(int channelIndex,
 			DataChannelDescription desc) 
 	{
-		
+		// FIXME this is not supported yet
+		throw new UnsupportedOperationException("org.concord.framework.data.stream.WritableDataStore.setDataChannelDescription not supported yet");
 	}
 	
 	/* (non-Javadoc)
