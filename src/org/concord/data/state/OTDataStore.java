@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.6 $
- * $Date: 2005-03-10 03:04:27 $
+ * $Revision: 1.7 $
+ * $Date: 2005-03-10 03:15:50 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -214,13 +214,23 @@ public class OTDataStore extends ProducerDataStore
 	    setValueAt(numSample, numChannel, value);	    
 	}
 		
-	/* (non-Javadoc)
+	/**
 	 * @see org.concord.framework.data.stream.WritableDataStore#removeSampleAt(int)
 	 */
 	public void removeSampleAt(int numSample) 
 	{
 		// FIXME this is not supported yet
+		throw new UnsupportedOperationException("org.concord.framework.data.stream.WritableDataStore.removeSampleAt not supported yet");
 	}
+	
+	/**
+	 * @see org.concord.framework.data.stream.WritableDataStore#insertSampleAt(int)
+	 */
+	public void insertSampleAt(int numSample)
+	{
+		// FIXME this is not supported yet
+		throw new UnsupportedOperationException("org.concord.framework.data.stream.WritableDataStore.insertSampleAt not supported yet");
+	}	
 	
 	/* (non-Javadoc)
 	 * @see org.concord.framework.data.stream.WritableDataStore#setDataChannelDescription(int, org.concord.framework.data.stream.DataChannelDescription)
@@ -267,5 +277,5 @@ public class OTDataStore extends ProducerDataStore
 		chDesc.setUnit(unit);
 
 		return chDesc;
-	}	
+	}
 }

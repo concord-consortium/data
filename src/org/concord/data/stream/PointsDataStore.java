@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2005-03-10 03:04:27 $
+ * $Revision: 1.5 $
+ * $Date: 2005-03-10 03:15:50 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -186,17 +186,6 @@ public class PointsDataStore extends DefaultDataStore
 		}
 		else{
 			addPoint(x,y);
-		}
-	}
-
-	/**
-	 * @param i
-	 */
-	private void insertSampleAt(int i)
-	{
-		for (int j=0; j < channelsValues.size(); j++){
-			Vector channel = (Vector)channelsValues.elementAt(j);
-			channel.add(i, null);
 		}
 	}
 
