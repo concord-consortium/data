@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2004-11-23 16:09:07 $
+ * $Revision: 1.3 $
+ * $Date: 2004-11-23 17:49:28 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -36,7 +36,7 @@ public class DataStoreUtil
 	{
 		BufferedReader lineReader = new BufferedReader(reader);
 
-		int numChannels = ds.getTotalNumChannels();
+		ds.clearValues();
 		
 		if(hasHeaders) {
 			// parse the headers and set the channel descriptions
@@ -64,7 +64,8 @@ public class DataStoreUtil
 			row++;
 
 			line = lineReader.readLine();
-		}		
+		}
+		
 	}
 	
 	public static void printData(PrintStream outS, DataStore ds, 

@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.8 $
- * $Date: 2004-11-23 16:08:36 $
+ * $Revision: 1.9 $
+ * $Date: 2004-11-23 17:49:28 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -76,6 +76,7 @@ public class DataTablePanel extends JPanel
 	protected JTable table;
 	protected DataTableModel tableModel;
 	protected JScrollPane scrollPane;
+	private static final String IMPORT_FROM_CLIPBOARD = "Import from Clipboard";
 	/**
 	 * 
 	 */
@@ -96,6 +97,7 @@ public class DataTablePanel extends JPanel
 		addComponentListener(this);
 		
 		table.addMouseListener(this);
+		scrollPane.getViewport().addMouseListener(this);
 	}
 
 	
@@ -234,7 +236,7 @@ public class DataTablePanel extends JPanel
 		    menuItem.addActionListener(this);
 		    popup.add(menuItem);
 			
-		    menuItem = new JMenuItem("Paste");			
+		    menuItem = new JMenuItem(IMPORT_FROM_CLIPBOARD);			
 		    menuItem.addActionListener(this);
 		    popup.add(menuItem);
 		    
@@ -274,7 +276,7 @@ public class DataTablePanel extends JPanel
 				clipboard.setContents(new StringSelection(strVal), null);
 			}
 			catch(Exception ex){}
-		} else if (e.getActionCommand().equals("Paste")){
+		} else if (e.getActionCommand().equals(IMPORT_FROM_CLIPBOARD)){
 			InputStream inS;
 			try {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
