@@ -42,7 +42,6 @@ import org.concord.data.ui.DataFlowControlToolBar;
 import org.concord.data.ui.DataStoreLabel;
 import org.concord.data.ui.DataValueLabel;
 import org.concord.framework.data.stream.DataProducer;
-import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.view.OTObjectView;
 import org.concord.framework.otrunk.view.OTViewContainer;
 

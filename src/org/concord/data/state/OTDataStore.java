@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2005-02-22 21:07:25 $
- * $Author: eburke $
+ * $Revision: 1.5 $
+ * $Date: 2005-03-09 17:09:59 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -34,31 +34,32 @@
 package org.concord.data.state;
 
 import java.io.IOException;
-import java.util.Vector;
 
 import org.concord.data.Unit;
 import org.concord.data.stream.DataStoreUtil;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
+import org.concord.framework.data.stream.ProducerDataStore;
 import org.concord.framework.data.stream.WritableDataStore;
-import org.concord.framework.otrunk.DefaultOTObject;
+import org.concord.framework.otrunk.OTID;
+import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectList;
 import org.concord.framework.otrunk.OTResourceList;
 import org.concord.framework.otrunk.OTResourceSchema;
 
 
 /**
- * PfDataStore
+ * OTDataStore
  * Class name and description
  *
  * Date created: Nov 18, 2004
  *
- * @author scott<p>
+ * @author scytacki<p>
  *
  */
-public class OTDataStore extends DefaultOTObject
-	implements WritableDataStore
+public class OTDataStore extends ProducerDataStore
+	implements WritableDataStore, OTObject
 {
 	public static interface ResourceSchema extends OTResourceSchema
 	{
@@ -75,15 +76,34 @@ public class OTDataStore extends DefaultOTObject
 	};
 	
 	protected ResourceSchema resources;
-	protected Vector dataStoreListeners = new Vector();
 	DataStoreEvent changeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_CHANGED);
 	
 	public OTDataStore(ResourceSchema resources)
 	{
-		super(resources);
-		this.resources = resources;
+	    this.resources = resources;
 	}
 	
+	/* (non-Javadoc)
+     * @see org.concord.framework.otrunk.OTObject#getGlobalId()
+     */
+    public OTID getGlobalId()
+    {
+        return resources.getGlobalId();
+    }
+
+    /* (non-Javadoc)
+     * @see org.concord.framework.otrunk.OTObject#getName()
+     */
+    public String getName()
+    {
+        return resources.getName();
+    }
+
+    public void setName(String name)
+    {
+        resources.setName(name);
+    }
+    
 	public void init()
 	{
 		String valueStr = resources.getValuesString();
@@ -121,11 +141,13 @@ public class OTDataStore extends DefaultOTObject
 	/* (non-Javadoc)
 	 * @see org.concord.framework.data.stream.DataStore#getTotalNumSamples()
 	 */
-	public int getTotalNumSamples() 
+	public synchronized int getTotalNumSamples() 
 	{
 		int numChannels = getTotalNumChannels();
 		
-		return resources.getValues().size() / numChannels;
+		OTResourceList values = resources.getValues();
+		int size = values.size();
+		return size / numChannels;
 	}
 	
 	/* (non-Javadoc)
@@ -133,6 +155,11 @@ public class OTDataStore extends DefaultOTObject
 	 */
 	public Object getValueAt(int numSample, int numChannel) 
 	{
+		//Special case: when dt is a channel, it's the channel -1
+		if (numChannel == -1){
+			return new Float(numSample * dt);
+		}
+		
 		int numChannels = getTotalNumChannels();
 		
 		if(numChannel >= numChannels) return null;
@@ -175,6 +202,18 @@ public class OTDataStore extends DefaultOTObject
 		}
 	}	
 
+	/**
+	 * Adds a value to the channel indicated
+	 * If the channel doesn't exist, it doesn't do anything
+	 *
+	 * @param numChannel	channel number, starting from 0, >0
+	 * @param value			value to add
+	 */
+	protected void addValue(int numSample, int numChannel, Object value)
+	{
+	    setValueAt(numSample, numChannel, value);	    
+	}
+		
 	/* (non-Javadoc)
 	 * @see org.concord.framework.data.stream.WritableDataStore#removeValueAt(int)
 	 */
@@ -197,6 +236,13 @@ public class OTDataStore extends DefaultOTObject
 	 */
 	public DataChannelDescription getDataChannelDescription(int numChannel) 
 	{
+	    if(getDataProducer() != null) {
+	        // need to make sure that these values are saved
+	        // so if this data store is disconnected from the 
+	        // the data producer it will preserve this info
+	        return super.getDataChannelDescription(numChannel);
+	    }
+	    
 		OTObjectList channelDescriptions = resources.getChannelDescriptions();
 		if(numChannel >= channelDescriptions.size()) {
 			return null;
@@ -221,22 +267,5 @@ public class OTDataStore extends DefaultOTObject
 		chDesc.setUnit(unit);
 
 		return chDesc;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.stream.DataStore#removeDataStoreListener(org.concord.framework.data.stream.DataStoreListener)
-	 */
-	public void removeDataStoreListener(DataStoreListener l) 
-	{
-		dataStoreListeners.remove(l);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.stream.DataStore#addDataStoreListener(org.concord.framework.data.stream.DataStoreListener)
-	 */
-	public void addDataStoreListener(DataStoreListener l) 
-	{
-		dataStoreListeners.add(l);
-	}
-	
+	}	
 }
