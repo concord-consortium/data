@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.9 $
- * $Date: 2004-11-23 17:49:28 $
+ * $Revision: 1.10 $
+ * $Date: 2004-11-24 01:24:25 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -282,11 +282,17 @@ public class DataTablePanel extends JPanel
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
 				Transferable contents = clipboard.getContents(null);
-				String data = (String)contents.getTransferData(DataFlavor.stringFlavor);
+				final String data = (String)contents.getTransferData(DataFlavor.stringFlavor);
 
-				StringReader dataReader = new StringReader(data);
-				
-				tableModel.loadData(dataReader);
+				Thread importer = new Thread(){
+					public void run()
+					{
+						StringReader dataReader = new StringReader(data);
+						
+						tableModel.loadData(dataReader);						
+					}
+				};
+				importer.start();
 			} catch(Exception ex){
 				ex.printStackTrace();
 			}			
