@@ -120,7 +120,9 @@ public final class Unit implements DataDimension{
 	public final static int UNIT_CODE_LUMEN				= 61;
 	public final static int UNIT_CODE_LUX				= 62;
 	public final static int UNIT_CODE_CENTIMETER        = 63;
-	public final static int UNIT_TABLE_LENGTH           = 64;
+	public final static int UNIT_CODE_MILLISECOND       = 64;
+	
+	public final static int UNIT_TABLE_LENGTH           = 65;
 
 	public final static int UNIT_CAT_UNKNOWN			= 0;
 	public final static int UNIT_CAT_LENGTH				= 1;
@@ -279,6 +281,10 @@ public final class Unit implements DataDimension{
 			return new Unit("micron","µ",false,UNIT_CAT_LENGTH,UNIT_CODE_MICRON,UNIT_CODE_METER,
 							  (byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1e-6f,0.0f,false,false); 
+		case UNIT_CODE_MILLISECOND : 
+			return new Unit("millisecond","ms",false,UNIT_CAT_TIME,UNIT_CODE_MILLISECOND,UNIT_CODE_S,
+							  (byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
+							  0.001f,0.0f,false,true); 
 		case UNIT_CODE_S : 
 			return new Unit("second","s",false,UNIT_CAT_TIME,UNIT_CODE_S,UNIT_CODE_S,
 							  (byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
