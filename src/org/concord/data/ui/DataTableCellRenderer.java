@@ -24,19 +24,20 @@
  */
 /**
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2004-11-12 19:43:27 $
- * $Author: eblack $
+ * $Revision: 1.4 $
+ * $Date: 2004-11-16 18:47:08 $
+ * $Author: scytacki $
  *
  * Copyright 2004 The Concord Consortium
 */
 package org.concord.data.ui;
 
-import java.awt.Component;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 

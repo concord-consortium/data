@@ -25,6 +25,7 @@
 package org.concord.data.event;
 
 import java.util.EventObject;
+
 import org.concord.data.ConditionValue;
 
 public class ConditionEvent extends EventObject
