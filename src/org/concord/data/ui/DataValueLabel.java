@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2004-11-12 19:43:27 $
- * $Author: eblack $
+ * $Revision: 1.4 $
+ * $Date: 2005-01-27 16:43:11 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -34,6 +34,7 @@
 package org.concord.data.ui;
 
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataListener;
@@ -53,11 +54,12 @@ import org.concord.framework.data.stream.DataStreamEvent;
  * @author imoncada<p>
  *
  */
-public class DataValueLabel extends JLabel
+public class DataValueLabel extends JTextField
 	implements DataListener
 {
 	protected DataProducer dataProducer;
 	protected int channel = 0;				//Default channel is 0
+	private float value;
 	
 	/**
 	 * Default constructor. Creates an empty label that doesn't listen to
@@ -66,6 +68,7 @@ public class DataValueLabel extends JLabel
 	public DataValueLabel()
 	{
 		super();
+		setEditable(false);
 	}
 	
 	/**
@@ -169,9 +172,19 @@ public class DataValueLabel extends JLabel
 				val = (float)(Math.floor(((precision) * val) + 0.5) / precision);
 			}
 		}
+		value = val;
 		setText(Float.toString(val));
 	}
 
+	/**
+	 * Return the current value that is being displayed
+	 * @return
+	 */
+	public float getValue()
+	{
+		return value;
+	}
+	
 	/**
 	 * @see org.concord.framework.data.stream.DataListener#dataStreamEvent(org.concord.framework.data.stream.DataStreamEvent)
 	 */
