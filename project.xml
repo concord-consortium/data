@@ -19,12 +19,6 @@
         <eclipse.dependency>true</eclipse.dependency>
       </properties>
     </dependency>
-    <dependency>
-      <groupId>concord</groupId>
-      <artifactId>maven-ccManifest-plugin</artifactId>
-      <version>1.0.0</version>
-      <type>plugin</type>
-    </dependency>
   </dependencies>
 </project>
 
