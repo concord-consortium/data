@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2004-08-27 17:03:08 $
+ * $Revision: 1.4 $
+ * $Date: 2004-09-02 16:27:28 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -9,14 +9,25 @@
 */
 package org.concord.data.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -31,7 +42,7 @@ import javax.swing.event.TableModelListener;
  *
  */
 public class DataTablePanel extends JPanel
-	implements TableModelListener, ComponentListener
+	implements TableModelListener, ComponentListener, MouseListener, ActionListener
 {
 	protected JTable table;
 	protected DataTableModel tableModel;
@@ -45,7 +56,7 @@ public class DataTablePanel extends JPanel
 		
 		tableModel = new DataTableModel();
 		table = new JTable(tableModel);
-		//table.setBackground(Color.pink);
+				
 		scrollPane = new JScrollPane(table);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
@@ -54,6 +65,8 @@ public class DataTablePanel extends JPanel
 		tableModel.addTableModelListener(this);
 		
 		addComponentListener(this);
+		
+		table.addMouseListener(this);
 	}
 
 	
@@ -142,5 +155,86 @@ public class DataTablePanel extends JPanel
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
+	public void mouseClicked(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
+	public void mouseEntered(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
+	public void mouseExited(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
+	public void mousePressed(MouseEvent e)
+	{
+		
+		if (SwingUtilities.isRightMouseButton(e)){
+			System.out.println("right click");
+			
+			JPopupMenu popup = new JPopupMenu();
+			JMenuItem menuItem = new JMenuItem("Copy");
+		    menuItem.addActionListener(this);
+		    popup.add(menuItem);
+		    
+		    popup.show(this, e.getX() + 5, e.getY() + 20);
+			
+		}
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
+	public void mouseReleased(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent e)
+	{
+		String strVal="";
+		
+		ByteArrayOutputStream outS = new ByteArrayOutputStream();
+		tableModel.printData(new PrintStream(outS), table.getSelectedRows(), false);
+		strVal = outS.toString();
+		
+		try{
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		
+			clipboard.setContents(new StringSelection(strVal), null);
+		}
+		catch(Exception ex){}
 	}
 }

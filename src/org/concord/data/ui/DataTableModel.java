@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2004-08-26 20:43:28 $
+ * $Revision: 1.3 $
+ * $Date: 2004-09-02 16:27:28 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -10,6 +10,7 @@
 package org.concord.data.ui;
 
 import java.awt.Color;
+import java.io.PrintStream;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
@@ -18,7 +19,6 @@ import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
-import org.concord.math.util.MathUtil;
 
 
 /**
@@ -288,18 +288,45 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void printData()
 	{
-		System.out.println("# Channels Total: "+getTotalNumChannels());		
-		System.out.println("# Samples Total: "+getTotalNumSamples());		
-		System.out.println("Step: "+getDataStep());
+		printData(System.out, null, true);
+	}
+	
+	public void printData(PrintStream outS, int rowsToPrint[], boolean blnDebug)
+	{
+		if (blnDebug){
+			outS.println("# Channels Total: "+getTotalNumChannels());		
+			outS.println("# Samples Total: "+getTotalNumSamples());		
+			outS.println("Step: "+getDataStep());
+		}
 		int ti, tj;
 		ti = getRowCount();
 		tj = getColumnCount();
-		System.out.println("Table: "+ti+" X "+tj);
+		if (blnDebug){
+			outS.println("Table: "+ti+" X "+tj);
+		}
+		for (int j=0; j<tj; j++){
+			outS.print(getColumnName(j)+"\t");
+		}
+		outS.println("");
+		int r = 0;
+		boolean blnPrint;
 		for (int i=0; i<ti; i++){
-			for (int j=0; j<tj; j++){
-				System.out.print(getValueAt(i, j).toString()+"   ");
+			blnPrint = false;
+			if (rowsToPrint == null){
+				blnPrint = true;
 			}
-			System.out.println("");
+			else {
+				if (r < rowsToPrint.length && rowsToPrint[r] == i){
+					blnPrint = true;
+					r++;
+				}
+			}
+			if (blnPrint){
+				for (int j=0; j<tj; j++){
+					outS.print(getValueAt(i, j).toString()+"\t");
+				}
+				outS.println("");
+			}
 		}
 	}
 
@@ -327,5 +354,12 @@ public class DataTableModel extends AbstractTableModel
 	{
 		// TODO Auto-generated method stub
 		
+	}
+	/**
+	 * @return Returns the dataColumns.
+	 */
+	public Vector getDataColumns()
+	{
+		return dataColumns;
 	}
 }
