@@ -12,7 +12,6 @@ package org.concord.data;
 import java.util.Vector;
 
 import org.concord.framework.data.DataDimension;
-import org.concord.math.util.MathUtil;
 
 public final class Unit implements DataDimension{
 	public int unitCategory  = UNIT_CAT_UNKNOWN;
@@ -279,7 +278,7 @@ public final class Unit implements DataDimension{
 							  (byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1609.344f,0.0f,false,false); 
 		case UNIT_CODE_MICRON :
-			return new Unit("micron","µ",false,UNIT_CAT_LENGTH,UNIT_CODE_MICRON,UNIT_CODE_METER,
+			return new Unit("micron","?",false,UNIT_CAT_LENGTH,UNIT_CODE_MICRON,UNIT_CODE_METER,
 							  (byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1e-6f,0.0f,false,false); 
 		case UNIT_CODE_MILLISECOND : 
@@ -555,7 +554,7 @@ public final class Unit implements DataDimension{
 		switch(order){
 			case -12: 	retValue = "p"; break;
 			case -9:	retValue = "n"; break;
-			case -6:	retValue = "µ"; break;
+			case -6:	retValue = "?"; break;
 			case -3:	retValue = "m"; break;
 			case -2:	retValue = "c"; break;
 			case -1:	retValue = "d"; break;
