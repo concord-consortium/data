@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2004-08-24 23:15:07 $
+ * $Revision: 1.2 $
+ * $Date: 2004-08-26 20:43:28 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -16,6 +16,9 @@ import javax.swing.table.AbstractTableModel;
 
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
+import org.concord.framework.data.stream.DataStoreEvent;
+import org.concord.framework.data.stream.DataStoreListener;
+import org.concord.math.util.MathUtil;
 
 
 /**
@@ -28,6 +31,7 @@ import org.concord.framework.data.stream.DataStore;
  *
  */
 public class DataTableModel extends AbstractTableModel
+	implements DataStoreListener
 {
 	protected Vector dataStores;	//DataStore objects
 	protected int step = 1;
@@ -58,7 +62,7 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void addDataStore(DataStore dataStore)
 	{
-		this.dataStores.add(dataStore);
+		//this.dataStores.add(dataStore);
 		
 		//Create a default DataColumnDescription for each channel in the data store
 		for (int i=0; i<dataStore.getTotalNumChannels(); i++){
@@ -82,7 +86,10 @@ public class DataTableModel extends AbstractTableModel
 			}
 		}
 		if (i == dataStores.size()){
+			
 			dataStores.add(dataStore);
+			dataStore.addDataStoreListener(this);
+			
 		}
 		//
 		
@@ -208,15 +215,40 @@ public class DataTableModel extends AbstractTableModel
 		
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
 		DataStore dataStore = dcol.getDataStore();
-		return dataStore.getValueAt(row*step, dcol.getDataStoreColumn());
+		Object val = dataStore.getValueAt(row*step, dcol.getDataStoreColumn());
+		
+		DataChannelDescription channelDesc = dataStore.getDataChannelDescription(dcol.getDataStoreColumn());
+		
+		if (channelDesc != null){
+			if (val instanceof Float){
+				//TEMP
+				//((Float)val).
+				double precision = Math.pow(10, channelDesc.getPrecision());
+				float retval = (float)(Math.floor(((precision) * ((Float)val).floatValue()) + 0.5) / precision);
+				val = Float.toString(retval);
+			}
+		} 
+		
+		return val;
 	}
 
 	/**
 	 * @see javax.swing.table.TableModel#getColumnName(int)
 	 */
-	public String getColumnName(int col) {
+	public String getColumnName(int col) 
+	{
+		String strLabel;
+		
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
-		return dcol.getLabel();
+		DataStore dataStore = dcol.getDataStore();
+		DataChannelDescription channelDesc = dataStore.getDataChannelDescription(dcol.getDataStoreColumn());
+		
+		strLabel = dcol.getLabel();
+		if (channelDesc != null && channelDesc.getUnit() != null){
+			strLabel = strLabel + " ("+ channelDesc.getUnit().getDimension() +")";
+		}
+		
+		return strLabel;
     }
 
 	/**
@@ -269,5 +301,31 @@ public class DataTableModel extends AbstractTableModel
 			}
 			System.out.println("");
 		}
+	}
+
+	/**
+	 * @see org.concord.framework.data.stream.DataStoreListener#dataAdded(org.concord.framework.data.stream.DataStoreEvent)
+	 */
+	public void dataAdded(DataStoreEvent evt)
+	{
+		fireTableDataChanged();
+	}
+
+	/**
+	 * @see org.concord.framework.data.stream.DataStoreListener#dataRemoved(org.concord.framework.data.stream.DataStoreEvent)
+	 */
+	public void dataRemoved(DataStoreEvent evt)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @see org.concord.framework.data.stream.DataStoreListener#dataChanged(org.concord.framework.data.stream.DataStoreEvent)
+	 */
+	public void dataChanged(DataStoreEvent evt)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }
