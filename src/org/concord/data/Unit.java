@@ -12,8 +12,9 @@ package org.concord.data;
 import java.util.Vector;
 
 import org.concord.math.util.MathUtil;
+import org.concord.framework.data.DataDimension;
 
-public final class Unit {
+public final class Unit implements DataDimension{
 	public int unitCategory  = UNIT_CAT_UNKNOWN;
 
 	public int	code 	= UNIT_CODE_UNKNOWN;
@@ -207,6 +208,10 @@ public final class Unit {
 		
 	} 
 
+	public String getDimension(){return abbreviation;}
+	
+	public void setDimension(String dimension){abbreviation = dimension;}
+	
 	public static Vector getCatUnitAbbrev(int index)
 	{
 		Vector abbrevs = new Vector();
