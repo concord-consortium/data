@@ -24,9 +24,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2005-03-10 07:10:19 $
- * $Author: maven $
+ * $Revision: 1.3 $
+ * $Date: 2005-03-15 03:17:58 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -83,6 +83,8 @@ public class DataStoreFunctionUtil
 	 */
 	public int findSamplePositionValue(float x)
 	{
+		if (dataStore == null) return -1;
+		
 		//Assumes the data is ordered by the specified channel
 		float value;
 		Object obj;
@@ -108,6 +110,8 @@ public class DataStoreFunctionUtil
 	 */
 	public float getXValueAt(int sample)
 	{
+		if (dataStore == null) return Float.NaN;
+		
 		Object obj = dataStore.getValueAt(sample, xChannel);
 		if (obj instanceof Float){
 			return ((Float)obj).floatValue();
