@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.8 $
- * $Date: 2005-03-10 04:26:12 $
- * $Author: imoncada $
+ * $Revision: 1.9 $
+ * $Date: 2005-03-10 04:47:55 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -77,6 +77,7 @@ public class OTDataStore extends ProducerDataStore
 	
 	protected ResourceSchema resources;
 	DataStoreEvent changeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_CHANGED);
+	DataStoreEvent removeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_REMOVED);
 	
 	public OTDataStore(ResourceSchema resources)
 	{
@@ -219,8 +220,19 @@ public class OTDataStore extends ProducerDataStore
 	 */
 	public void removeSampleAt(int numSample) 
 	{
-		// FIXME this is not supported yet
-		throw new UnsupportedOperationException("org.concord.framework.data.stream.WritableDataStore.removeSampleAt not supported yet");
+		OTResourceList values = resources.getValues();
+		int numChannels = getTotalNumChannels();
+		
+		int index = numSample * numChannels;
+
+		for(int i=0; i<numChannels; i++) {
+		    values.remove(index + i);
+		}
+
+		for(int i=0; i<dataStoreListeners.size(); i++) {
+			DataStoreListener l = (DataStoreListener)dataStoreListeners.get(i);
+			l.dataRemoved(removeEvent);
+		}		
 	}
 	
 	/**
@@ -228,8 +240,19 @@ public class OTDataStore extends ProducerDataStore
 	 */
 	public void insertSampleAt(int numSample)
 	{
-		// FIXME this is not supported yet
-		throw new UnsupportedOperationException("org.concord.framework.data.stream.WritableDataStore.insertSampleAt not supported yet");
+		OTResourceList values = resources.getValues();
+		int numChannels = getTotalNumChannels();
+		
+		int index = numSample * numChannels;
+
+		for(int i=0; i<numChannels; i++) {
+		    values.add(index, null);
+		}
+
+		for(int i=0; i<dataStoreListeners.size(); i++) {
+			DataStoreListener l = (DataStoreListener)dataStoreListeners.get(i);
+			l.dataChanged(changeEvent);
+		}		
 	}	
 	
 	/* (non-Javadoc)
