@@ -24,9 +24,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2005-01-25 16:13:15 $
- * $Author: maven $
+ * $Revision: 1.3 $
+ * $Date: 2005-03-09 17:09:59 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -41,7 +41,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.concord.data.ui.DataTablePanel;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.WritableDataStore;
 
