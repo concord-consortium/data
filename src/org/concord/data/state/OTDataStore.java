@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.9 $
- * $Date: 2005-03-10 04:47:55 $
+ * $Revision: 1.10 $
+ * $Date: 2005-03-10 07:09:49 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -226,7 +226,7 @@ public class OTDataStore extends ProducerDataStore
 		int index = numSample * numChannels;
 
 		for(int i=0; i<numChannels; i++) {
-		    values.remove(index + i);
+		    values.remove(index);
 		}
 
 		for(int i=0; i<dataStoreListeners.size(); i++) {
