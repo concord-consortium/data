@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2004-11-12 19:43:27 $
- * $Author: eblack $
+ * $Revision: 1.5 $
+ * $Date: 2005-01-15 15:58:18 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -41,6 +41,7 @@ import javax.swing.Action;
 import javax.swing.Icon;
 
 import org.concord.framework.data.DataFlow;
+import org.concord.framework.data.DataFlowCapabilities;
 import org.concord.framework.simulation.Simulation;
 import org.concord.framework.simulation.SimulationEvent;
 import org.concord.framework.simulation.SimulationListener;
@@ -107,6 +108,7 @@ public class DataFlowControlAction extends AbstractAction
 	public DataFlowControlAction(int type)
 	{
 		super();
+		setEnabled(false);
 		objsFlow = new Vector();
 		setFlowControlType(type);
 		setDefaultProperties(type);
@@ -287,14 +289,54 @@ public class DataFlowControlAction extends AbstractAction
 		}
 	}
 
+	private boolean checkCapabilities(int type)
+	{
+		// Go through each object in the data flow list
+		// report capabilities then we must assume the button
+		// should be enabled.
+		// if the object reports
+		// capabilites, check which ones are available
+		// if the object is a simulation and is reporing
+		// a simulation state then that will take precendence
+		// over this.
+		for(int i=0; i<objsFlow.size(); i++) {
+			Object flowObject = objsFlow.get(i);
+			if(!(flowObject instanceof DataFlowCapabilities)) {
+				return true;
+			}
+			DataFlowCapabilities.Capabilities capabilities = ((DataFlowCapabilities)flowObject).getDataFlowCapabilities();
+			switch (type) {
+			case FLOW_CONTROL_NONE:
+				return true;
+			case FLOW_CONTROL_START:
+				if(capabilities.canStart()) {
+					return true;
+				}
+				break;
+			case FLOW_CONTROL_STOP:
+				if(capabilities.canStop()) {
+					return true;
+				}
+				break;
+			case FLOW_CONTROL_RESET:
+				if(capabilities.canReset()) {
+					return true;
+				}
+				break;
+			}			
+		}
+		return false;
+	}
+	
 	private void enableAction(int type, int simState)
 	{
 		if (!autoEnable) return;
 		if (type == FLOW_CONTROL_NONE) return;
 		
-		//If there is no info about simulation state, enable the action
+		//If there is no info about simulation state, 
+		// check the capabilities of the data flow objects
 		if (simState == Simulation.SIM_UNDEF_STATE){
-			setEnabled(true);
+			setEnabled(checkCapabilities(type));
 			return;
 		}
 		
