@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2004-09-02 16:27:28 $
+ * $Revision: 1.4 $
+ * $Date: 2004-09-10 19:20:49 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -215,7 +215,13 @@ public class DataTableModel extends AbstractTableModel
 		
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
 		DataStore dataStore = dcol.getDataStore();
-		Object val = dataStore.getValueAt(row*step, dcol.getDataStoreColumn());
+		
+		int indexSample = row*step;
+		//Not all the data stores have the same number of samples
+		if (indexSample >= dataStore.getTotalNumSamples()){
+			return new String();
+		}
+		Object val = dataStore.getValueAt(indexSample, dcol.getDataStoreColumn());
 		
 		DataChannelDescription channelDesc = dataStore.getDataChannelDescription(dcol.getDataStoreColumn());
 		
