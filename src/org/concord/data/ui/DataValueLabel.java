@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2005-02-22 21:07:25 $
- * $Author: eburke $
+ * $Revision: 1.6 $
+ * $Date: 2005-03-10 05:57:36 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -168,7 +168,7 @@ public class DataValueLabel extends JTextField
 		if (channelDesc != null){
 			if (channelDesc.isUsePrecision()){
 				double precision = Math.pow(10, channelDesc.getPrecision());
-				val = (float)(Math.floor(((precision) * val) + 0.5) / precision);
+				val = (float)(Math.floor((val / precision ) + 0.5) * precision);
 			}
 		}
 		value = val;
