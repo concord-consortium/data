@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2004-09-22 16:28:58 $
+ * $Revision: 1.2 $
+ * $Date: 2004-09-22 17:53:41 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -17,7 +17,10 @@ import org.concord.framework.data.DataFlow;
 
 /**
  * DataFlowControlButton
- * Class name and description
+ * Button that controls one or more data flow or
+ * simulation objects
+ * It can start, stop or reset the data flow or
+ * simulation objects
  *
  * Date created: Sep 20, 2004
  *
