@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.10 $
- * $Date: 2005-03-10 07:09:49 $
+ * $Revision: 1.11 $
+ * $Date: 2005-03-10 07:11:15 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -126,6 +126,10 @@ public class OTDataStore extends ProducerDataStore
 	public void clearValues() 
 	{
 		resources.getValues().removeAll();
+		for(int i=0; i<dataStoreListeners.size(); i++) {
+			DataStoreListener l = (DataStoreListener)dataStoreListeners.get(i);
+			l.dataRemoved(removeEvent);
+		}				
 	}
 	
 	/* (non-Javadoc)
