@@ -1,8 +1,8 @@
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2004-10-11 19:45:07 $
- * $Author: dima $
+ * $Revision: 1.6 $
+ * $Date: 2004-10-26 17:27:23 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -11,6 +11,7 @@ package org.concord.data.ui;
 
 import java.awt.Color;
 import java.io.PrintStream;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
@@ -19,7 +20,8 @@ import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
-
+import org.concord.framework.data.stream.ProducerDataStore;
+import org.concord.framework.data.stream.WritableDataStore;
 
 /**
  * DataTableModel
@@ -36,6 +38,10 @@ public class DataTableModel extends AbstractTableModel
 	protected Vector dataStores;	//DataStore objects
 	protected int step = 1;
 	protected Vector dataColumns;	//DataColumnDescription objects
+	
+	//Hastable that keeps the data stores added with the addDataStore method. If a data store has been added
+	//using this method, then the table model has to display ALYWAYS all its columns
+	private Hashtable dataStoresWithFullColumns;
 
 	/**
 	 * 
@@ -45,6 +51,7 @@ public class DataTableModel extends AbstractTableModel
 		super();
 		dataStores = new Vector();
 		dataColumns = new Vector();
+		dataStoresWithFullColumns = new Hashtable();
 	}
 
 	/**
@@ -62,11 +69,52 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void addDataStore(DataStore dataStore)
 	{
-		//this.dataStores.add(dataStore);
+		//This is in case the data store doesn't have any column YET
+		addListenerToDataStore(dataStore);
+		
+		dataStoresWithFullColumns.put(dataStore, new Boolean(true));
 		
 		//Create a default DataColumnDescription for each channel in the data store
-		for (int i=0; i<dataStore.getTotalNumChannels(); i++){
+		int startChannel = 0;
+		if (dataStore instanceof ProducerDataStore){
+			if (((ProducerDataStore)dataStore).isUseDtAsChannel()){
+				startChannel = -1;
+			}
+		}
+		for (int i = startChannel; i<dataStore.getTotalNumChannels(); i++){
 			addDataColumn(dataStore, i);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param dataStore
+	 */
+	public void updateDataStore(DataStore dataStore)
+	{
+		if (isDataStoreWithAllColumns(dataStore)){
+			removeDataStore(dataStore);
+			addDataStore(dataStore);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param dataStore
+	 */
+	public void removeDataStore(DataStore dataStore)
+	{
+		//Remove the listener and remove the data store from the vector 
+		dataStore.removeDataStoreListener(this);
+		dataStores.remove(dataStore);
+		
+		//Remove all columns of the data store 
+		for (int i=0; i<dataColumns.size(); i++){
+			DataColumnDescription colDesc = (DataColumnDescription)dataColumns.elementAt(i);
+			if (colDesc.getDataStore() == dataStore){
+				dataColumns.remove(colDesc);
+				i = i - 1;
+			}
 		}
 	}
 	
@@ -77,8 +125,20 @@ public class DataTableModel extends AbstractTableModel
 	{
 		dataColumns.add(dcol);
 		
-		//Make sure we have its data source in our vector
 		DataStore dataStore = dcol.getDataStore();
+		addListenerToDataStore(dataStore);
+
+		fireTableStructureChanged();
+		
+		return dcol;
+	}
+	
+	/**
+	 * @param dataStore
+	 */
+	private void addListenerToDataStore(DataStore dataStore)
+	{
+		//Make sure we have its data source in our vector
 		int i;
 		for (i=0; i<dataStores.size(); i++){
 			if (dataStores.elementAt(i) == dataStore){
@@ -92,12 +152,8 @@ public class DataTableModel extends AbstractTableModel
 			
 		}
 		//
-		
-		fireTableStructureChanged();
-		
-		return dcol;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -195,24 +251,6 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public Object getValueAt(int row, int col)
 	{
-//		DataStore dataStore;
-//		int n;
-//		int m = 0;
-		
-//		if (col == 0){
-//			//Time column
-//			return new String("ha");
-//		}
-		
-//		col = col-1;
-//		for (int i=0; i<dataStores.size(); i++){
-//			dataStore = (DataStore)dataStores.elementAt(i);
-//			n = dataStore.getTotalNumChannels();
-//			if (col < (m+n)) return dataStore.getValueAt(row*step, col - m);
-//			m = m + n;
-//		}
-//		return null;
-		
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
 		DataStore dataStore = dcol.getDataStore();
 		
@@ -257,6 +295,77 @@ public class DataTableModel extends AbstractTableModel
 		return strLabel;
     }
 
+	
+	
+	/**
+	 * @see javax.swing.table.TableModel#isCellEditable(int, int)
+	 */
+	public boolean isCellEditable(int rowIndex, int columnIndex)
+	{
+		//The cell is editable if the data store of the column is Writable
+		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
+		DataStore dataStore = dcol.getDataStore();
+		
+		//The dt cannot be changed!
+		if (dcol.getDataStoreColumn() == -1){
+			return false;
+		}
+		
+		if (dataStore instanceof WritableDataStore){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
+	 */
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+	{
+		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
+		DataStore dataStore = dcol.getDataStore();
+		
+		//The cell is editable only if the data store of the column is Writable
+		if (!(dataStore instanceof WritableDataStore)) return;
+
+		//The dt cannot be changed!
+		if (dcol.getDataStoreColumn() == -1){
+			return;
+		}
+		
+		DataChannelDescription channelDesc = dataStore.getDataChannelDescription(dcol.getDataStoreColumn());
+		if (channelDesc != null && channelDesc.isNumericData()){
+			//TEMP
+			if (!(aValue instanceof Float)){
+				String strVal = aValue.toString();
+				if (strVal.equals("")){
+					aValue = null;
+				}
+				else{
+					try{
+						float val = Float.parseFloat(strVal);
+						double precision = Math.pow(10, channelDesc.getPrecision());
+						val = (float)(Math.floor(((precision) * val) + 0.5) / precision);
+						aValue = new Float(val);
+					}
+					catch(Exception ex){
+						//Don't set the value if it is not a valid number
+						return;
+					}
+				}
+			}
+		}
+		
+		Object oldValue = getValueAt(rowIndex, columnIndex);
+		
+		if (aValue == oldValue) return;
+		if (aValue != null && aValue.equals(oldValue)) return;
+		if (aValue != null && oldValue != null && aValue.toString().equals(oldValue.toString())) return;
+			
+		((WritableDataStore)dataStore).setValueAt(rowIndex, columnIndex, aValue);
+	}
+	
 	/**
 	 * @return Returns the step.
 	 */
@@ -328,8 +437,13 @@ public class DataTableModel extends AbstractTableModel
 				}
 			}
 			if (blnPrint){
+				Object obj;
 				for (int j=0; j<tj; j++){
-					outS.print(getValueAt(i, j).toString()+"\t");
+					obj = getValueAt(i, j);
+					if (obj != null){
+						outS.print(obj.toString());
+					}
+					outS.print("\t");
 				}
 				outS.println("");
 			}
@@ -349,8 +463,7 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void dataRemoved(DataStoreEvent evt)
 	{
-		// TODO Auto-generated method stub
-		
+		fireTableDataChanged();
 	}
 
 	/**
@@ -358,9 +471,9 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void dataChanged(DataStoreEvent evt)
 	{
-		// TODO Auto-generated method stub
-		
+		fireTableDataChanged();
 	}
+	
 	/**
 	 * @return Returns the dataColumns.
 	 */
@@ -369,4 +482,50 @@ public class DataTableModel extends AbstractTableModel
 		return dataColumns;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.concord.framework.data.stream.DataStoreListener#dataChannelDescChanged(org.concord.framework.data.stream.DataStoreEvent)
+	 */
+	public void dataChannelDescChanged(DataStoreEvent evt)
+	{
+		DataStore dataStore = evt.getSource();
+		if (isDataStoreWithAllColumns(dataStore)){
+			updateDataStore(dataStore);
+		}
+		
+		fireTableStructureChanged();
+	}
+
+	public boolean isDataStoreWithAllColumns(DataStore dataStore)
+	{
+		Boolean allColumns = (Boolean)dataStoresWithFullColumns.get(dataStore);
+		if (allColumns != null && allColumns.booleanValue()){
+			return true;
+		}
+		return false;
+	}
 }
+
+
+/*
+
+//getValueAt:
+// 
+//		DataStore dataStore;
+//		int n;
+//		int m = 0;
+		
+//		if (col == 0){
+//			//Time column
+//			return new String("ha");
+//		}
+		
+//		col = col-1;
+//		for (int i=0; i<dataStores.size(); i++){
+//			dataStore = (DataStore)dataStores.elementAt(i);
+//			n = dataStore.getTotalNumChannels();
+//			if (col < (m+n)) return dataStore.getValueAt(row*step, col - m);
+//			m = m + n;
+//		}
+//		return null;
+
+ */
