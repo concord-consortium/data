@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.6 $
- * $Date: 2004-10-26 17:27:23 $
+ * $Revision: 1.7 $
+ * $Date: 2004-10-28 19:01:28 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -252,6 +252,8 @@ public class DataTableModel extends AbstractTableModel
 	public Object getValueAt(int row, int col)
 	{
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
+		if (dcol == null) return null;
+		
 		DataStore dataStore = dcol.getDataStore();
 		
 		int indexSample = row*step;
@@ -284,6 +286,8 @@ public class DataTableModel extends AbstractTableModel
 		String strLabel;
 		
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
+		if (dcol == null) return null;
+		
 		DataStore dataStore = dcol.getDataStore();
 		DataChannelDescription channelDesc = dataStore.getDataChannelDescription(dcol.getDataStoreColumn());
 		
@@ -304,6 +308,8 @@ public class DataTableModel extends AbstractTableModel
 	{
 		//The cell is editable if the data store of the column is Writable
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
+		if (dcol == null) return false;
+		
 		DataStore dataStore = dcol.getDataStore();
 		
 		//The dt cannot be changed!
@@ -324,6 +330,8 @@ public class DataTableModel extends AbstractTableModel
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
 	{
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
+		if (dcol == null) return;
+		
 		DataStore dataStore = dcol.getDataStore();
 		
 		//The cell is editable only if the data store of the column is Writable
