@@ -42,7 +42,6 @@ import org.concord.data.ui.DataFlowControlToolBar;
 import org.concord.data.ui.DataStoreLabel;
 import org.concord.data.ui.DataValueLabel;
 import org.concord.framework.data.stream.DataProducer;
-import org.concord.framework.data.stream.DataProducerProxy;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.view.OTObjectView;
 import org.concord.framework.otrunk.view.OTViewContainer;
@@ -81,14 +80,7 @@ public class OTDataFieldView
 			return dataStoreField;
 		}
 		
-		DataProducer dataProducer = null;
-		OTObject dataProducerObj = otObject.getDataProducer();
-		if(dataProducerObj instanceof DataProducerProxy)
-		{
-			dataProducer = ((DataProducerProxy)dataProducerObj).getDataProducer();
-		} else {
-			dataProducer = (DataProducer)dataProducerObj;
-		}
+		DataProducer dataProducer = (DataProducer)otObject.getDataProducer();
 		
 		dataField = new DataValueLabel(dataProducer);
 
