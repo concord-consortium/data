@@ -39,6 +39,13 @@
         <md5sum>c65115dd9c6c48b874630f1c2d1ecbba</md5sum>
     </file>
     <file>
+        <name>file_catalog.xml</name>
+        <rev>1.2</rev>
+        <modtime>1107382014000</modtime>
+        <size>8034</size>
+        <md5sum>660aff6f17c58fa47cdd890e8a12be66</md5sum>
+    </file>
+    <file>
         <name>maven.xml</name>
         <rev>1.1</rev>
         <modtime>1102954599000</modtime>
@@ -54,10 +61,10 @@
     </file>
     <file>
         <name>project.xml</name>
-        <rev>1.6</rev>
-        <modtime>1107379342000</modtime>
-        <size>702</size>
-        <md5sum>88724d603616bbf0c0924e5f07c4760a</md5sum>
+        <rev>1.7</rev>
+        <modtime>1107382017000</modtime>
+        <size>700</size>
+        <md5sum>6a66cfb81fa168168463d5b1cf040d1e</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ConditionValue.java</name>
@@ -242,4 +249,3 @@
         <md5sum>abaf4c812bcdc98e2bae5a50c620d270</md5sum>
     </file>
 </filecatalog>
-
