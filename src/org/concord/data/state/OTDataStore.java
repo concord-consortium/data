@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2005-01-31 17:41:32 $
+ * $Revision: 1.3 $
+ * $Date: 2005-02-06 17:15:50 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -91,6 +91,8 @@ public class OTDataStore extends DefaultOTObject
 		String valueStr = resources.getValuesString();
 		if(valueStr == null) return;
 		
+		int numChannels = resources.getNumberChannels();
+				
 		resources.setValuesString(null);
 		try {
 			DataStoreUtil.loadData(valueStr, this, false);
@@ -198,7 +200,7 @@ public class OTDataStore extends DefaultOTObject
 	public DataChannelDescription getDataChannelDescription(int numChannel) 
 	{
 		OTObjectList channelDescriptions = resources.getChannelDescriptions();
-		if(numChannel > channelDescriptions.size()) {
+		if(numChannel >= channelDescriptions.size()) {
 			return null;
 		}
 		
