@@ -1,8 +1,8 @@
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2004-09-10 19:20:49 $
- * $Author: imoncada $
+ * $Revision: 1.5 $
+ * $Date: 2004-10-11 19:45:07 $
+ * $Author: dima $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -368,4 +368,5 @@ public class DataTableModel extends AbstractTableModel
 	{
 		return dataColumns;
 	}
+
 }
