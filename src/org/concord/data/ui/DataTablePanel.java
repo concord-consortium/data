@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2004-11-16 18:48:07 $
+ * $Revision: 1.8 $
+ * $Date: 2004-11-23 16:08:36 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -158,8 +158,7 @@ public class DataTablePanel extends JPanel
 	 */
 	public void componentHidden(ComponentEvent e)
 	{
-		// TODO Auto-generated method stub
-		
+		// Do nothing		
 	}
 
 
@@ -168,8 +167,7 @@ public class DataTablePanel extends JPanel
 	 */
 	public void componentMoved(ComponentEvent e)
 	{
-		// TODO Auto-generated method stub
-		
+		// do nothing		
 	}
 
 

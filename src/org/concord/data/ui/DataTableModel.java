@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.10 $
- * $Date: 2004-11-16 18:48:07 $
+ * $Revision: 1.11 $
+ * $Date: 2004-11-23 16:08:35 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -406,6 +406,8 @@ public class DataTableModel extends AbstractTableModel
 	}
 	
 	/**
+	 * the dataStep determines which rows of data will be displayed
+	 * if the step is 5 then every 5th row will be displayed. The rest will be skipped 
 	 * @return Returns the step.
 	 */
 	public int getDataStep()
