@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2005-01-27 16:43:11 $
+ * $Revision: 1.2 $
+ * $Date: 2005-01-31 17:41:32 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -33,14 +33,19 @@
 */
 package org.concord.data.state;
 
+import java.io.IOException;
 import java.util.Vector;
 
+import org.concord.data.Unit;
+import org.concord.data.stream.DataStoreUtil;
+import org.concord.framework.data.DataDimension;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
 import org.concord.framework.data.stream.WritableDataStore;
 import org.concord.framework.otrunk.DefaultOTObject;
 import org.concord.framework.otrunk.OTObject;
+import org.concord.framework.otrunk.OTObjectList;
 import org.concord.framework.otrunk.OTResourceList;
 import org.concord.framework.otrunk.OTResourceSchema;
 
@@ -59,7 +64,16 @@ public class OTDataStore extends DefaultOTObject
 {
 	public static interface ResourceSchema extends OTResourceSchema
 	{
-		public OTResourceList getValues();		
+		public static int DEFAULT_numberChannels = -1;
+		public int getNumberChannels();
+		public void setNumberChannels(int cols);
+		
+		public OTResourceList getValues();
+
+		public OTObjectList getChannelDescriptions();
+		
+		public String getValuesString();
+		public void setValuesString(String values);
 	};
 	
 	protected ResourceSchema resources;
@@ -70,6 +84,19 @@ public class OTDataStore extends DefaultOTObject
 	{
 		super(resources);
 		this.resources = resources;
+	}
+	
+	public void init()
+	{
+		String valueStr = resources.getValuesString();
+		if(valueStr == null) return;
+		
+		resources.setValuesString(null);
+		try {
+			DataStoreUtil.loadData(valueStr, this, false);
+		} catch ( IOException e) {
+			e.printStackTrace();
+		}		
 	}
 	
 	/* (non-Javadoc)
@@ -85,7 +112,10 @@ public class OTDataStore extends DefaultOTObject
 	 */
 	public int getTotalNumChannels() 
 	{
-		return 1;
+		int resNumChan = resources.getNumberChannels();
+		if(resNumChan == -1) return 1;
+		
+		return resNumChan;
 	}
 	
 	/* (non-Javadoc)
@@ -93,7 +123,9 @@ public class OTDataStore extends DefaultOTObject
 	 */
 	public int getTotalNumSamples() 
 	{
-		return resources.getValues().size();
+		int numChannels = getTotalNumChannels();
+		
+		return resources.getValues().size() / numChannels;
 	}
 	
 	/* (non-Javadoc)
@@ -101,7 +133,16 @@ public class OTDataStore extends DefaultOTObject
 	 */
 	public Object getValueAt(int numSample, int numChannel) 
 	{
-		return resources.getValues().get(numSample);
+		int numChannels = getTotalNumChannels();
+		
+		if(numChannel >= numChannels) return null;
+		
+		int index = numSample * numChannels + numChannel;
+		if(index >= resources.getValues().size()) {
+			return null;
+		}
+		
+		return resources.getValues().get(index);
 	}
 	
 	/* (non-Javadoc)
@@ -110,10 +151,22 @@ public class OTDataStore extends DefaultOTObject
 	public void setValueAt(int numSample, int numChannel, Object value) 
 	{
 		OTResourceList values = resources.getValues();
-		if(values.size() < numSample+1) {
-			values.add(numSample, value);			
+		int numChannels = getTotalNumChannels();
+		
+		if(numChannel >= numChannels) {
+			// FIXME
+			// increase the number of channels
+			// if we have existing data then we need to insert a lot of nulls
+			// or something to fill the space.
+			numChannels = numChannel+1;
+			resources.setNumberChannels(numChannels);
+		}
+		
+		int index = numSample * numChannels + numChannel;
+		if(index >= values.size()) {
+			values.add(index, value);			
 		} else {
-			values.set(numSample, value);
+			values.set(index, value);
 		}
 		
 		for(int i=0; i<dataStoreListeners.size(); i++) {
@@ -136,7 +189,7 @@ public class OTDataStore extends DefaultOTObject
 	public void setDataChannelDescription(int channelIndex,
 			DataChannelDescription desc) 
 	{
-
+		
 	}
 	
 	/* (non-Javadoc)
@@ -144,7 +197,30 @@ public class OTDataStore extends DefaultOTObject
 	 */
 	public DataChannelDescription getDataChannelDescription(int numChannel) 
 	{
-		return null;
+		OTObjectList channelDescriptions = resources.getChannelDescriptions();
+		if(numChannel > channelDescriptions.size()) {
+			return null;
+		}
+		
+		OTDataChannelDescription otChDesc = 
+			(OTDataChannelDescription)channelDescriptions.get(numChannel);
+		
+		DataChannelDescription chDesc = new DataChannelDescription();
+		chDesc.setAbsoluteMax(otChDesc.getAbsoluteMax());
+		chDesc.setAbsoluteMin(otChDesc.getAbsoluteMin());
+		chDesc.setNumericData(true);
+		chDesc.setName(otChDesc.getName());
+		int precision = otChDesc.getPrecision();
+		if(precision != Integer.MAX_VALUE) {
+			chDesc.setPrecision(precision);
+		}
+		chDesc.setRecommendMax(otChDesc.getRecommendMax());
+		chDesc.setRecommendMin(otChDesc.getRecommendMin());
+		String unitStr = otChDesc.getUnit();
+		Unit unit = Unit.findUnit(unitStr);
+		chDesc.setUnit(unit);
+
+		return chDesc;
 	}
 	
 	/* (non-Javadoc)

@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.6 $
- * $Date: 2004-11-24 15:09:09 $
- * $Author: maven $
+ * $Revision: 1.7 $
+ * $Date: 2005-01-31 17:41:32 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -37,6 +37,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.StringTokenizer;
 
 import org.concord.framework.data.stream.DataChannelDescription;
@@ -55,7 +56,17 @@ import org.concord.framework.data.stream.WritableDataStore;
  */
 public class DataStoreUtil
 {
-	public static void loadData(Reader reader, WritableDataStore ds, boolean hasHeaders)
+	public static void loadData(String data, WritableDataStore ds, 
+			boolean hasHeaders)
+		throws IOException
+	{
+		StringReader dataReader = new StringReader(data);
+		
+		loadData(dataReader, ds, hasHeaders);
+	}
+	
+	public static void loadData(Reader reader, WritableDataStore ds, 
+			boolean hasHeaders)
 		throws IOException
 	{
 		BufferedReader lineReader = new BufferedReader(reader);
