@@ -30,9 +30,7 @@
  */
 package org.concord.data.state;
 
-import org.concord.framework.data.DataDimension;
 import org.concord.framework.otrunk.OTObject;
-import org.concord.framework.otrunk.OTResourceSchema;
 
 /**
  * @author scott

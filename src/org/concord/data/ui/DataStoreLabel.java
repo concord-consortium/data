@@ -30,7 +30,6 @@
  */
 package org.concord.data.ui;
 
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import org.concord.framework.data.stream.DataChannelDescription;

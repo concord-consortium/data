@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2005-02-06 17:15:50 $
- * $Author: scytacki $
+ * $Revision: 1.4 $
+ * $Date: 2005-02-22 21:07:25 $
+ * $Author: eburke $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -38,13 +38,11 @@ import java.util.Vector;
 
 import org.concord.data.Unit;
 import org.concord.data.stream.DataStoreUtil;
-import org.concord.framework.data.DataDimension;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
 import org.concord.framework.data.stream.WritableDataStore;
 import org.concord.framework.otrunk.DefaultOTObject;
-import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectList;
 import org.concord.framework.otrunk.OTResourceList;
 import org.concord.framework.otrunk.OTResourceSchema;
