@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2004-08-26 20:43:28 $
+ * $Revision: 1.3 $
+ * $Date: 2004-08-27 17:03:08 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -131,7 +131,7 @@ public class DataTablePanel extends JPanel
 	 */
 	public void componentResized(ComponentEvent e)
 	{
-		table.setPreferredScrollableViewportSize(new Dimension(getSize().width - 20,getSize().height - 80));
+		table.setPreferredScrollableViewportSize(new Dimension(getSize().width - 20,getSize().height - 40));
 	}
 
 
