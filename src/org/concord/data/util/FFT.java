@@ -217,18 +217,25 @@ public class FFT
             throw new IllegalArgumentException("calculateNormalizedFFTKoeff fftData == null || normalizedFFTData == null");
         }
         int dataDim = fftData.length / 2;
-        if(dataDim != normalizedFFTData.length * 2){
+        if(dataDim / 2 != normalizedFFTData.length){
             throw new IllegalArgumentException("fftData.length / 4  != normalizedFFTData.length ");
         }
         float   maxF = -1;
         int     maxIndex = -1;
+        int maxLength = normalizedFFTData.length;
+        boolean wasError = false;
         for(int i = 1; i <= dataDim;i+=2){
             float nk = (float)Math.sqrt(fftData[i]*fftData[i]+fftData[i+1]*fftData[i+1]);
             if(i == 1) nk /= 2.0;
-            normalizedFFTData[(i - 1)/2] = nk;
-            if(nk > maxF){
-                maxIndex = (i - 1)/2;
-                maxF = nk;
+            int idx = (i - 1)/2;
+            if(idx < maxLength){
+                normalizedFFTData[idx] = nk;
+                if(nk > maxF){
+                    maxIndex = idx;
+                    maxF = nk;
+                }
+            }else{
+                wasError = true;
             }
         }
         if(maxF > 0){
@@ -240,6 +247,7 @@ public class FFT
             maxFreq = getFrequency(rate,maxIndex,normalizedFFTData);
         }
         if(out != null && out.length > 0) out[0] = maxF;
+        if(wasError) maxFreq = -maxFreq;
         return maxFreq;
     }
 
@@ -265,6 +273,41 @@ public class FFT
             float fk = getFrequency(rate,i,normKoeff);
             System.out.println("normKoeff["+i+"] = "+normKoeff[i]+" freq. = "+fk);
         }
+    }
+    
+    public static boolean isPowerOf2(int val){
+        boolean wasPowerOf2 = true;
+        while( val > 0 && wasPowerOf2){
+            if(wasPowerOf2 && (val > 1) && ((val % 2) != 0)) wasPowerOf2 = false;
+            val /= 2;
+        }
+        
+        return wasPowerOf2;
+    }
+    
+    public static int ceilPowerOf2(int val){
+        int retValue = 1;
+        boolean wasPowerOf2 = true;
+        while( val > 0){
+            if(wasPowerOf2 && (val > 1) && ((val % 2) != 0)) wasPowerOf2 = false;
+            val /= 2;
+            retValue *= 2;
+        }
+        if(wasPowerOf2) retValue /= 2;
+        
+        return retValue;
+    }
+    public static int floorPowerOf2(int val){
+        int retValue = 1;
+        boolean wasPowerOf2 = true;
+        while( val > 0){
+            if(wasPowerOf2 && (val > 1) && ((val % 2) != 0)) wasPowerOf2 = false;
+            val /= 2;
+            retValue *= 2;
+        }
+        if(retValue > 1) retValue /= 2;
+        
+        return retValue;
     }
 }
 /*
