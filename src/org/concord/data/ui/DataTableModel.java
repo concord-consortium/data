@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.11 $
- * $Date: 2004-11-23 16:08:35 $
+ * $Revision: 1.12 $
+ * $Date: 2005-03-31 04:50:43 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -47,7 +47,7 @@ import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
-import org.concord.framework.data.stream.ProducerDataStore;
+import org.concord.framework.data.stream.DeltaDataStore;
 import org.concord.framework.data.stream.WritableDataStore;
 
 /**
@@ -103,8 +103,8 @@ public class DataTableModel extends AbstractTableModel
 		
 		//Create a default DataColumnDescription for each channel in the data store
 		int startChannel = 0;
-		if (dataStore instanceof ProducerDataStore){
-			if (((ProducerDataStore)dataStore).isUseDtAsChannel()){
+		if (dataStore instanceof DeltaDataStore){
+			if (((DeltaDataStore)dataStore).isUseDtAsChannel()){
 				startChannel = -1;
 			}
 		}
