@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.10 $
- * $Date: 2004-11-24 01:24:25 $
+ * $Revision: 1.11 $
+ * $Date: 2004-11-30 05:48:04 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -55,7 +55,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
@@ -227,10 +226,23 @@ public class DataTablePanel extends JPanel
 	 */
 	public void mousePressed(MouseEvent e)
 	{
-		
-		if (SwingUtilities.isRightMouseButton(e)){
-			System.out.println("right click");
-			
+		// isPopupTrigger happens on moused pressed for osx and linux
+		evaluatePopup(e);		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
+	public void mouseReleased(MouseEvent e)
+	{
+		// isPopupTrigger happens on moused released for windows
+		evaluatePopup(e);		
+	}
+
+	private void evaluatePopup(MouseEvent e)
+	{
+		if (e.isPopupTrigger()){
 			JPopupMenu popup = new JPopupMenu();
 			JMenuItem menuItem = new JMenuItem("Copy");			
 		    menuItem.addActionListener(this);
@@ -240,22 +252,9 @@ public class DataTablePanel extends JPanel
 		    menuItem.addActionListener(this);
 		    popup.add(menuItem);
 		    
-		    popup.show(this, e.getX() + 5, e.getY() + 20);
-			
+		    popup.show(this, e.getX() + 5, e.getY() + 20);			
 		}
-		
 	}
-
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-	 */
-	public void mouseReleased(MouseEvent e)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
