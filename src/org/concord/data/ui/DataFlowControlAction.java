@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2004-09-22 17:53:41 $
+ * $Revision: 1.3 $
+ * $Date: 2004-10-21 18:15:29 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -268,6 +268,12 @@ public class DataFlowControlAction extends AbstractAction
 		if (!autoEnable) return;
 		if (type == FLOW_CONTROL_NONE) return;
 		
+		//If there is no info about simulation state, enable the action
+		if (simState == Simulation.SIM_UNDEF_STATE){
+			setEnabled(true);
+			return;
+		}
+		
 		if (type == FLOW_CONTROL_START){
 		//If the simulation state is in RUN state, it should be disabled
 			if (simState == Simulation.SIM_RUN_STATE){
@@ -303,18 +309,18 @@ public class DataFlowControlAction extends AbstractAction
 	
 	private int getSimulationState()
 	{
-		int sim = -1;
-		int s = -1;
+		int sim = Simulation.SIM_UNDEF_STATE;
+		int s = Simulation.SIM_UNDEF_STATE;
 		for (int i=0; i<objsFlow.size(); i++){
 			if (objsFlow.elementAt(i) instanceof Simulation){
 				Simulation objSim = (Simulation)objsFlow.elementAt(i);
 				s = objSim.getSimulationState();
-				if (sim == -1){
+				if (sim == Simulation.SIM_UNDEF_STATE){
 					sim = s;
 				}
 				else{
 					if (s != sim){
-						return -1;
+						return Simulation.SIM_UNDEF_STATE;
 					}
 				}
 			}
