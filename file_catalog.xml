@@ -34,16 +34,16 @@
     <file>
         <name>build.xml</name>
         <rev>1.2</rev>
-        <modtime>1107637977000</modtime>
+        <modtime>1107710352000</modtime>
         <size>5078</size>
-        <md5sum>cf117d51feed4c6bb6aad0364162bbdd</md5sum>
+        <md5sum>a708a5f75291ff0af0ecbaa1a2dc5715</md5sum>
     </file>
     <file>
         <name>file_catalog.xml</name>
-        <rev>1.14</rev>
-        <modtime>1107590767000</modtime>
+        <rev>1.15</rev>
+        <modtime>1107638091000</modtime>
         <size>8495</size>
-        <md5sum>4519133607ce434eb0ef83fc6cf85e63</md5sum>
+        <md5sum>fa38baf503a6d0b0644dd447ab1903f2</md5sum>
     </file>
     <file>
         <name>maven.xml</name>
@@ -61,10 +61,10 @@
     </file>
     <file>
         <name>project.xml</name>
-        <rev>1.19</rev>
-        <modtime>1107637982000</modtime>
+        <rev>1.20</rev>
+        <modtime>1107710357000</modtime>
         <size>701</size>
-        <md5sum>7d6fea678fccf0b3dd1532105287cc10</md5sum>
+        <md5sum>b93b3becc0d1dbefa7e89cfa924528c9</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ConditionValue.java</name>
@@ -124,17 +124,17 @@
     </file>
     <file>
         <name>src/org/concord/data/state/OTDataStore.java</name>
-        <rev>1.2</rev>
-        <modtime>1107193292000</modtime>
-        <size>6881</size>
-        <md5sum>d18a8439a56ac74d6fdbb77ab5c4594a</md5sum>
+        <rev>1.3</rev>
+        <modtime>1107710150000</modtime>
+        <size>6938</size>
+        <md5sum>5ca646ece454e3f85a9b09316b632093</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/DataStoreUtil.java</name>
-        <rev>1.7</rev>
-        <modtime>1107193292000</modtime>
-        <size>3513</size>
-        <md5sum>fa5e8acba39811201ccc529c5610dfe4</md5sum>
+        <rev>1.8</rev>
+        <modtime>1107710150000</modtime>
+        <size>4044</size>
+        <md5sum>661029e4a92e7e76d5e0af5f0b1bc4d4</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/PointsDataStore.java</name>
