@@ -518,6 +518,18 @@ public final class Unit implements DataDimension{
 		return null;
 	}
 
+	public static Unit findUnit(String unitAbbreviation)
+	{
+		for(int i = 1; i < UNIT_TABLE_LENGTH; i++){
+			Unit u = getUnit(i);
+			if(u.abbreviation.equals(unitAbbreviation)) {
+				return u;
+			}
+		}
+		
+		return null;
+	}
+	
 	public static int errorConvertStatus = 0;
 	public static Unit sourceGlobalUnit = null;
 	public static Unit destGlobalUnit = null;
