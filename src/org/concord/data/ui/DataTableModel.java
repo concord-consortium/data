@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.9 $
- * $Date: 2004-11-12 19:43:27 $
- * $Author: eblack $
+ * $Revision: 1.10 $
+ * $Date: 2004-11-16 18:48:07 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -34,12 +34,15 @@
 package org.concord.data.ui;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.concord.data.stream.DataStoreUtil;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStoreEvent;
@@ -449,19 +452,19 @@ public class DataTableModel extends AbstractTableModel
 			outS.println("# Samples Total: "+getTotalNumSamples());		
 			outS.println("Step: "+getDataStep());
 		}
-		int ti, tj;
-		ti = getRowCount();
-		tj = getColumnCount();
+		int numRows, numCols;
+		numRows = getRowCount();
+		numCols = getColumnCount();
 		if (blnDebug){
-			outS.println("Table: "+ti+" X "+tj);
+			outS.println("Table: "+numRows+" X "+numCols);
 		}
-		for (int j=0; j<tj; j++){
+		for (int j=0; j<numCols; j++){
 			outS.print(getColumnName(j)+"\t");
 		}
 		outS.println("");
 		int r = 0;
 		boolean blnPrint;
-		for (int i=0; i<ti; i++){
+		for (int i=0; i<numRows; i++){
 			blnPrint = false;
 			if (rowsToPrint == null){
 				blnPrint = true;
@@ -474,7 +477,7 @@ public class DataTableModel extends AbstractTableModel
 			}
 			if (blnPrint){
 				Object obj;
-				for (int j=0; j<tj; j++){
+				for (int j=0; j<numCols; j++){
 					obj = getValueAt(i, j);
 					if (obj != null){
 						outS.print(obj.toString());
@@ -538,6 +541,24 @@ public class DataTableModel extends AbstractTableModel
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * @param dataReader
+	 */
+	public void loadData(Reader dataReader)
+	{
+		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(0);
+		if (dcol == null) {
+			throw new RuntimeException("data store doesn't have a single column");
+		}
+		
+		DataStore dataStore = dcol.getDataStore();
+		try {
+			DataStoreUtil.loadData(dataReader, (WritableDataStore)dataStore, false);					
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
 

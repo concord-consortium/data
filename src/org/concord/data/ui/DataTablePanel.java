@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.6 $
- * $Date: 2004-11-12 19:43:27 $
- * $Author: eblack $
+ * $Revision: 1.7 $
+ * $Date: 2004-11-16 18:48:07 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -36,7 +36,9 @@ package org.concord.data.ui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -44,7 +46,9 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.StringReader;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -228,7 +232,11 @@ public class DataTablePanel extends JPanel
 			System.out.println("right click");
 			
 			JPopupMenu popup = new JPopupMenu();
-			JMenuItem menuItem = new JMenuItem("Copy");
+			JMenuItem menuItem = new JMenuItem("Copy");			
+		    menuItem.addActionListener(this);
+		    popup.add(menuItem);
+			
+		    menuItem = new JMenuItem("Paste");			
 		    menuItem.addActionListener(this);
 		    popup.add(menuItem);
 		    
@@ -256,15 +264,32 @@ public class DataTablePanel extends JPanel
 	{
 		String strVal="";
 		
-		ByteArrayOutputStream outS = new ByteArrayOutputStream();
-		tableModel.printData(new PrintStream(outS), table.getSelectedRows(), false);
-		strVal = outS.toString();
+		if(e.getActionCommand().equals("Copy")) {
 		
-		try{
-			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		
-			clipboard.setContents(new StringSelection(strVal), null);
+			ByteArrayOutputStream outS = new ByteArrayOutputStream();
+			tableModel.printData(new PrintStream(outS), table.getSelectedRows(), false);
+			strVal = outS.toString();
+			
+			try{
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				
+				clipboard.setContents(new StringSelection(strVal), null);
+			}
+			catch(Exception ex){}
+		} else if (e.getActionCommand().equals("Paste")){
+			InputStream inS;
+			try {
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+				Transferable contents = clipboard.getContents(null);
+				String data = (String)contents.getTransferData(DataFlavor.stringFlavor);
+
+				StringReader dataReader = new StringReader(data);
+				
+				tableModel.loadData(dataReader);
+			} catch(Exception ex){
+				ex.printStackTrace();
+			}			
 		}
-		catch(Exception ex){}
 	}
 }
