@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.11 $
- * $Date: 2005-03-10 07:11:15 $
+ * $Revision: 1.12 $
+ * $Date: 2005-03-31 04:50:43 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -41,6 +41,7 @@ import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
 import org.concord.framework.data.stream.ProducerDataStore;
+import org.concord.framework.data.stream.WritableArrayDataStore;
 import org.concord.framework.data.stream.WritableDataStore;
 import org.concord.framework.otrunk.OTID;
 import org.concord.framework.otrunk.OTObject;
@@ -59,7 +60,7 @@ import org.concord.framework.otrunk.OTResourceSchema;
  *
  */
 public class OTDataStore extends ProducerDataStore
-	implements WritableDataStore, OTObject
+	implements WritableArrayDataStore, OTObject
 {
 	public static interface ResourceSchema extends OTResourceSchema
 	{
@@ -207,6 +208,15 @@ public class OTDataStore extends ProducerDataStore
 		}
 	}	
 
+	public void setValues(int numbChannels,float []values)
+	{
+	    for(int i=0;i<values.length;i++) {
+	        int channelNumber = i%numbChannels;
+	        setValueAt(i/numbChannels, channelNumber, 
+	                new Float(values[i]));
+	    }
+	}
+	
 	/**
 	 * Adds a value to the channel indicated
 	 * If the channel doesn't exist, it doesn't do anything
@@ -306,4 +316,23 @@ public class OTDataStore extends ProducerDataStore
 
 		return chDesc;
 	}
+	
+	/* (non-Javadoc)
+     * @see org.concord.framework.data.stream.WritableArrayDataStore#setDt(float)
+     */
+    public void setDt(float dt)
+    {
+        // FIXME
+        throw new RuntimeException("unimplemented");
+    }
+	
+    /* (non-Javadoc)
+     * @see org.concord.framework.data.stream.WritableArrayDataStore#setValues(int, float[], int, int, int)
+     */
+    public void setValues(int numChannels, float[] values, int offset,
+            int numSamples, int nextSampleOffset)
+    {
+        // FIXME
+        throw new RuntimeException("unimplemented");
+    }
 }
