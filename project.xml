@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <!-- Inherit main project xml file -->
+  <extend>../project.xml</extend>
+
+  <!-- Project specific parameters -->
+  <artifactId>data</artifactId>
+  <name>Data</name>
+  <groupId>${pom.artifactId}</groupId>
+  <currentVersion>1.0</currentVersion>
+
+  <dependencies>
+    <dependency>
+      <groupId>framework</groupId>
+      <artifactId>framework</artifactId>
+      <version>SNAPSHOT</version>
+      <type>jar</type>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+  </dependencies>
+
+</project>
+
