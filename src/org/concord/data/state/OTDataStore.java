@@ -24,9 +24,9 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2005-03-09 17:09:59 $
- * $Author: scytacki $
+ * $Revision: 1.6 $
+ * $Date: 2005-03-10 03:04:27 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -215,9 +215,9 @@ public class OTDataStore extends ProducerDataStore
 	}
 		
 	/* (non-Javadoc)
-	 * @see org.concord.framework.data.stream.WritableDataStore#removeValueAt(int)
+	 * @see org.concord.framework.data.stream.WritableDataStore#removeSampleAt(int)
 	 */
-	public void removeValueAt(int numSample) 
+	public void removeSampleAt(int numSample) 
 	{
 		// FIXME this is not supported yet
 	}

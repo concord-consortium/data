@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2005-03-08 08:54:56 $
+ * $Revision: 1.4 $
+ * $Date: 2005-03-10 03:04:27 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -97,10 +97,12 @@ public class PointsDataStore extends DefaultDataStore
 		//Removing all values from startI to i
 		ti = Math.min(i, t);
 		for (int ii = startI+1; ii < ti; ii++){
-			for (int j=0; j < channelsValues.size(); j++){
-				Vector channel = (Vector)channelsValues.elementAt(j);
-				channel.remove(startI+1);
-			}
+			//for (int j=0; j < channelsValues.size(); j++){
+			//	Vector channel = (Vector)channelsValues.elementAt(j);
+			//	channel.remove(startI+1);
+			//}
+			//The only problem with doing this is that removeSampleAt fires a removed event
+			removeSampleAt(startI+1);
 			i--;
 		}
 		//i = i - (ti - (startI +1));
@@ -165,37 +167,36 @@ public class PointsDataStore extends DefaultDataStore
 	private void addPointOrder(float x, float y, int i, float value)
 	{
 		if (i < getTotalNumSamples()){
-			for (int j=0; j < channelsValues.size(); j++){
-				Vector channel = (Vector)channelsValues.elementAt(j);
-				if (value == x){
-					if (j == 0){
-						channel.set(i, new Float(x));
-						//System.out.println("addPointOrder set "+getFloatVectorStr(channel));
-					}
-					else if (j == 1){
-						channel.set(i, new Float(y));
-					}
-					else{
-						channel.set(i, null);
-					}
+			if (value != x){
+				insertSampleAt(i);
+			}
+			for (int j=0; j < getTotalNumChannels(); j++){
+				if (j == 0){
+					setValueAt(i, j, new Float(x));
+					//System.out.println("addPointOrder set "+getFloatVectorStr(channel));
+				}
+				else if (j == 1){
+					setValueAt(i, j, new Float(y));
 				}
 				else{
-					if (j == 0){
-						channel.add(i, new Float(x));
-						//System.out.println("addPointOrder add "+getFloatVectorStr(channel));
-					}
-					else if (j == 1){
-						channel.add(i, new Float(y));
-					}
-					else{
-						channel.add(i, null);
-					}
-				}
+					setValueAt(i, j, null);
+				}				
 			}
 			notifyDataChanged();
 		}
 		else{
 			addPoint(x,y);
+		}
+	}
+
+	/**
+	 * @param i
+	 */
+	private void insertSampleAt(int i)
+	{
+		for (int j=0; j < channelsValues.size(); j++){
+			Vector channel = (Vector)channelsValues.elementAt(j);
+			channel.add(i, null);
 		}
 	}
 

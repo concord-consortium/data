@@ -24,9 +24,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2005-03-09 17:09:59 $
- * $Author: scytacki $
+ * $Revision: 1.4 $
+ * $Date: 2005-03-10 03:04:27 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -96,7 +96,7 @@ public class DataTableEditor extends JPanel
 	{
 		int row = tablePanel.getTable().getSelectedRow();
 		if (dataStore instanceof WritableDataStore){
-			((WritableDataStore)dataStore).removeValueAt(row);
+			((WritableDataStore)dataStore).removeSampleAt(row);
 		}
 	}
 	
