@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2004-09-22 15:52:09 $
+ * $Revision: 1.2 $
+ * $Date: 2004-10-29 05:22:45 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -140,8 +140,10 @@ public class DataValueLabel extends JLabel
 		
 		//If the channel has a description, display the value with the correct precision
 		if (channelDesc != null){
-			double precision = Math.pow(10, channelDesc.getPrecision());
-			val = (float)(Math.floor(((precision) * val) + 0.5) / precision);
+			if (channelDesc.isUsePrecision()){
+				double precision = Math.pow(10, channelDesc.getPrecision());
+				val = (float)(Math.floor(((precision) * val) + 0.5) / precision);
+			}
 		}
 		setText(Float.toString(val));
 	}
