@@ -121,8 +121,9 @@ public final class Unit implements DataDimension{
 	public final static int UNIT_CODE_LUX				= 62;
 	public final static int UNIT_CODE_CENTIMETER        = 63;
 	public final static int UNIT_CODE_MILLISECOND       = 64;
+	public final static int UNIT_CODE_LINEAR_VEL_MILLISECOND = 65;
 	
-	public final static int UNIT_TABLE_LENGTH           = 65;
+	public final static int UNIT_TABLE_LENGTH           = 66;
 
 	public final static int UNIT_CAT_UNKNOWN			= 0;
 	public final static int UNIT_CAT_LENGTH				= 1;
@@ -461,6 +462,10 @@ public final class Unit implements DataDimension{
 			return new Unit("m/s","m/s",true,UNIT_CAT_VELOCITY,UNIT_CODE_LINEAR_VEL,UNIT_CODE_LINEAR_VEL,
 							  (byte)1,(byte)0,(byte)-1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1f,0.0f,false,true); 
+		case UNIT_CODE_LINEAR_VEL_MILLISECOND :
+			return new Unit("m/ms","m/ms",true,UNIT_CAT_VELOCITY,UNIT_CODE_LINEAR_VEL_MILLISECOND,UNIT_CODE_LINEAR_VEL,
+							  (byte)1,(byte)0,(byte)-1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
+							  1000f,0.0f,false,true); 
 		case UNIT_CODE_AMPERE :
 			return new Unit("ampere","A",false,UNIT_CAT_ELECTRICITY,UNIT_CODE_AMPERE,UNIT_CODE_AMPERE,
 							  (byte)0,(byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
