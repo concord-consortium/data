@@ -7,7 +7,7 @@
   <artifactId>data</artifactId>
   <name>Data</name>
   <groupId>${pom.artifactId}</groupId>
-  <currentVersion>1.13</currentVersion>
+  <currentVersion>1.14</currentVersion>
   <dependencies>
     <dependency>
       <groupId>framework</groupId>
