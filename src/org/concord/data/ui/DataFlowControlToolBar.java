@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2004-09-22 16:28:58 $
+ * $Revision: 1.2 $
+ * $Date: 2004-09-22 17:53:41 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -119,6 +119,10 @@ public class DataFlowControlToolBar extends JToolBar
         }
 	}
 	
+	/**
+	 * Add data flow objects to an "empty" button
+	 * @param b
+	 */
 	protected void addDataFlowObjects(DataFlowControlButton b)
 	{
 		for (int i=0; i<objsFlow.size(); i++){

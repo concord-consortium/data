@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2004-09-22 16:28:58 $
+ * $Revision: 1.2 $
+ * $Date: 2004-09-22 17:53:41 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -24,7 +24,12 @@ import org.concord.framework.simulation.SimulationListener;
 
 /**
  * DataFlowControlAction
- * Class name and description
+ * Action that controls one or more data flow or
+ * simulation objects
+ * It can start, stop or reset the data flow or
+ * simulation objects
+ * It gets enabled and disabled automatically 
+ * if desired.
  *
  * Date created: Sep 20, 2004
  *
