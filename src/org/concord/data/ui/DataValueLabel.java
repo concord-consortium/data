@@ -24,16 +24,15 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2005-01-27 16:43:11 $
- * $Author: scytacki $
+ * $Revision: 1.5 $
+ * $Date: 2005-02-22 21:07:25 $
+ * $Author: eburke $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
 */
 package org.concord.data.ui;
 
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import org.concord.framework.data.stream.DataChannelDescription;

@@ -30,25 +30,19 @@
  */
 package org.concord.data.state;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.StringReader;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.concord.data.stream.DataStoreUtil;
 import org.concord.data.ui.DataFlowControlToolBar;
 import org.concord.data.ui.DataStoreLabel;
 import org.concord.data.ui.DataValueLabel;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataProducerProxy;
-import org.concord.framework.data.stream.DefaultDataStore;
-import org.concord.framework.data.stream.WritableDataStore;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.view.OTObjectView;
 import org.concord.framework.otrunk.view.OTViewContainer;
