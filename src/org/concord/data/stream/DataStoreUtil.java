@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2005-01-31 17:41:32 $
+ * $Revision: 1.8 $
+ * $Date: 2005-02-06 17:15:50 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -72,6 +72,7 @@ public class DataStoreUtil
 		BufferedReader lineReader = new BufferedReader(reader);
 
 		ds.clearValues();
+		int numChannels = ds.getTotalNumChannels();
 		
 		if(hasHeaders) {
 			// parse the headers and set the channel descriptions
@@ -80,24 +81,46 @@ public class DataStoreUtil
 		int row = 0;
 		int col = 0;
 		
+		
 		String line = lineReader.readLine();
 		while(line != null) {
-			col = 0;
-			StringTokenizer toks = new StringTokenizer(line, "\t");
-			
-			while(toks.hasMoreTokens()) {
-				String strValue = toks.nextToken();
+			if(numChannels > 0) {
+				StringTokenizer toks = new StringTokenizer(line, "\t ");
 				
-				try {
-					Float fValue = Float.valueOf(strValue);
-					ds.setValueAt(row, col, fValue);
-				} catch (NumberFormatException e) {
-					ds.setValueAt(row, col, strValue);
-				}
-				col++;
-			}
-			row++;
+				while(toks.hasMoreTokens()) {
+					String strValue = toks.nextToken();
+					
+					try {
+						Float fValue = Float.valueOf(strValue);
+						ds.setValueAt(row, col, fValue);
+					} catch (NumberFormatException e) {
+						ds.setValueAt(row, col, strValue);
+					}
+					col++;
+					if(col == numChannels) {
+						col = 0;
+						row++;
+					} 
+				}				
+			} else {
+				col = 0;
 
+				StringTokenizer toks = new StringTokenizer(line, "\t");
+				
+				while(toks.hasMoreTokens()) {
+					String strValue = toks.nextToken();
+					
+					try {
+						Float fValue = Float.valueOf(strValue);
+						ds.setValueAt(row, col, fValue);
+					} catch (NumberFormatException e) {
+						ds.setValueAt(row, col, strValue);
+					}
+					col++;
+				}
+				row++;
+			}
+				
 			line = lineReader.readLine();
 		}
 		
