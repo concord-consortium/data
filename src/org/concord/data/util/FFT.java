@@ -189,6 +189,83 @@ public class FFT
 			mmax=istep;
 		}
 	}
+	//fftData contains normilized koefficients fftData[0] is first non zero frequency
+	public static float getFrequency(float rate, int index, float []fftData){
+	    return (rate / 2) * index / fftData.length;
+	}
+    
+    //returns freq. with max. magnitude
+    public static float calculateNormalizedFFTKoeff(float []fftData,float []normalizedFFTData,float norma,float rate){
+        return calculateNormalizedFFTKoeff(fftData,normalizedFFTData,norma,rate,null);
+    }
+    
+    //returns freq. with max. magnitude
+    public static float calculateNormalizedFFTKoeff(float []fftData,float []normalizedFFTData,float rate){
+        return calculateNormalizedFFTKoeff(fftData,normalizedFFTData,-1,rate,null);
+    }
+    
+    //returns freq. with max. magnitude
+    public static float calculateNormalizedFFTKoeff(float []fftData,float []normalizedFFTData,float rate, float []out){
+        return calculateNormalizedFFTKoeff(fftData,normalizedFFTData,-1,rate,out);
+    }
+    
+    //returns freq. with max. magnitude
+    public static float calculateNormalizedFFTKoeff(float []fftData,float []normalizedFFTData,float norma,float rate, float []out){
+        float maxFreq = 0;
+        if(out != null) for(int i = 0; i < out.length; i++) out[i] = 0;
+        if(fftData == null || normalizedFFTData == null){
+            throw new IllegalArgumentException("calculateNormalizedFFTKoeff fftData == null || normalizedFFTData == null");
+        }
+        int dataDim = fftData.length / 2;
+        if(dataDim != normalizedFFTData.length * 2){
+            throw new IllegalArgumentException("fftData.length / 4  != normalizedFFTData.length ");
+        }
+        float   maxF = -1;
+        int     maxIndex = -1;
+        for(int i = 1; i <= dataDim;i+=2){
+            float nk = (float)Math.sqrt(fftData[i]*fftData[i]+fftData[i+1]*fftData[i+1]);
+            if(i == 1) nk /= 2.0;
+            normalizedFFTData[(i - 1)/2] = nk;
+            if(nk > maxF){
+                maxIndex = (i - 1)/2;
+                maxF = nk;
+            }
+        }
+        if(maxF > 0){
+            if(norma > 0){
+                for(int i = 0; i < normalizedFFTData.length; i++){
+                    normalizedFFTData[i] = norma * normalizedFFTData[i] / maxF;
+                }
+            }
+            maxFreq = getFrequency(rate,maxIndex,normalizedFFTData);
+        }
+        if(out != null && out.length > 0) out[0] = maxF;
+        return maxFreq;
+    }
+
+    public static void main(String []arg){
+        int	dataDim = 4096;
+        float []data = new float[dataDim*2];
+        float rate = 44100;
+        float T = 1; //(1s);
+        float deltat = T / rate;
+        float freq = 400;
+        float omega = 2 * (float)Math.PI * freq;
+        float zeroOffset = 0;
+        for(int i = 0; i < dataDim;i++){
+            data[i] = zeroOffset+(float)Math.sin(omega * (float)i * deltat);
+        }
+        FFT.realft(data,dataDim,1);//FFT
+        float []normKoeff = new float[dataDim/2];//Frequencies
+        float   maxFreq = calculateNormalizedFFTKoeff(data,normKoeff,100,rate);
+        float   normZeroFreq = normKoeff[0];
+        System.out.println("zeroFreq = "+normZeroFreq);
+        System.out.println("maxFreq = "+maxFreq);
+        for(int i = 0; i < normKoeff.length; i++){
+            float fk = getFrequency(rate,i,normKoeff);
+            System.out.println("normKoeff["+i+"] = "+normKoeff[i]+" freq. = "+fk);
+        }
+    }
 }
 /*
  public static void calcData(FFTJava fftTest,float freq){
@@ -214,4 +291,6 @@ public class FFT
  }
 
 */
+
+
 
