@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2005-03-10 03:15:50 $
+ * $Revision: 1.6 $
+ * $Date: 2005-03-10 06:04:53 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -61,134 +61,6 @@ public class PointsDataStore extends DefaultDataStore
 		setValueAt(sample, 1, new Float(y));
 	}
 
-	public void addPointOrderFromTo(float x, float y, float otherX)
-	{
-		if (otherX <= x){
-			addPointOrderFrom(x, y, otherX);
-		}
-		else{
-			addPointOrderTo(x, y, otherX);
-		}
-	}
-	
-	public void addPointOrderFrom(float x, float y, float startX)
-	{
-		float value;
-		int i;
-		int startI;
-		int t;
-		int ti;
-		
-		if (x < startX){
-			return;
-		}
-		if (x == startX){
-			addPointOrder(x, y);
-			return;
-		}
-		
-		i = getIndexValue(x);
-		t = getTotalNumSamples();
-		startI = getIndexValue(startX);
-		value = getXValue(i);
-		
-		//System.out.println("addPointOrderFrom("+x+" "+i+" "+startX+" "+startI+") in "+getFloatVectorStr((Vector)channelsValues.elementAt(0)));
-		
-		//Removing all values from startI to i
-		ti = Math.min(i, t);
-		for (int ii = startI+1; ii < ti; ii++){
-			//for (int j=0; j < channelsValues.size(); j++){
-			//	Vector channel = (Vector)channelsValues.elementAt(j);
-			//	channel.remove(startI+1);
-			//}
-			//The only problem with doing this is that removeSampleAt fires a removed event
-			removeSampleAt(startI+1);
-			i--;
-		}
-		//i = i - (ti - (startI +1));
-		
-		//System.out.println("after removing, i:"+i+" "+getFloatVectorStr((Vector)channelsValues.elementAt(0)));
-		
-		addPointOrder(x, y, i, value);
-		
-	}
-	
-	public void addPointOrderTo(float x, float y, float endX)
-	{
-		float value;
-		int i;
-		int endI;
-		int t;
-		int ti;
-		
-		if (x > endX){
-			return;
-		}
-		if (x == endX){
-			addPointOrder(x, y);
-			return;
-		}
-		
-		i = getIndexValue(x);
-		t = getTotalNumSamples();
-		endI = getIndexValue(endX);
-		value = getXValue(i);
-		
-		//System.out.println("addPointOrderFrom("+x+" "+i+" "+endX+" "+endI+") in "+getFloatVectorStr((Vector)channelsValues.elementAt(0)));
-		
-		//Removing all values from i to endI
-		ti = Math.min(endI, t);
-		for (int ii = i; ii < ti; ii++){
-			for (int j=0; j < channelsValues.size(); j++){
-				Vector channel = (Vector)channelsValues.elementAt(j);
-				channel.remove(i);
-			}
-		}
-		
-		//System.out.println("after removing, i:"+i+" "+getFloatVectorStr((Vector)channelsValues.elementAt(0)));
-		
-		addPointOrder(x, y, i, value);
-	}
-	
-	public void addPointOrder(float x, float y)
-	{
-		float value;
-		int i = getIndexValue(x);
-		value = getXValue(i);
-		
-		addPointOrder(x, y, i, value);
-	}
-	
-	/**
-	 * @param x
-	 * @param i
-	 * @param value
-	 */
-	private void addPointOrder(float x, float y, int i, float value)
-	{
-		if (i < getTotalNumSamples()){
-			if (value != x){
-				insertSampleAt(i);
-			}
-			for (int j=0; j < getTotalNumChannels(); j++){
-				if (j == 0){
-					setValueAt(i, j, new Float(x));
-					//System.out.println("addPointOrder set "+getFloatVectorStr(channel));
-				}
-				else if (j == 1){
-					setValueAt(i, j, new Float(y));
-				}
-				else{
-					setValueAt(i, j, null);
-				}				
-			}
-			notifyDataChanged();
-		}
-		else{
-			addPoint(x,y);
-		}
-	}
-
 	/**
 	 * @param channel
 	 * @return
@@ -209,41 +81,5 @@ public class PointsDataStore extends DefaultDataStore
 		strS = strS + "]";
 		return strS;
 	}
-
-	/**
-	 * @param i
-	 * @return
-	 */
-	private float getXValue(int i)
-	{
-		Object obj = getValueAt(i, 0);
-		if (obj instanceof Float){
-			return ((Float)obj).floatValue();
-		}
-		return Float.NaN;
-	}
-
-	/**
-	 * @param x
-	 * @return
-	 */
-	private int getIndexValue(float x)
-	{
-		float value;
-		Object obj;
-		int i;
-		for (i = 0; i < getTotalNumSamples(); i++){
-			obj = getValueAt(i, 0);
-			if (obj instanceof Float){
-				value = ((Float)obj).floatValue();
-				if (value >= x){
-					break;
-				}
-			}
-		}
-		
-		//System.out.println("get index "+i+" of value "+x+" in "+getFloatVectorStr((Vector)channelsValues.elementAt(0)));
-		
-		return i;
-	}
+	
 }
