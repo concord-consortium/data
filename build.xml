@@ -1,0 +1,13 @@
+<project name="Data" default="data" basedir =".">
+    <property name="src" value="src" />
+    <property name="lib" value="lib" />
+    <path id="data.class.path">
+    </path>
+    <target name="data">
+       <javac srcdir="${src}" destdir="${lib}" includes="org/concord/data/**" sourcepath="">
+            <classpath refid="data.class.path" />
+       </javac>
+       <jar jarfile="${lib}/data.jar" basedir="${lib}" manifest="data.mf" includes="**/data/**" />
+		<signjar jar="${lib}/data.jar" alias="concord" storepass="cc1234" />
+    </target>
+</project>
