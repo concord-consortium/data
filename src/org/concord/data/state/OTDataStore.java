@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.12 $
- * $Date: 2005-03-31 04:50:43 $
+ * $Revision: 1.13 $
+ * $Date: 2005-04-13 03:48:31 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -159,7 +159,7 @@ public class OTDataStore extends ProducerDataStore
 	/* (non-Javadoc)
 	 * @see org.concord.framework.data.stream.DataStore#getValueAt(int, int)
 	 */
-	public Object getValueAt(int numSample, int numChannel) 
+	public synchronized Object getValueAt(int numSample, int numChannel) 
 	{
 		//Special case: when dt is a channel, it's the channel -1
 		if (numChannel == -1){
@@ -177,11 +177,16 @@ public class OTDataStore extends ProducerDataStore
 		
 		return resources.getValues().get(index);
 	}
+
+	public void setValueAt(int numSample, int numChannel, Object value) 
+	{
+	    setValueAt(numSample, numChannel, value, true);
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.concord.framework.data.stream.WritableDataStore#setValueAt(int, int, java.lang.Object)
 	 */
-	public void setValueAt(int numSample, int numChannel, Object value) 
+	public void setValueAt(int numSample, int numChannel, Object value, boolean doNotify) 
 	{
 		OTResourceList values = resources.getValues();
 		int numChannels = getTotalNumChannels();
@@ -202,19 +207,21 @@ public class OTDataStore extends ProducerDataStore
 			values.set(index, value);
 		}
 		
-		for(int i=0; i<dataStoreListeners.size(); i++) {
-			DataStoreListener l = (DataStoreListener)dataStoreListeners.get(i);
-			l.dataChanged(changeEvent);			
-		}
+		if(doNotify) {
+		    notifyDataChanged();
+		}		
 	}	
 
+	
 	public void setValues(int numbChannels,float []values)
 	{
 	    for(int i=0;i<values.length;i++) {
 	        int channelNumber = i%numbChannels;
 	        setValueAt(i/numbChannels, channelNumber, 
-	                new Float(values[i]));
+	                new Float(values[i]), false);
 	    }
+	    
+	    notifyDataChanged();
 	}
 	
 	/**
@@ -229,6 +236,25 @@ public class OTDataStore extends ProducerDataStore
 	    setValueAt(numSample, numChannel, value);	    
 	}
 		
+	protected void addSamples(float [] values, int offset, 
+	        int numberOfSamples, int localNextSampleOffset)
+	{
+		synchronized(this) {
+			int numChannels = getNumberOfProducerChannels();
+			int firstSample = getTotalNumSamples();
+
+		    for(int i=0; i<numberOfSamples; i++) {
+		        for(int j=0; j<numChannels; j++) {
+		            Float value = new Float(values[offset+(i*localNextSampleOffset)+j]);
+		            setValueAt(firstSample + i, j, value, false);
+		        }
+		    }
+		}
+		
+	    // notifyDataAdded();	
+	    notifyDataChanged();
+	}
+	
 	/**
 	 * @see org.concord.framework.data.stream.WritableDataStore#removeSampleAt(int)
 	 */
