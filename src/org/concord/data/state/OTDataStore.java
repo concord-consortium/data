@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.14 $
- * $Date: 2005-04-19 01:14:05 $
+ * $Revision: 1.15 $
+ * $Date: 2005-04-19 15:45:47 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -34,6 +34,7 @@
 package org.concord.data.state;
 
 import java.io.IOException;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 import org.concord.data.Unit;
@@ -128,10 +129,8 @@ public class OTDataStore extends ProducerDataStore
 	public void clearValues() 
 	{
 		resources.getValues().removeAll();
-		for(int i=0; i<dataStoreListeners.size(); i++) {
-			DataStoreListener l = (DataStoreListener)dataStoreListeners.get(i);
-			l.dataRemoved(removeEvent);
-		}				
+		
+		notifyDataRemoved();
 	}
 	
 	/* (non-Javadoc)
@@ -270,10 +269,7 @@ public class OTDataStore extends ProducerDataStore
 		    values.remove(index);
 		}
 
-		for(int i=0; i<dataStoreListeners.size(); i++) {
-			DataStoreListener l = (DataStoreListener)dataStoreListeners.get(i);
-			l.dataRemoved(removeEvent);
-		}		
+		notifyDataRemoved();
 	}
 	
 	/**
@@ -290,10 +286,7 @@ public class OTDataStore extends ProducerDataStore
 		    values.add(index, null);
 		}
 
-		for(int i=0; i<dataStoreListeners.size(); i++) {
-			DataStoreListener l = (DataStoreListener)dataStoreListeners.get(i);
-			l.dataChanged(changeEvent);
-		}		
+		notifyDataChanged();
 	}	
 	
 	/* (non-Javadoc)
@@ -388,8 +381,12 @@ public class OTDataStore extends ProducerDataStore
 		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_ADDED);
 		DataStoreListener l;
 		for (int i=0; i<dataStoreListeners.size(); i++){
-		    WeakReference ref = (WeakReference)dataStoreListeners.elementAt(i);
+		    Reference ref = (Reference)dataStoreListeners.elementAt(i);
 			l = (DataStoreListener)ref.get();
+			
+			// ignore references that have been gc'd
+			if(l == null) continue;
+
 			l.dataAdded(evt);
 		}
 	}
@@ -399,8 +396,12 @@ public class OTDataStore extends ProducerDataStore
 		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_ADDED);
 		DataStoreListener l;
 		for (int i=0; i<dataStoreListeners.size(); i++){
-		    WeakReference ref = (WeakReference)dataStoreListeners.elementAt(i);
+		    Reference ref = (Reference)dataStoreListeners.elementAt(i);
 			l = (DataStoreListener)ref.get();
+			
+			// ignore references that have been gc'd
+			if(l == null) continue;
+
 			l.dataRemoved(evt);
 		}
 	}
@@ -410,8 +411,12 @@ public class OTDataStore extends ProducerDataStore
 		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_ADDED);
 		DataStoreListener l;
 		for (int i=0; i<dataStoreListeners.size(); i++){
-		    WeakReference ref = (WeakReference)dataStoreListeners.elementAt(i);
+		    Reference ref = (Reference)dataStoreListeners.elementAt(i);
 			l = (DataStoreListener)ref.get();
+			
+			// ignore references that have been gc'd
+			if(l == null) continue;
+
 			l.dataChanged(evt);
 		}
 	}
@@ -421,8 +426,12 @@ public class OTDataStore extends ProducerDataStore
 		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_DESC_CHANGED);
 		DataStoreListener l;
 		for (int i=0; i<dataStoreListeners.size(); i++){
-		    WeakReference ref = (WeakReference)dataStoreListeners.elementAt(i);
+		    Reference ref = (Reference)dataStoreListeners.elementAt(i);
 			l = (DataStoreListener)ref.get();
+			
+			// ignore references that have been gc'd
+			if(l == null) continue;
+
 			l.dataChannelDescChanged(evt);
 		}
 	}
