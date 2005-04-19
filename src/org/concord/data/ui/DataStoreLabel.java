@@ -48,6 +48,7 @@ public class DataStoreLabel extends JTextField
 {
 	DataStore dataStore = null;
 	int channel = 0;
+    private float currentValue;
 	
 	public DataStoreLabel(DataStore dataStore, int channel)
 	{
@@ -56,6 +57,11 @@ public class DataStoreLabel extends JTextField
 		dataStore.addDataStoreListener(this);
 		setEditable(false);
 		updateValue();
+	}
+
+	public float getValue()
+	{
+	    return currentValue;
 	}
 	
 	/* (non-Javadoc)
@@ -92,7 +98,7 @@ public class DataStoreLabel extends JTextField
 	{
 		int numSamples = dataStore.getTotalNumSamples();
 		if(numSamples == 0) return;
-		
+				
 		Float lastValue = 
 			(Float)dataStore.getValueAt(numSamples-1, channel);
 
@@ -107,6 +113,7 @@ public class DataStoreLabel extends JTextField
 	 */
 	private void setValue(float val)
 	{
+	    
 		DataChannelDescription channelDesc = 
 			dataStore.getDataChannelDescription(channel);
 		
@@ -114,9 +121,13 @@ public class DataStoreLabel extends JTextField
 		if (channelDesc != null){
 			if (channelDesc.isUsePrecision()){
 				double precision = Math.pow(10, channelDesc.getPrecision());
-				val = (float)(Math.floor(((precision) * val) + 0.5) / precision);
+				val = (float)(Math.floor((val / (precision)) + 0.5) * precision);
 			}
 		}
+
+		currentValue = val;
+
 		setText(Float.toString(val));
 	}
+	
 }
