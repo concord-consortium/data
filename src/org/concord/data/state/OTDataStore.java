@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.13 $
- * $Date: 2005-04-13 03:48:31 $
+ * $Revision: 1.14 $
+ * $Date: 2005-04-19 01:14:05 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -34,6 +34,7 @@
 package org.concord.data.state;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import org.concord.data.Unit;
 import org.concord.data.stream.DataStoreUtil;
@@ -361,4 +362,69 @@ public class OTDataStore extends ProducerDataStore
         // FIXME
         throw new RuntimeException("unimplemented");
     }
+    
+	/**
+	 * @see org.concord.framework.data.stream.DataStore#addDataStoreListener(org.concord.framework.data.stream.DataStoreListener)
+	 */
+	public void addDataStoreListener(DataStoreListener l)
+	{
+	    WeakReference ref = new WeakReference(l);
+		if (!dataStoreListeners.contains(ref)){
+			dataStoreListeners.add(ref);
+		}
+	}
+
+	/**
+	 * @see org.concord.framework.data.stream.DataStore#removeDataStoreListener(org.concord.framework.data.stream.DataStoreListener)
+	 */
+	public void removeDataStoreListener(DataStoreListener l)
+	{
+	    WeakReference ref = new WeakReference(l);
+		dataStoreListeners.remove(ref);		
+	}
+
+	protected void notifyDataAdded()
+	{
+		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_ADDED);
+		DataStoreListener l;
+		for (int i=0; i<dataStoreListeners.size(); i++){
+		    WeakReference ref = (WeakReference)dataStoreListeners.elementAt(i);
+			l = (DataStoreListener)ref.get();
+			l.dataAdded(evt);
+		}
+	}
+	
+	protected void notifyDataRemoved()
+	{
+		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_ADDED);
+		DataStoreListener l;
+		for (int i=0; i<dataStoreListeners.size(); i++){
+		    WeakReference ref = (WeakReference)dataStoreListeners.elementAt(i);
+			l = (DataStoreListener)ref.get();
+			l.dataRemoved(evt);
+		}
+	}
+	
+	protected void notifyDataChanged()
+	{
+		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_ADDED);
+		DataStoreListener l;
+		for (int i=0; i<dataStoreListeners.size(); i++){
+		    WeakReference ref = (WeakReference)dataStoreListeners.elementAt(i);
+			l = (DataStoreListener)ref.get();
+			l.dataChanged(evt);
+		}
+	}
+	
+	protected void notifyChannelDescChanged()
+	{
+		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_DESC_CHANGED);
+		DataStoreListener l;
+		for (int i=0; i<dataStoreListeners.size(); i++){
+		    WeakReference ref = (WeakReference)dataStoreListeners.elementAt(i);
+			l = (DataStoreListener)ref.get();
+			l.dataChannelDescChanged(evt);
+		}
+	}
+
 }

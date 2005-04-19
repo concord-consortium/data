@@ -103,6 +103,14 @@ public class OTDataFieldView
 		return fieldLabelPanel;
 	}
 
+    /* (non-Javadoc)
+     * @see org.concord.framework.otrunk.view.OTObjectView#viewClosed()
+     */
+    public void viewClosed()
+    {
+        // TODO Auto-generated method stub
+    }
+    	
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
