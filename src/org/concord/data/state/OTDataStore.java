@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.15 $
- * $Date: 2005-04-19 15:45:47 $
+ * $Revision: 1.16 $
+ * $Date: 2005-04-19 16:44:34 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -296,7 +296,7 @@ public class OTDataStore extends ProducerDataStore
 			DataChannelDescription desc) 
 	{
 		// FIXME this is not supported yet
-		throw new UnsupportedOperationException("org.concord.framework.data.stream.WritableDataStore.setDataChannelDescription not supported yet");
+		//throw new UnsupportedOperationException("org.concord.framework.data.stream.WritableDataStore.setDataChannelDescription not supported yet");
 	}
 	
 	/* (non-Javadoc)
@@ -308,7 +308,15 @@ public class OTDataStore extends ProducerDataStore
 	        // need to make sure that these values are saved
 	        // so if this data store is disconnected from the 
 	        // the data producer it will preserve this info
-	        return super.getDataChannelDescription(numChannel);
+			DataChannelDescription channelDesc;
+			if (dataStreamDesc == null) return null;
+			
+			//Special case: using dt as the channel -1
+			if (numChannel == -1){
+				return dataStreamDesc.getDtChannelDescription();
+			}
+			
+			return dataStreamDesc.getChannelDescription(numChannel);
 	    }
 	    
 		OTObjectList channelDescriptions = resources.getChannelDescriptions();
