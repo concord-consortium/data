@@ -102,6 +102,10 @@ public class DataStoreLabel extends JTextField
 		Float lastValue = 
 			(Float)dataStore.getValueAt(numSamples-1, channel);
 
+		if(lastValue == null) {
+		    System.err.println("DataStoreLabel: null last value");
+		    return;
+		}
 		setValue(lastValue.floatValue());
 	}
 	
