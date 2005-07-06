@@ -24,9 +24,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2005-05-19 17:06:08 $
- * $Author: maven $
+ * $Revision: 1.3 $
+ * $Date: 2005-07-06 19:12:43 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -54,6 +54,7 @@ public class OTWaveGenerator extends DefaultOTObject
 	implements DataProducer
 {
 	public static interface ResourceSchema extends OTResourceSchema {
+	    public final static float DEFAULT_sampleTime = 0.1f; 
 		public float getSampleTime();
 		public void putSampleTime(float time);
 	}

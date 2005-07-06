@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.16 $
- * $Date: 2005-04-19 16:44:34 $
+ * $Revision: 1.17 $
+ * $Date: 2005-07-06 19:12:43 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -39,10 +39,10 @@ import java.lang.ref.WeakReference;
 
 import org.concord.data.Unit;
 import org.concord.data.stream.DataStoreUtil;
+import org.concord.data.stream.ProducerDataStore;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
-import org.concord.framework.data.stream.ProducerDataStore;
 import org.concord.framework.data.stream.WritableArrayDataStore;
 import org.concord.framework.data.stream.WritableDataStore;
 import org.concord.framework.otrunk.OTID;
