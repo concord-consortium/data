@@ -32,6 +32,7 @@ package org.concord.data.state;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -119,5 +120,11 @@ public class OTDataFieldView
 	{
 		float currentValue = dataField.getValue();
 		otObject.getDataStore().setValueAt(0, 0, new Float(currentValue));
+	}
+
+
+	public String getXHTMLText(File folder, int containerDisplayWidth, int containerDisplayHeight) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
