@@ -23,16 +23,19 @@
 
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.5 $
+ * $Date: 2005-08-05 18:21:00 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
 */
 package org.concord.data.state;
 
+import org.concord.data.Unit;
 import org.concord.data.stream.WaveDataProducer;
+import org.concord.framework.data.DataDimension;
+import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
@@ -93,7 +96,13 @@ public class OTWaveGenerator extends DefaultOTObject
 		float sampleTime = resources.getSampleTime();
 		DataStreamDescription dataDescription = myProducer.getDataDescription();
 		dataDescription.setDt(sampleTime);		
+		DataChannelDescription chDesc = dataDescription.getDtChannelDescription();
+        chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_S));
+        chDesc.setName("time");
 
+        chDesc = dataDescription.getChannelDescription(0);
+        chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_METER));
+        
 		return myProducer.getDataDescription();
 	}
 	
