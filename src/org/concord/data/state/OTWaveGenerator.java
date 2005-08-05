@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2005-08-05 18:21:00 $
+ * $Revision: 1.6 $
+ * $Date: 2005-08-05 18:27:20 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -102,6 +102,7 @@ public class OTWaveGenerator extends DefaultOTObject
 
         chDesc = dataDescription.getChannelDescription(0);
         chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_METER));
+        chDesc.setName("distance");
         
 		return myProducer.getDataDescription();
 	}
