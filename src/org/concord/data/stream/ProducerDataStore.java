@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2005-07-06 19:12:43 $
+ * $Revision: 1.2 $
+ * $Date: 2005-08-05 16:13:40 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -178,7 +178,7 @@ public class ProducerDataStore extends AbstractDataStore
 	    
 		//Special case: when dt is a channel, it's the channel -1
 		if (numChannel == -1){
-			return new Float(numSample * dt);
+			return new Float(numSample * getDt());
 		}
 		
 		return super.getValueAt(numSample, numChannel);
@@ -299,9 +299,13 @@ public class ProducerDataStore extends AbstractDataStore
 		    return;
 		}
 		nextSampleOffset = desc.getNextSampleOffset();
-		dt = desc.getDt();
+        if(desc.getDataType() == DataStreamDescription.DATA_SEQUENCE) {
+            setDt(desc.getDt());
+            setUseDtAsChannel(true);
+        } else {
+            setUseDtAsChannel(false);
+        }
 		numberOfProducerChannels = desc.getChannelsPerSample();
-		useDtAsChannel = (desc.getDataType() == DataStreamDescription.DATA_SEQUENCE);
 
 		//Make sure the values vector has enough channels
 		while (numberOfProducerChannels > channelsValues.size()){
@@ -346,7 +350,7 @@ public class ProducerDataStore extends AbstractDataStore
 	/**
 	 * @param useDtAsChannel The useDtAsChannel to set.
 	 */
-	public void setUseDtAsChannel(boolean useDtAsChannel)
+	protected void setUseDtAsChannel(boolean useDtAsChannel)
 	{
 		this.useDtAsChannel = useDtAsChannel;
 	}
@@ -355,4 +359,9 @@ public class ProducerDataStore extends AbstractDataStore
 	{
 	    return dt;
 	}
+    
+    public void setDt(float dt)
+    {
+        this.dt = dt;
+    }
 }

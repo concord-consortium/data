@@ -24,8 +24,8 @@
  */
 /*
  * Last modification information:
- * $Revision: 1.17 $
- * $Date: 2005-07-06 19:12:43 $
+ * $Revision: 1.18 $
+ * $Date: 2005-08-05 16:13:40 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -70,6 +70,14 @@ public class OTDataStore extends ProducerDataStore
 		public int getNumberChannels();
 		public void setNumberChannels(int cols);
 		
+		/**
+         * If the dt is set then the first channel
+         * description will be for the dt channel
+         */
+        public static float DEFAULT_dt = Float.NaN;
+        public float getDt();
+        public void setDt(float dt);
+        
 		public OTResourceList getValues();
 
 		public OTObjectList getChannelDescriptions();
@@ -163,7 +171,7 @@ public class OTDataStore extends ProducerDataStore
 	{
 		//Special case: when dt is a channel, it's the channel -1
 		if (numChannel == -1){
-			return new Float(numSample * dt);
+			return new Float(numSample * getDt());
 		}
 		
 		int numChannels = getTotalNumChannels();
@@ -350,10 +358,41 @@ public class OTDataStore extends ProducerDataStore
      */
     public void setDt(float dt)
     {
-        // FIXME
-        throw new RuntimeException("unimplemented");
+        resources.setDt(dt);
     }
 	
+    /**
+     * This returns the dt of the datastore.  If there is no 
+     * dt it returns Float.NaN
+     */
+    public float getDt()
+    {
+        return resources.getDt();
+    }
+    
+    /**
+     * @return Returns the useDtAsChannel.
+     */
+    public boolean isUseDtAsChannel()
+    {
+        return !Float.isNaN(resources.getDt());
+    }
+    
+    /**
+     * @param useDtAsChannel The useDtAsChannel to set.
+     */
+    public void setUseDtAsChannel(boolean useDtAsChannel)
+    {
+        if(!useDtAsChannel) {
+            setDt(Float.NaN);
+        } else {
+            if(Float.isNaN(getDt())) {
+                System.err.println("Warning: trying to use dt as a channel without a valid value");
+            }
+        }
+    }
+    
+
     /* (non-Javadoc)
      * @see org.concord.framework.data.stream.WritableArrayDataStore#setValues(int, float[], int, int, int)
      */
