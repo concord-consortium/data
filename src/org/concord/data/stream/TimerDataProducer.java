@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.4 $
+ * $Date: 2005-08-07 01:10:19 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -41,7 +41,7 @@ import org.concord.framework.data.stream.DefaultDataProducer;
 
 
 /**
- * WaveDataProducer
+ * TimereDataProducer
  * Class name and description
  *
  * Date created: Oct 27, 2004
@@ -54,7 +54,8 @@ public abstract class TimerDataProducer extends DefaultDataProducer
 {
 	private Timer timer = null;
 	private float currentTime = 0;
-	
+	private float timeScale = 1;
+    
 	public void reset()
 	{
 		currentTime = 0;
@@ -70,19 +71,27 @@ public abstract class TimerDataProducer extends DefaultDataProducer
 	{
 		if(timer == null) {
 			float dt = getDataDescription().getDt();
-			int tt = (int)(1000f * dt);				
+			int tt = (int)((1000f * dt) * getTimeScale());				
 			timer = new Timer(tt, this);				
 		}
 		timer.start();
 	}
 	
 	public void actionPerformed(ActionEvent e)
-	{
-		
-		//Since this is just an example: random values from -1 to 1 
+	{		
 		addValue(getValue(currentTime));	
 		currentTime += getDataDescription().getDt();
 	}
-	
-	protected abstract float getValue(float t); 
+    
+	protected abstract float getValue(float t);
+    
+    public float getTimeScale()
+    {
+        return timeScale;
+    }
+    
+    public void setTimeScale(float scale)
+    {
+        timeScale = scale;
+    }
 }
