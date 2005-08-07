@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.6 $
- * $Date: 2005-08-05 18:27:20 $
+ * $Revision: 1.7 $
+ * $Date: 2005-08-07 01:10:19 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -34,7 +34,6 @@ package org.concord.data.state;
 
 import org.concord.data.Unit;
 import org.concord.data.stream.WaveDataProducer;
-import org.concord.framework.data.DataDimension;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
@@ -58,7 +57,17 @@ public class OTWaveGenerator extends DefaultOTObject
 	public static interface ResourceSchema extends OTResourceSchema {
 	    public final static float DEFAULT_sampleTime = 0.1f; 
 		public float getSampleTime();
-		public void putSampleTime(float time);
+		public void setSampleTime(float time);
+
+        /**
+         * This allows you to speed up or slow down real time
+         * so it is makes it easier to test some things. Scales
+         * larger than 1 will slow time down like zooming in on
+         * time.  Scales smaller than 1 will speed it up.
+         */
+        public final static float DEFAULT_timeScale = 1f;
+        public float getTimeScale();
+        public void setTimeScale(float scale);
 	}
 	
 	private ResourceSchema resources;
@@ -93,17 +102,6 @@ public class OTWaveGenerator extends DefaultOTObject
 	 */
 	public DataStreamDescription getDataDescription()
 	{
-		float sampleTime = resources.getSampleTime();
-		DataStreamDescription dataDescription = myProducer.getDataDescription();
-		dataDescription.setDt(sampleTime);		
-		DataChannelDescription chDesc = dataDescription.getDtChannelDescription();
-        chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_S));
-        chDesc.setName("time");
-
-        chDesc = dataDescription.getChannelDescription(0);
-        chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_METER));
-        chDesc.setName("distance");
-        
 		return myProducer.getDataDescription();
 	}
 	
@@ -141,5 +139,19 @@ public class OTWaveGenerator extends DefaultOTObject
 		myProducer.stop();
 	}
 	
+    public void init()
+    {
+        float sampleTime = resources.getSampleTime();
+        DataStreamDescription dataDescription = myProducer.getDataDescription();
+        dataDescription.setDt(sampleTime);      
+        DataChannelDescription chDesc = dataDescription.getDtChannelDescription();
+        chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_S));
+        chDesc.setName("time");
 
+        chDesc = dataDescription.getChannelDescription(0);
+        chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_METER));
+        chDesc.setName("distance");
+        
+        myProducer.setTimeScale(resources.getTimeScale());
+    }
 }
