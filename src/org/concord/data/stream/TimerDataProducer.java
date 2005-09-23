@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2005-08-07 01:10:19 $
- * $Author: scytacki $
+ * $Revision: 1.5 $
+ * $Date: 2005-09-23 19:57:09 $
+ * $Author: swang $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -64,6 +64,7 @@ public abstract class TimerDataProducer extends DefaultDataProducer
 	
 	public void stop()
 	{
+		if(timer == null) return;
 		timer.stop();
 	}
 	
