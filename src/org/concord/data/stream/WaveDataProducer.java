@@ -23,14 +23,17 @@
 
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.5 $
+ * $Date: 2005-09-23 19:57:29 $
+ * $Author: swang $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
 */
 package org.concord.data.stream;
+
+import org.concord.framework.data.stream.DataStreamDescription;
+import org.concord.framework.data.stream.DataStreamEvent;
 
 /**
  * WaveDataProducer
@@ -49,5 +52,17 @@ public class WaveDataProducer extends TimerDataProducer
 	protected float getValue(float t)
 	{
 		return (float)(Math.sin(t));
+	}
+	
+	public Object getCopy() {
+		WaveDataProducer producer = new WaveDataProducer();
+		producer.dataDesc = (DataStreamDescription)this.dataDesc.getCopy();
+		
+		producer.dataEvent = (DataStreamEvent)this.dataEvent.clone(new DataStreamEvent());
+		producer.values = this.values;
+		producer.setTimeScale(this.getTimeScale());
+		
+		
+		return producer;
 	}
 }
