@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2005-08-07 01:10:19 $
- * $Author: scytacki $
+ * $Revision: 1.8 $
+ * $Date: 2005-09-23 19:57:49 $
+ * $Author: swang $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -38,8 +38,11 @@ import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
+import org.concord.framework.data.stream.DefaultDataProducer;
 import org.concord.framework.otrunk.DefaultOTObject;
+import org.concord.framework.otrunk.OTObjectService;
 import org.concord.framework.otrunk.OTResourceSchema;
+import org.concord.framework.util.Copyable;
 
 
 /**
@@ -52,7 +55,7 @@ import org.concord.framework.otrunk.OTResourceSchema;
  *
  */
 public class OTWaveGenerator extends DefaultOTObject
-	implements DataProducer
+	implements DataProducer, Copyable
 {
 	public static interface ResourceSchema extends OTResourceSchema {
 	    public final static float DEFAULT_sampleTime = 0.1f; 
@@ -154,4 +157,20 @@ public class OTWaveGenerator extends DefaultOTObject
         
         myProducer.setTimeScale(resources.getTimeScale());
     }
+    
+	public Object getCopy() {
+		OTObjectService service = getOTObjectService();
+		
+		OTWaveGenerator generator = null;
+		try {
+			generator = (OTWaveGenerator)service.createObject(OTWaveGenerator.class);
+			generator.myProducer = (WaveDataProducer)this.myProducer.getCopy();
+			generator.resources = this.resources;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//generator.myProducer = this.myProducer;
+		return generator;
+	}
 }
