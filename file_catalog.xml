@@ -3,6 +3,7 @@
     <server>cvs.concord.org</server>
     <repo>/home/buildspace/CodeBank</repo>
     <module>Projects/Data</module>
+    <tagname>rel_1_3</tagname>
     <file>
         <name>.classpath</name>
         <rev>1.3</rev>
@@ -40,213 +41,220 @@
     </file>
     <file>
         <name>file_catalog.xml</name>
-        <rev>1.18</rev>
-        <modtime>1116017205000</modtime>
-        <size>8082</size>
-        <md5sum>a4e780fbde5ec7a1c85160b1d88cd527</md5sum>
+        <rev>1.19</rev>
+        <modtime>1116525025000</modtime>
+        <size>8322</size>
+        <md5sum>aaf3ee686b54d6569abbad05960463c8</md5sum>
     </file>
     <file>
         <name>project.xml</name>
-        <rev>1.26</rev>
-        <modtime>1116525021000</modtime>
+        <rev>1.28</rev>
+        <modtime>1128625612000</modtime>
         <size>798</size>
-        <md5sum>0b76b064d4e495076b1ecc9c3f456f4d</md5sum>
+        <md5sum>2592f1551653e85dfec4a38e7e3396fc</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ConditionValue.java</name>
-        <rev>1.2</rev>
-        <modtime>1100288607000</modtime>
-        <size>8872</size>
-        <md5sum>1c20646d069249ec5da44693e8d48b3e</md5sum>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>8885</size>
+        <md5sum>405840be0d42b37d653bf23f5f3866fd</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/MathUtil.java</name>
-        <rev>1.2</rev>
-        <modtime>1100288607000</modtime>
-        <size>1380</size>
-        <md5sum>52213585b43d27c16dd60ad1bbf3c337</md5sum>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>1393</size>
+        <md5sum>28b609bb7c8bfb7b8265971182c8f0e2</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/Unit.java</name>
-        <rev>1.9</rev>
-        <modtime>1107193292000</modtime>
-        <size>33001</size>
-        <md5sum>927f30e6b50863b012cb38a1fcba566e</md5sum>
+        <rev>1.10</rev>
+        <modtime>1123258639000</modtime>
+        <size>33014</size>
+        <md5sum>ad1ee86c1b11986a486e29f49bf1a7b1</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/event/ConditionEvent.java</name>
-        <rev>1.3</rev>
-        <modtime>1100630828000</modtime>
-        <size>1309</size>
-        <md5sum>dd06c2ca3585d2f9271f223de5c71176</md5sum>
+        <rev>1.4</rev>
+        <modtime>1123258639000</modtime>
+        <size>1322</size>
+        <md5sum>b0047da7b62faee50bc42a9135b563dc</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/event/ConditionListener.java</name>
-        <rev>1.2</rev>
-        <modtime>1100288607000</modtime>
-        <size>1063</size>
-        <md5sum>a35b8d3b896b972e3ab7e31ae81fabab</md5sum>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>1076</size>
+        <md5sum>f386aca6b19d2e58bcdcb5cbb4b4cf84</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/state/OTDataChannelDescription.java</name>
-        <rev>1.3</rev>
-        <modtime>1109106445000</modtime>
-        <size>2262</size>
-        <md5sum>1232feac37551ecd2998281f0ffc0cbd</md5sum>
+        <rev>1.4</rev>
+        <modtime>1123258639000</modtime>
+        <size>2275</size>
+        <md5sum>2bcb226a578eb74387a6ca0896d17ba3</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/state/OTDataField.java</name>
-        <rev>1.2</rev>
-        <modtime>1106844320000</modtime>
-        <size>1500</size>
-        <md5sum>92df64ca2d75af57480261e09997d138</md5sum>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>1513</size>
+        <md5sum>5f23a9749666056b08c69d46549d6f00</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/state/OTDataFieldView.java</name>
-        <rev>1.7</rev>
-        <modtime>1116522192000</modtime>
-        <size>3688</size>
-        <md5sum>5240e9af45f23e70fdad5f87f1b6e03e</md5sum>
+        <rev>1.9</rev>
+        <modtime>1123258639000</modtime>
+        <size>3877</size>
+        <md5sum>6ba397a80734bd1dfa61ae9c198240f9</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/state/OTDataStore.java</name>
-        <rev>1.16</rev>
-        <modtime>1113929074000</modtime>
-        <size>12502</size>
-        <md5sum>6be5b469c5500f627563cf1dacc054cf</md5sum>
+        <rev>1.19</rev>
+        <modtime>1123258639000</modtime>
+        <size>13448</size>
+        <md5sum>7e7ca5d3aeb2047452ea6911474a1e6e</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/state/OTWaveGenerator.java</name>
-        <rev>1.2</rev>
-        <modtime>1116522368000</modtime>
-        <size>3481</size>
-        <md5sum>d3adadd1a44dcfc6f28408b2c12a2c8c</md5sum>
+        <rev>1.8</rev>
+        <modtime>1127505469000</modtime>
+        <size>5159</size>
+        <md5sum>081a12be0ffdadbecb7fe742b6cc5b01</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/DataStoreFunctionUtil.java</name>
-        <rev>1.3</rev>
-        <modtime>1110856678000</modtime>
-        <size>3298</size>
-        <md5sum>8c68157bcd7aef2165207b45b475f993</md5sum>
+        <rev>1.4</rev>
+        <modtime>1123258639000</modtime>
+        <size>3308</size>
+        <md5sum>879f1cd8fd0474960e3ee11de5f06606</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/DataStoreUtil.java</name>
-        <rev>1.8</rev>
-        <modtime>1107710150000</modtime>
-        <size>4044</size>
-        <md5sum>661029e4a92e7e76d5e0af5f0b1bc4d4</md5sum>
+        <rev>1.9</rev>
+        <modtime>1123258639000</modtime>
+        <size>4054</size>
+        <md5sum>f321f521aaeab854b34f8f565dfff983</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/PointsDataStore.java</name>
-        <rev>1.6</rev>
-        <modtime>1110434693000</modtime>
-        <size>1973</size>
-        <md5sum>25ee974fd9d1a2663fe9ce775af375b8</md5sum>
+        <rev>1.7</rev>
+        <modtime>1123258639000</modtime>
+        <size>1983</size>
+        <md5sum>cc2f46d19e6ddb9a08d418506348de99</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/PrintingDataConsumer.java</name>
-        <rev>1.2</rev>
-        <modtime>1105805075000</modtime>
-        <size>3333</size>
-        <md5sum>d61a2cc044ce23d7785b76c8b5f8546f</md5sum>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>3346</size>
+        <md5sum>ce9f44d6aca6e37b3324191f974650d9</md5sum>
+    </file>
+    <file>
+        <name>src/org/concord/data/stream/ProducerDataStore.java</name>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>10243</size>
+        <md5sum>54849b9889faecf4917c759012d18a14</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/TimerDataProducer.java</name>
-        <rev>1.2</rev>
-        <modtime>1100288607000</modtime>
-        <size>2122</size>
-        <md5sum>914743c1bad7c988c6d5ed9eef1d4fd5</md5sum>
+        <rev>1.5</rev>
+        <modtime>1127505429000</modtime>
+        <size>2315</size>
+        <md5sum>e78a1a856df8817c36399ddb06ccc083</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/WaveDataProducer.java</name>
-        <rev>1.3</rev>
-        <modtime>1100288607000</modtime>
-        <size>1471</size>
-        <md5sum>caae1d09dc9075e1cb14b81812bd3871</md5sum>
+        <rev>1.5</rev>
+        <modtime>1127505449000</modtime>
+        <size>1954</size>
+        <md5sum>bb5f02860e0f7364f383f05e3fc64769</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataColumnDescription.java</name>
-        <rev>1.2</rev>
-        <modtime>1100288607000</modtime>
-        <size>2564</size>
-        <md5sum>8400bcd907c47d1bcec45391128ae05e</md5sum>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>2576</size>
+        <md5sum>d65c88563013abf4ae86305c74e2697f</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataFlowControlAction.java</name>
-        <rev>1.5</rev>
-        <modtime>1105804698000</modtime>
-        <size>12739</size>
-        <md5sum>74cd154ad9ae8af69f9a3588652cc00e</md5sum>
+        <rev>1.6</rev>
+        <modtime>1123258639000</modtime>
+        <size>12749</size>
+        <md5sum>a8ea57f3a305d8bf173f2dd4b1cd92b7</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataFlowControlButton.java</name>
-        <rev>1.3</rev>
-        <modtime>1100288607000</modtime>
-        <size>5558</size>
-        <md5sum>bf05363b684fb9691b2001a2d9d6dd44</md5sum>
+        <rev>1.4</rev>
+        <modtime>1123258639000</modtime>
+        <size>5570</size>
+        <md5sum>d1e5b9230f364efb198f2647493eda5a</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataFlowControlToolBar.java</name>
-        <rev>1.3</rev>
-        <modtime>1100288607000</modtime>
-        <size>4083</size>
-        <md5sum>90a7c74fe69d0694eaa0e63f9b57422a</md5sum>
+        <rev>1.4</rev>
+        <modtime>1123258639000</modtime>
+        <size>4095</size>
+        <md5sum>3f68f8022568c46a4854878cfa4e3e4a</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataStoreLabel.java</name>
-        <rev>1.5</rev>
-        <modtime>1115220655000</modtime>
-        <size>3851</size>
-        <md5sum>ea81b25604069fc837a111146473da37</md5sum>
+        <rev>1.6</rev>
+        <modtime>1123258639000</modtime>
+        <size>3864</size>
+        <md5sum>3f8e4e16ea163bd0ef632fd7f9f1d7a0</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataTableCellRenderer.java</name>
-        <rev>1.4</rev>
-        <modtime>1100630828000</modtime>
-        <size>4206</size>
-        <md5sum>765ceff237414e7eeb2b496c417efb8f</md5sum>
+        <rev>1.5</rev>
+        <modtime>1123258639000</modtime>
+        <size>4216</size>
+        <md5sum>1324031258f99c2d118b3d034e88a63f</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataTableEditor.java</name>
-        <rev>1.4</rev>
-        <modtime>1110423867000</modtime>
-        <size>4058</size>
-        <md5sum>3e0abf0bc3340cb0300151c2862500cf</md5sum>
+        <rev>1.5</rev>
+        <modtime>1123258639000</modtime>
+        <size>4068</size>
+        <md5sum>fe6b185dbc79272756b57ff1083d284f</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataTableModel.java</name>
-        <rev>1.12</rev>
-        <modtime>1112244643000</modtime>
-        <size>14375</size>
-        <md5sum>c51a5b6a70adc9c97f221cf6a2063b42</md5sum>
+        <rev>1.13</rev>
+        <modtime>1123258639000</modtime>
+        <size>14385</size>
+        <md5sum>c77e81ca51763e4d940f8de8573f7286</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataTablePanel.java</name>
-        <rev>1.1</rev>
-        <modtime>1101793684000</modtime>
-        <size>7341</size>
-        <md5sum>2c36368ea1d612d852c70df84f982738</md5sum>
+        <rev>1.12</rev>
+        <modtime>1123258639000</modtime>
+        <size>7351</size>
+        <md5sum>33d560934784d9fc55f7e92778b99d83</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DataValueLabel.java</name>
-        <rev>1.6</rev>
-        <modtime>1110434256000</modtime>
-        <size>5774</size>
-        <md5sum>4955bb91489a4b5b28d813fab69487ed</md5sum>
+        <rev>1.7</rev>
+        <modtime>1123258639000</modtime>
+        <size>5784</size>
+        <md5sum>d69fa131de5dea946f03cd64fc65e6e2</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/DefaultTableCellColorModel.java</name>
-        <rev>1.2</rev>
-        <modtime>1100288607000</modtime>
-        <size>7987</size>
-        <md5sum>5f9b2022db96537ddc536a865f74d436</md5sum>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>7999</size>
+        <md5sum>e14c0387051e01a617527e4c88bd62f1</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ui/TableCellColorModel.java</name>
-        <rev>1.2</rev>
-        <modtime>1100288607000</modtime>
-        <size>1809</size>
-        <md5sum>abaf4c812bcdc98e2bae5a50c620d270</md5sum>
+        <rev>1.3</rev>
+        <modtime>1123258639000</modtime>
+        <size>1821</size>
+        <md5sum>df9c490c0937661ac15da9c1e84d4b68</md5sum>
     </file>
 </filecatalog>
 
