@@ -144,8 +144,10 @@ public final class Unit implements DataDimension{
 	public final static int UNIT_CODE_CENTIMETER        = 63;
 	public final static int UNIT_CODE_MILLISECOND       = 64;
 	public final static int UNIT_CODE_LINEAR_VEL_MILLISECOND = 65;
+	public final static int UNIT_CODE_KILOMETER			= 66;
+	public final static int UNIT_CODE_LINEAR_VEL_KMH	= 67;
 	
-	public final static int UNIT_TABLE_LENGTH           = 66;
+	public final static int UNIT_TABLE_LENGTH           = 68;
 
 	public final static int UNIT_CAT_UNKNOWN			= 0;
 	public final static int UNIT_CAT_LENGTH				= 1;
@@ -276,6 +278,10 @@ public final class Unit implements DataDimension{
 			return new Unit("atomic mass unit","amu",true,UNIT_CAT_MASS,UNIT_CODE_AMU,UNIT_CODE_KG,
 							  (byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1.66054e-27f,0.0f,false,false); 
+		case UNIT_CODE_KILOMETER : 
+			return new Unit("kilometer","m",false,UNIT_CAT_LENGTH,UNIT_CODE_METER,UNIT_CODE_METER,
+							  (byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
+							  1000f,0.0f,false,true); 
 		case UNIT_CODE_METER : 
 			return new Unit("meter","m",false,UNIT_CAT_LENGTH,UNIT_CODE_METER,UNIT_CODE_METER,
 							  (byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
@@ -488,6 +494,10 @@ public final class Unit implements DataDimension{
 			return new Unit("m/ms","m/ms",true,UNIT_CAT_VELOCITY,UNIT_CODE_LINEAR_VEL_MILLISECOND,UNIT_CODE_LINEAR_VEL,
 							  (byte)1,(byte)0,(byte)-1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1000f,0.0f,false,true); 
+		case UNIT_CODE_LINEAR_VEL_KMH :
+			return new Unit("km/h","km/h",true,UNIT_CAT_VELOCITY,UNIT_CODE_LINEAR_VEL_KMH,UNIT_CODE_LINEAR_VEL,
+							  (byte)1,(byte)0,(byte)-1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
+							  1f/3600f,0.0f,false,true); 
 		case UNIT_CODE_AMPERE :
 			return new Unit("ampere","A",false,UNIT_CAT_ELECTRICITY,UNIT_CODE_AMPERE,UNIT_CODE_AMPERE,
 							  (byte)0,(byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
