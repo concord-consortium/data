@@ -497,7 +497,7 @@ public final class Unit implements DataDimension{
 		case UNIT_CODE_LINEAR_VEL_KMH :
 			return new Unit("km/h","km/h",true,UNIT_CAT_VELOCITY,UNIT_CODE_LINEAR_VEL_KMH,UNIT_CODE_LINEAR_VEL,
 							  (byte)1,(byte)0,(byte)-1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
-							  1f/3600f,0.0f,false,true); 
+							  1f/3.6f,0.0f,false,true); 
 		case UNIT_CODE_AMPERE :
 			return new Unit("ampere","A",false,UNIT_CAT_ELECTRICITY,UNIT_CODE_AMPERE,UNIT_CODE_AMPERE,
 							  (byte)0,(byte)0,(byte)0,(byte)1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
