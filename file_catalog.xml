@@ -3,7 +3,7 @@
     <server>cvs.concord.org</server>
     <repo>/home/buildspace/CodeBank</repo>
     <module>Projects/Data</module>
-    <tagname>rel_1_4</tagname>
+    <tagname>rel_1_5</tagname>
     <file>
         <name>.classpath</name>
         <rev>1.3</rev>
@@ -41,17 +41,17 @@
     </file>
     <file>
         <name>file_catalog.xml</name>
-        <rev>1.20</rev>
-        <modtime>1128625616000</modtime>
+        <rev>1.21</rev>
+        <modtime>1132001126000</modtime>
         <size>8599</size>
-        <md5sum>03fc7e8b82d6762e4e469c579ee427f9</md5sum>
+        <md5sum>3030c7a01d226011071018bf5becafea</md5sum>
     </file>
     <file>
         <name>project.xml</name>
-        <rev>1.30</rev>
-        <modtime>1132001123000</modtime>
+        <rev>1.32</rev>
+        <modtime>1139264542000</modtime>
         <size>798</size>
-        <md5sum>66b25c57275f0735835f65cb7e4b11d0</md5sum>
+        <md5sum>02234042699795b4d5043f4d27957bc4</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ConditionValue.java</name>
@@ -110,6 +110,20 @@
         <md5sum>6ba397a80734bd1dfa61ae9c198240f9</md5sum>
     </file>
     <file>
+        <name>src/org/concord/data/state/OTDataFlowControl.java</name>
+        <rev>1.2</rev>
+        <modtime>1139250519000</modtime>
+        <size>1209</size>
+        <md5sum>ea431724ac67701692d144f8404e99a9</md5sum>
+    </file>
+    <file>
+        <name>src/org/concord/data/state/OTDataFlowControlView.java</name>
+        <rev>1.1</rev>
+        <modtime>1139250089000</modtime>
+        <size>3130</size>
+        <md5sum>5e6740049264d4369b4f205d144aa110</md5sum>
+    </file>
+    <file>
         <name>src/org/concord/data/state/OTDataStore.java</name>
         <rev>1.19</rev>
         <modtime>1123258639000</modtime>
@@ -117,11 +131,18 @@
         <md5sum>7e7ca5d3aeb2047452ea6911474a1e6e</md5sum>
     </file>
     <file>
+        <name>src/org/concord/data/state/OTDelegatingDataProducer.java</name>
+        <rev>1.2</rev>
+        <modtime>1139250519000</modtime>
+        <size>2764</size>
+        <md5sum>70462b12f8d90d8676e8eb4e8407f59d</md5sum>
+    </file>
+    <file>
         <name>src/org/concord/data/state/OTWaveGenerator.java</name>
-        <rev>1.8</rev>
-        <modtime>1127505469000</modtime>
-        <size>5159</size>
-        <md5sum>081a12be0ffdadbecb7fe742b6cc5b01</md5sum>
+        <rev>1.9</rev>
+        <modtime>1139250089000</modtime>
+        <size>3935</size>
+        <md5sum>e75c02a5518cd221c8932f884242d0d3</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/DataStoreFunctionUtil.java</name>
