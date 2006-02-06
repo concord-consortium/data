@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.8 $
- * $Date: 2005-09-23 19:57:49 $
- * $Author: swang $
+ * $Revision: 1.9 $
+ * $Date: 2006-02-06 18:21:29 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -54,8 +54,8 @@ import org.concord.framework.util.Copyable;
  * @author scott<p>
  *
  */
-public class OTWaveGenerator extends DefaultOTObject
-	implements DataProducer, Copyable
+public class OTWaveGenerator extends OTDelegatingDataProducer
+	implements Copyable
 {
 	public static interface ResourceSchema extends OTResourceSchema {
 	    public final static float DEFAULT_sampleTime = 0.1f; 
@@ -79,73 +79,12 @@ public class OTWaveGenerator extends DefaultOTObject
 		super(resources);
 		this.resources = resources;		
 	}
-
-	WaveDataProducer myProducer = new WaveDataProducer();
-	
-	/*
-	public void init()
-	{
-		Float sampleTime = (Float)getResource(RES_SAMPLE_TIME);
-		DataStreamDescription dataDescription = myProducer.getDataDescription();
-		dataDescription.setDt(sampleTime.floatValue());		
-	}
-	*/
-	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.stream.DataProducer#addDataListener(org.concord.framework.data.stream.DataListener)
-	 */
-	public void addDataListener(DataListener listener)
-	{
-		myProducer.addDataListener(listener);
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.stream.DataProducer#getDataDescription()
-	 */
-	public DataStreamDescription getDataDescription()
-	{
-		return myProducer.getDataDescription();
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.stream.DataProducer#removeDataListener(org.concord.framework.data.stream.DataListener)
-	 */
-	public void removeDataListener(DataListener listener)
-	{
-		myProducer.removeDataListener(listener);		
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.DataFlow#reset()
-	 */
-	public void reset()
-	{
-		myProducer.reset();
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.DataFlow#start()
-	 */
-	public void start()
-	{
-		myProducer.start();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.DataFlow#stop()
-	 */
-	public void stop()
-	{
-		myProducer.stop();
-	}
 	
     public void init()
     {
         float sampleTime = resources.getSampleTime();
-        DataStreamDescription dataDescription = myProducer.getDataDescription();
+        WaveDataProducer waveProducer = new WaveDataProducer();
+        DataStreamDescription dataDescription = waveProducer.getDataDescription();
         dataDescription.setDt(sampleTime);      
         DataChannelDescription chDesc = dataDescription.getDtChannelDescription();
         chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_S));
@@ -155,7 +94,8 @@ public class OTWaveGenerator extends DefaultOTObject
         chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_METER));
         chDesc.setName("distance");
         
-        myProducer.setTimeScale(resources.getTimeScale());
+        waveProducer.setTimeScale(resources.getTimeScale());
+        setMyDataProducer(waveProducer);
     }
     
 	public Object getCopy() {
@@ -164,7 +104,7 @@ public class OTWaveGenerator extends DefaultOTObject
 		OTWaveGenerator generator = null;
 		try {
 			generator = (OTWaveGenerator)service.createObject(OTWaveGenerator.class);
-			generator.myProducer = (WaveDataProducer)this.myProducer.getCopy();
+			generator.setMyDataProducer((DataProducer)((WaveDataProducer)(getMyDataProducer())).getCopy());
 			generator.resources = this.resources;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
