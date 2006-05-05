@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.19 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.20 $
+ * $Date: 2006-05-05 15:48:54 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -43,7 +43,6 @@ import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
 import org.concord.framework.data.stream.WritableArrayDataStore;
-import org.concord.framework.data.stream.WritableDataStore;
 import org.concord.framework.otrunk.OTID;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectList;
@@ -398,8 +397,15 @@ public class OTDataStore extends ProducerDataStore
     public void setValues(int numChannels, float[] values, int offset,
             int numSamples, int nextSampleOffset)
     {
-        // FIXME
-        throw new RuntimeException("unimplemented");
+        for(int i=0; i<numSamples*nextSampleOffset; 
+            i+=nextSampleOffset) {
+            for(int j=0;j<numChannels;j++) {
+                Float fValue = new Float(values[offset+i+j]);
+                setValueAt(i/nextSampleOffset, j, fValue, false);
+            }
+        }
+        
+        notifyDataChanged();
     }
     
 	/**
