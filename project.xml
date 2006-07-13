@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <!-- Inherit main project xml file -->
-  <extend>../Builds/project.xml</extend>
-  <!-- Project specific parameters -->
-  <pomVersion>3</pomVersion>
-  <artifactId>data</artifactId>
-  <name>Data</name>
-  <groupId>${pom.artifactId}</groupId>
-  <currentVersion>1.15</currentVersion>
-  <dependencies>
-    <dependency>
-      <groupId>framework</groupId>
-      <artifactId>framework</artifactId>
-      <version>SNAPSHOT</version>
-      <type>jar</type>
-      <properties>
-        <cc.proj>Framework</cc.proj>
-        <cc.path>Framework/lib</cc.path>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
-    </dependency>
-  </dependencies>
+    <!-- Inherit main project xml file -->
+    <extend>../Builds/project.xml</extend>
+    <!-- Project specific parameters -->
+    <pomVersion>3</pomVersion>
+    <artifactId>data</artifactId>
+    <name>Data</name>
+    <groupId>${pom.artifactId}</groupId>
+    <currentVersion>1.7</currentVersion>
+    <dependencies>
+        <dependency>
+            <groupId>framework</groupId>
+            <artifactId>framework</artifactId>
+            <version>1.9</version>
+            <type>jar</type>
+            <properties>
+                <cc.proj>Framework</cc.proj>
+                <cc.path>Framework/lib</cc.path>
+                <eclipse.dependency>true</eclipse.dependency>
+            </properties>
+        </dependency>
+    </dependencies>
 </project>
+
