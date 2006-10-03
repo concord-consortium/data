@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2006-05-05 16:04:00 $
- * $Author: maven $
+ * $Revision: 1.3 $
+ * $Date: 2006-10-03 21:07:21 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -81,6 +81,17 @@ public class TaringDataFilter
     }
     
     /**
+     * Do the actual tare.  This will offset the channel that is being
+     * tared.  It will probably do this by adding another listener to the 
+     * data.  So the tare might take one sample before it takes effect
+     *
+     */
+    public void tare()
+    {
+    	doingTare = true;
+    }
+    
+    /**
      * set the channel number that will be adjusted by the tare
      * this uses the virtual channel like is used by the DataGraphable
      * class.  So channel 0 means the first channel.  Even if the 
@@ -112,17 +123,29 @@ public class TaringDataFilter
     
     protected void dataReceived(DataStreamEvent dataEvent)
     {
+        int producerChannel = getProducerChannel();
+        int numSamples = dataEvent.getNumSamples();
+        int offset = dataEvent.getDataDescription().getDataOffset();
+        int stride = dataEvent.getDataDescription().getNextSampleOffset();
+
         if(doingTare) {
             // save this for the calibration
-            
-        } else {
-            // send the event to our listeners
-            // however we need to do the actual filter
-            // here and adjust the values
-            int producerChannel = getProducerChannel();
-            dataEvent.getNumSamples();
-            notifyDataReceived(dataEvent);
+        	float value = dataEvent.data[offset + producerChannel];
+        	tareOffset = -value;        	
+            doingTare = false;
+        } 
+        
+        // send the event to our listeners
+        // however we need to do the actual filter
+        // here and adjust the values
+        for(int i=0; i<numSamples; i++){
+        	float value = dataEvent.data[offset + producerChannel];        	
+        	dataEvent.data[offset + producerChannel] = value + tareOffset;
+        	offset += stride;
+
         }
+        
+        notifyDataReceived(dataEvent);
     }
     
     /* (non-Javadoc)
@@ -132,10 +155,9 @@ public class TaringDataFilter
     {
         if(doingTare) {
             // save this for the calibration
-        } else {
-            // send the event to our listeners
-            notifyDataStreamEvent(dataEvent);
-        }
+        } 
+        // send the event to our listeners
+        notifyDataStreamEvent(dataEvent);
     }
             
     /* (non-Javadoc)
@@ -230,7 +252,7 @@ public class TaringDataFilter
 
 	protected void notifyDataReceived(DataStreamEvent sourceEvent)
 	{
-	    sourceEvent.clone(dataEvent);
+	    dataEvent = sourceEvent.clone(dataEvent);
 	    dataEvent.setSource(this);
 		for(int i=0; i<dataListeners.size(); i++) {
 			DataListener dataListener = (DataListener)dataListeners.elementAt(i);
@@ -243,7 +265,7 @@ public class TaringDataFilter
 	
 	protected void notifyDataStreamEvent(DataStreamEvent sourceEvent)
 	{
-	    sourceEvent.clone(dataEvent);
+	    dataEvent = sourceEvent.clone(dataEvent);
 	    dataEvent.setSource(this);
 		for(int i=0; i<dataListeners.size(); i++) {
 			DataListener dataListener = (DataListener)dataListeners.elementAt(i);
