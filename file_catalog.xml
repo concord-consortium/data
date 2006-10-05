@@ -3,7 +3,7 @@
     <server>cvs.concord.org</server>
     <repo>/home/buildspace/CodeBank</repo>
     <module>Projects/Data</module>
-    <tagname>rel_1_7</tagname>
+    <tagname>rel_1_8</tagname>
     <file>
         <name>.classpath</name>
         <rev>1.3</rev>
@@ -41,17 +41,17 @@
     </file>
     <file>
         <name>file_catalog.xml</name>
-        <rev>1.23</rev>
-        <modtime>1147896455000</modtime>
+        <rev>1.24</rev>
+        <modtime>1152809050000</modtime>
         <size>9578</size>
-        <md5sum>59f0ed768552696b13e886b549ecc93d</md5sum>
+        <md5sum>ec5289fc58725a839e6b719cf9b6729e</md5sum>
     </file>
     <file>
         <name>project.xml</name>
-        <rev>1.36</rev>
-        <modtime>1152823364000</modtime>
-        <size>798</size>
-        <md5sum>842eeff73da40f3a53aef4547e2d6164</md5sum>
+        <rev>1.38</rev>
+        <modtime>1160097190000</modtime>
+        <size>799</size>
+        <md5sum>6ee15d4ca3e0caec093ed7bfd6349ddf</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/ConditionValue.java</name>
@@ -138,6 +138,13 @@
         <md5sum>70462b12f8d90d8676e8eb4e8407f59d</md5sum>
     </file>
     <file>
+        <name>src/org/concord/data/state/OTPropertyDataProducer.java</name>
+        <rev>1.1</rev>
+        <modtime>1159563975000</modtime>
+        <size>4101</size>
+        <md5sum>5cfb045b788b1680c1004a23ece8a612</md5sum>
+    </file>
+    <file>
         <name>src/org/concord/data/state/OTWaveGenerator.java</name>
         <rev>1.9</rev>
         <modtime>1139250089000</modtime>
@@ -180,11 +187,18 @@
         <md5sum>54849b9889faecf4917c759012d18a14</md5sum>
     </file>
     <file>
+        <name>src/org/concord/data/stream/PropertyDataProducer.java</name>
+        <rev>1.1</rev>
+        <modtime>1159563975000</modtime>
+        <size>3176</size>
+        <md5sum>dceb545cae5235791f98b3585d7c8461</md5sum>
+    </file>
+    <file>
         <name>src/org/concord/data/stream/TaringDataFilter.java</name>
-        <rev>1.2</rev>
-        <modtime>1146845040000</modtime>
-        <size>7414</size>
-        <md5sum>a923353b6e4e8ca32f30b58b45140ffa</md5sum>
+        <rev>1.3</rev>
+        <modtime>1159909641000</modtime>
+        <size>8207</size>
+        <md5sum>366ced0c98c277f25074bcc06d023080</md5sum>
     </file>
     <file>
         <name>src/org/concord/data/stream/TimerDataProducer.java</name>
