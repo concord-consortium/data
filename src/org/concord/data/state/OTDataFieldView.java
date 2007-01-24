@@ -44,7 +44,6 @@ import org.concord.data.ui.DataValueLabel;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.view.OTObjectView;
-import org.concord.framework.otrunk.view.OTViewContainer;
 
 /**
  * @author scott
@@ -55,24 +54,17 @@ import org.concord.framework.otrunk.view.OTViewContainer;
 public class OTDataFieldView 
 	implements OTObjectView, ActionListener 
 {
-	OTDataField otObject;
-	protected OTViewContainer viewContainer;
+	OTDataField otDataField;
 	protected DataValueLabel dataField;
 	JButton saveButton = new JButton("Save");
-	
-	public void initialize(OTObject otDataField, OTViewContainer vContainer)
-	{
-		this.otObject = (OTDataField)otDataField;
-		viewContainer = vContainer;
-	}
-
-	
+		
 	/* (non-Javadoc)
 	 * @see org.concord.framework.otrunk.view.OTObjectView#getComponent(boolean)
 	 */
-	public JComponent getComponent(boolean editable) 
+	public JComponent getComponent(OTObject otObject, boolean editable) 
 	{
-		OTDataStore otDataStore = otObject.getDataStore();
+		this.otDataField = (OTDataField)otObject;
+		OTDataStore otDataStore = otDataField.getDataStore();
 		DataStoreLabel dataStoreField = 
 			new DataStoreLabel(otDataStore,0);
 
@@ -80,7 +72,7 @@ public class OTDataFieldView
 			return dataStoreField;
 		}
 		
-		DataProducer dataProducer = (DataProducer)otObject.getDataProducer();
+		DataProducer dataProducer = (DataProducer)otDataField.getDataProducer();
 		
 		dataField = new DataValueLabel(dataProducer);
 
@@ -118,7 +110,7 @@ public class OTDataFieldView
 	public void actionPerformed(ActionEvent e) 
 	{
 		float currentValue = dataField.getValue();
-		otObject.getDataStore().setValueAt(0, 0, new Float(currentValue));
+		otDataField.getDataStore().setValueAt(0, 0, new Float(currentValue));
 	}
 
 

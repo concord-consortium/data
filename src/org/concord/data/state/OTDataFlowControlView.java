@@ -29,24 +29,17 @@
  */
 package org.concord.data.state;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import org.concord.data.ui.DataFlowControlToolBar;
-import org.concord.data.ui.DataStoreLabel;
 import org.concord.data.ui.DataValueLabel;
 import org.concord.framework.data.DataFlow;
-import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectList;
 import org.concord.framework.otrunk.view.OTObjectView;
-import org.concord.framework.otrunk.view.OTViewContainer;
 
 /**
  * @author scott
@@ -58,23 +51,16 @@ public class OTDataFlowControlView
 	implements OTObjectView
 {
 	OTDataFlowControl otObject;
-	protected OTViewContainer viewContainer;
 	protected DataValueLabel dataField;
 	JButton saveButton = new JButton("Save");
-	
-	public void initialize(OTObject otDataFlowControl, OTViewContainer vContainer)
-	{
-		this.otObject = (OTDataFlowControl)otDataFlowControl; 
-		viewContainer = vContainer;
-	}
-
 	
 	/* (non-Javadoc)
 	 * @see org.concord.framework.otrunk.view.OTObjectView#getComponent(boolean)
 	 */
-	public JComponent getComponent(boolean editable) 
+	public JComponent getComponent(OTObject otObject, boolean editable) 
 	{
-		OTObjectList dataFlows = otObject.getDataFlows();
+		this.otObject = (OTDataFlowControl)otObject; 
+		OTObjectList dataFlows = this.otObject.getDataFlows();
 		
 		DataFlowControlToolBar toolBar = new DataFlowControlToolBar();
 		
