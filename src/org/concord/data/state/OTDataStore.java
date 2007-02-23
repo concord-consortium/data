@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.20 $
- * $Date: 2006-05-05 15:48:54 $
+ * $Revision: 1.21 $
+ * $Date: 2007-02-23 04:16:02 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -46,6 +46,7 @@ import org.concord.framework.data.stream.WritableArrayDataStore;
 import org.concord.framework.otrunk.OTID;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectList;
+import org.concord.framework.otrunk.OTObjectService;
 import org.concord.framework.otrunk.OTResourceList;
 import org.concord.framework.otrunk.OTResourceSchema;
 
@@ -486,6 +487,11 @@ public class OTDataStore extends ProducerDataStore
 
 			l.dataChannelDescChanged(evt);
 		}
+	}
+
+	public OTObjectService getOTObjectService() 
+	{
+		return resources.getOTObjectService();
 	}
 
 }

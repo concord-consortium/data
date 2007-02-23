@@ -29,7 +29,7 @@
  */
 package org.concord.data.state;
 
-import org.concord.framework.otrunk.OTObject;
+import org.concord.framework.otrunk.OTObjectInterface;
 
 /**
  * @author scott
@@ -37,7 +37,7 @@ import org.concord.framework.otrunk.OTObject;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public interface OTDataChannelDescription extends OTObject
+public interface OTDataChannelDescription extends OTObjectInterface
 {
 	public String getUnit();
 	public void setUnit(String unit);

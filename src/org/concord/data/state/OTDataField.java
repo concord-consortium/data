@@ -30,6 +30,7 @@
 package org.concord.data.state;
 
 import org.concord.framework.otrunk.OTObject;
+import org.concord.framework.otrunk.OTObjectInterface;
 
 /**
  * @author scott
@@ -37,7 +38,7 @@ import org.concord.framework.otrunk.OTObject;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public interface OTDataField extends OTObject 
+public interface OTDataField extends OTObjectInterface
 {
 	public OTObject getDataProducer();
 	
