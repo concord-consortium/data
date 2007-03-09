@@ -43,7 +43,7 @@ import org.concord.data.ui.DataStoreLabel;
 import org.concord.data.ui.DataValueLabel;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.otrunk.OTObject;
-import org.concord.framework.otrunk.view.OTObjectView;
+import org.concord.framework.otrunk.view.OTJComponentView;
 
 /**
  * @author scott
@@ -52,14 +52,14 @@ import org.concord.framework.otrunk.view.OTObjectView;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class OTDataFieldView 
-	implements OTObjectView, ActionListener 
+	implements OTJComponentView, ActionListener 
 {
 	OTDataField otDataField;
 	protected DataValueLabel dataField;
 	JButton saveButton = new JButton("Save");
 		
 	/* (non-Javadoc)
-	 * @see org.concord.framework.otrunk.view.OTObjectView#getComponent(boolean)
+	 * @see org.concord.framework.otrunk.view.OTJComponentView#getComponent(boolean)
 	 */
 	public JComponent getComponent(OTObject otObject, boolean editable) 
 	{
@@ -97,7 +97,7 @@ public class OTDataFieldView
 	}
 
     /* (non-Javadoc)
-     * @see org.concord.framework.otrunk.view.OTObjectView#viewClosed()
+     * @see org.concord.framework.otrunk.view.OTJComponentView#viewClosed()
      */
     public void viewClosed()
     {
