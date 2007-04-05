@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.21 $
- * $Date: 2007-02-23 04:16:02 $
+ * $Revision: 1.22 $
+ * $Date: 2007-04-05 01:20:50 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -42,6 +42,7 @@ import org.concord.data.stream.ProducerDataStore;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
+import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.WritableArrayDataStore;
 import org.concord.framework.otrunk.OTID;
 import org.concord.framework.otrunk.OTObject;
@@ -137,6 +138,8 @@ public class OTDataStore extends ProducerDataStore
 	{
 		resources.getValues().removeAll();
 		
+		// reset the number of channels
+		resources.setNumberChannels(-1);
 		notifyDataRemoved();
 	}
 	
@@ -375,6 +378,21 @@ public class OTDataStore extends ProducerDataStore
     public boolean isUseDtAsChannel()
     {
         return !Float.isNaN(resources.getDt());
+    }
+    
+    /**
+     * Override this to handle changes in the number of channels
+     */
+    protected void updateDataDescription(DataStreamDescription desc)
+    {
+    	super.updateDataDescription(desc);
+    	
+    	if(resources.getValues().size() == 0){
+    		// reset the number of channels, so when we start adding data 
+    		// we do it the right way.  This is kind of a hack
+    		// it should probably set the number of channels based on description
+    		resources.setNumberChannels(-1);
+    	}
     }
     
     /**
