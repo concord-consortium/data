@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.4 $
+ * $Date: 2007-04-05 01:20:49 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -159,7 +159,19 @@ public class ProducerDataStore extends AbstractDataStore
 		}
 		this.dataProducer = dataProducer;
 		if (this.dataProducer != null){
-			updateDataDescription(this.dataProducer.getDataDescription());
+			// we should not actually update the data description until
+			// data arrives from this producer.  This is because there
+			// might be old data in this datastore which has a different
+			// description than the current producer.
+			
+			// The updateDataDescription will happen when the data is 
+			// is started because that will send a data event 
+			// updateDataDescription(this.dataProducer.getDataDescription());
+			
+			// If there is still data in the data store when the new data starts coming in
+			// it is not clear what should happen.  Probably the old data should be
+			// converted if possible.  Changing from no dt to a dt will be hard it will
+			// mean the data will have to be stored without a dt.
 			this.dataProducer.addDataListener(dataListener);
 		}
 	}
