@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.13 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.14 $
+ * $Date: 2007-04-05 02:58:31 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -320,6 +320,7 @@ public class DataTableModel extends AbstractTableModel
 		DataChannelDescription channelDesc = dataStore.getDataChannelDescription(dcol.getDataStoreColumn());
 		
 		strLabel = dcol.getLabel();
+		if (strLabel == null) strLabel = "";
 		if (channelDesc != null && channelDesc.getUnit() != null){
 			strLabel = strLabel + " ("+ channelDesc.getUnit().getDimension() +")";
 		}
