@@ -13,6 +13,7 @@ package org.concord.data.state;
 public interface OTUnitValueViewConfig 
 	extends org.concord.framework.otrunk.view.OTViewEntry {
 	
+	public static int DEFAULT_precision = 2;
 	public int getPrecision();
 	public void setPrecision(int precision);
 }
