@@ -1,6 +1,6 @@
 package org.concord.data.state;
 
-import org.concord.framework.otrunk.OTObject;
+import org.concord.framework.otrunk.OTObjectInterface;
 
 /**
  * OTUnitValue
@@ -11,7 +11,7 @@ import org.concord.framework.otrunk.OTObject;
  * @author Shengyao Wang<p>
  *
  */
-public interface OTUnitValue extends OTObject{
+public interface OTUnitValue extends OTObjectInterface{
 	
 	public void setValue(float value);
 	public float getValue();
