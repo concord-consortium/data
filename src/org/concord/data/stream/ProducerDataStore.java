@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2007-04-05 01:20:49 $
+ * $Revision: 1.5 $
+ * $Date: 2007-05-22 17:26:53 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -38,7 +38,6 @@ import org.concord.framework.data.stream.AbstractDataStore;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
-import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.DataStreamEvent;
 import org.concord.framework.data.stream.DeltaDataStore;
@@ -154,19 +153,25 @@ public class ProducerDataStore extends AbstractDataStore
 	 */
 	public void setDataProducer(DataProducer dataProducer)
 	{
+		if(this.dataProducer == dataProducer){
+			// do nothing
+			return;
+		}
+		
 		if (this.dataProducer != null){
 			this.dataProducer.removeDataListener(dataListener);
 		}
+		
 		this.dataProducer = dataProducer;
 		if (this.dataProducer != null){
-			// we should not actually update the data description until
-			// data arrives from this producer.  This is because there
-			// might be old data in this datastore which has a different
-			// description than the current producer.
-			
-			// The updateDataDescription will happen when the data is 
-			// is started because that will send a data event 
-			// updateDataDescription(this.dataProducer.getDataDescription());
+			// Updating the data description can invalidate the data
+			// which is already in the dataStore.  It will print a warning
+			// in that case.
+
+			// The solution to this problem is to not call this method
+			// (setDataProducer) 
+			// until the old data has been cleared from the datastore.
+			updateDataDescription(this.dataProducer.getDataDescription());
 			
 			// If there is still data in the data store when the new data starts coming in
 			// it is not clear what should happen.  Probably the old data should be
@@ -302,8 +307,31 @@ public class ProducerDataStore extends AbstractDataStore
 	    return numberOfProducerChannels;
 	}
 	
+	public final static boolean dataStreamDescriptionEquals(
+		DataStreamDescription desc1, DataStreamDescription desc2)
+	{
+		if(desc1 == desc2){
+			return true;
+		}
+		
+		if(desc1 == null){
+			return false;
+		}
+		
+		return desc1.equals(desc2);
+	}
+	
 	protected void updateDataDescription(DataStreamDescription desc)
 	{
+		// if we have data stored already then check if the description
+		// matches that data, print a warning if not.
+		if(getTotalNumSamples() > 0 && 
+				!dataStreamDescriptionEquals(this.dataStreamDesc, desc)){
+			System.err.println(
+					"Warning: there is data in this datastore, and the DataStreamDescription " +
+					"is being changed");
+		}
+		
 		dataStreamDesc = desc;
 		if(desc == null) {
 		    System.err.println("null data description");
