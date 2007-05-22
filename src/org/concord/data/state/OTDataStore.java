@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.23 $
- * $Date: 2007-05-22 17:26:53 $
+ * $Revision: 1.24 $
+ * $Date: 2007-05-22 22:10:48 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -35,6 +35,7 @@ package org.concord.data.state;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Vector;
 
 import org.concord.data.Unit;
 import org.concord.data.stream.DataStoreUtil;
@@ -119,9 +120,7 @@ public class OTDataStore extends ProducerDataStore
 	{
 		String valueStr = resources.getValuesString();
 		if(valueStr == null) return;
-		
-		int numChannels = resources.getNumberChannels();
-				
+						
 		resources.setValuesString(null);
 		try {
 			DataStoreUtil.loadData(valueStr, this, false);
@@ -315,7 +314,6 @@ public class OTDataStore extends ProducerDataStore
 	        // need to make sure that these values are saved
 	        // so if this data store is disconnected from the 
 	        // the data producer it will preserve this info
-			DataChannelDescription channelDesc;
 			if (dataStreamDesc == null) return null;
 			
 			//Special case: using dt as the channel -1
@@ -425,8 +423,14 @@ public class OTDataStore extends ProducerDataStore
 	 */
 	public void removeDataStoreListener(DataStoreListener l)
 	{
-	    WeakReference ref = new WeakReference(l);
-		dataStoreListeners.remove(ref);		
+	    Vector listenersClone = (Vector) dataStoreListeners.clone();
+	    
+	    for(int i=0; i<listenersClone.size(); i++){
+	    	WeakReference listenerRef = (WeakReference) listenersClone.get(i);
+	    	if(listenerRef.get() == l){
+	    		dataStoreListeners.remove(listenerRef);
+	    	}
+	    }
 	}
 
 	protected void notifyDataAdded()
@@ -446,10 +450,15 @@ public class OTDataStore extends ProducerDataStore
 	
 	protected void notifyDataRemoved()
 	{
-		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_ADDED);
+		DataStoreEvent evt = new DataStoreEvent(this, DataStoreEvent.DATA_REMOVED);
 		DataStoreListener l;
-		for (int i=0; i<dataStoreListeners.size(); i++){
-		    Reference ref = (Reference)dataStoreListeners.elementAt(i);
+		
+		// Clone our listeners so they can remove them selves from the list 
+		// without the vector up.
+		Vector listenersClone = (Vector) dataStoreListeners.clone();
+		
+		for (int i=0; i<listenersClone.size(); i++){
+		    Reference ref = (Reference)listenersClone.elementAt(i);
 			l = (DataStoreListener)ref.get();
 			
 			// ignore references that have been gc'd
