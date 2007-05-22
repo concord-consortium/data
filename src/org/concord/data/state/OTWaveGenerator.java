@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.9 $
- * $Date: 2006-02-06 18:21:29 $
+ * $Revision: 1.10 $
+ * $Date: 2007-05-22 22:10:48 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -35,11 +35,8 @@ package org.concord.data.state;
 import org.concord.data.Unit;
 import org.concord.data.stream.WaveDataProducer;
 import org.concord.framework.data.stream.DataChannelDescription;
-import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
-import org.concord.framework.data.stream.DefaultDataProducer;
-import org.concord.framework.otrunk.DefaultOTObject;
 import org.concord.framework.otrunk.OTObjectService;
 import org.concord.framework.otrunk.OTResourceSchema;
 import org.concord.framework.util.Copyable;
