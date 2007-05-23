@@ -1,0 +1,21 @@
+/**
+ * 
+ */
+package org.concord.data.state;
+
+/**
+ * @author scott
+ *
+ */
+public interface OTDataProducerFilter
+    extends OTDataProducer
+{
+	public OTDataProducer getSource();
+	public void setSource(OTDataProducer source);
+	
+	public int getSourceChannel();
+	public void setSourceChannel(int channel);
+	
+	public String getUnits();
+	public void setUnits(String units);
+}

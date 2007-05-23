@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2007-05-23 19:42:08 $
+ * $Revision: 1.2 $
+ * $Date: 2007-05-23 22:29:37 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -50,6 +50,9 @@ import org.concord.framework.otrunk.DefaultOTController;
  */
 public class OTPropertyDataProducerController extends DefaultOTController
 {    
+	public static Class [] realObjectClasses =  {PropertyDataProducer.class};	
+	public static Class otObjectClass = OTPropertyDataProducer.class;    
+
 	/* (non-Javadoc)
      * @see org.concord.framework.otrunk.OTController#loadRealObject(java.lang.Object)
      */
