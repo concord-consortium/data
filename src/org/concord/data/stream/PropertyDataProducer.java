@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2006-09-29 21:06:15 $
+ * $Revision: 1.2 $
+ * $Date: 2007-05-23 19:42:08 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -106,6 +106,7 @@ public class PropertyDataProducer extends TimerDataProducer
 		producer.values = this.values;
 		producer.setTimeScale(this.getTimeScale());
 		
+		// FIXME this isn't copying the property name and target
 		
 		return producer;
 	}
