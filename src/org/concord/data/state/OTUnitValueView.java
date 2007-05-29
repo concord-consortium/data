@@ -4,8 +4,11 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.concord.framework.otrunk.OTChangeEvent;
 import org.concord.framework.otrunk.OTChangeListener;
@@ -24,7 +27,7 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
  *
  */
 
-public class OTUnitValueView implements OTViewEntryAware, OTJComponentView{
+public class OTUnitValueView implements OTViewEntryAware, OTJComponentView, DocumentListener{
 	private OTUnitValue otObject;
 	private OTUnitValueViewConfig viewConfig;
 	private JComponent newComponent;
@@ -44,6 +47,7 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView{
 	}
 	
 	private JComponent getUnitValueView() {
+    	JComponent tf;
 		int precision = 2;
 		if(viewConfig != null) {
 			precision = viewConfig.getPrecision();
@@ -52,19 +56,24 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView{
 	    nf.setMinimumFractionDigits(precision);
 	    nf.setMaximumFractionDigits(precision);
 	    
-	    if(editable) {
-	    	JTextField tf = 
-	    		new JTextField(nf.format(this.otObject.getValue()) + 
-	    				" " + this.otObject.getUnit());
-	    	tf.setEditable(true);
-	    	return tf;
+	    if((Float.NaN + "").equals(otObject.getValue()+"")) {
+	    	if(editable)
+	    		tf = new JTextField("NaN");
+	    	else
+	    		tf = new JLabel("NaN");
 	    } else {
-	    	JTextField tf = 
-	    		new JTextField(nf.format(this.otObject.getValue()) + 
-	    				" " + this.otObject.getUnit());
-	    	tf.setEditable(false);
-		    return tf;
+	    	if(editable) {
+		    	tf = new JTextField(nf.format(otObject.getValue()) + 
+						" " + otObject.getUnit());
+		    	((JTextField)tf).setColumns(((JTextField)tf).getText().length()+1);
+		    	((JTextField)tf).setHorizontalAlignment(JTextField.CENTER);
+	    	}
+	    	else
+		    	tf = new JLabel(nf.format(otObject.getValue()) + 
+						" " + otObject.getUnit());
 	    }
+	    
+    	return tf;
 	}
 
 	public void viewClosed() {
@@ -86,7 +95,19 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView{
 			}
 		}
 	};
-	
-	
-	
+
+	public void changedUpdate(DocumentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void insertUpdate(DocumentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void removeUpdate(DocumentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}	
 }
