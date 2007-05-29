@@ -13,9 +13,11 @@ import org.concord.framework.otrunk.OTObjectInterface;
  */
 public interface OTUnitValue extends OTObjectInterface{
 	
+	public static float DEFAULT_value = 0.0f;
 	public void setValue(float value);
 	public float getValue();
 
+	public static String DEFAULT_unit = "";
 	public void setUnit(String unit);
 	public String getUnit();
 }
