@@ -13,7 +13,7 @@ import org.concord.framework.otrunk.OTObjectInterface;
  */
 public interface OTUnitValue extends OTObjectInterface{
 	
-	public static float DEFAULT_value = 0.0f;
+	public static float DEFAULT_value = Float.NaN;
 	public void setValue(float value);
 	public float getValue();
 
