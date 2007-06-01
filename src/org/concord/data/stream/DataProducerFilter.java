@@ -42,6 +42,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
 		// make sure values has enough space for our data
 		// this array is the same one used in dataEvent.data
 		values = new float [100];
+		dataEvent.data = values;
 	}
 
 	/* (non-Javadoc)
