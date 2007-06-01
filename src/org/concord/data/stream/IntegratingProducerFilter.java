@@ -9,7 +9,11 @@ package org.concord.data.stream;
  */
 public class IntegratingProducerFilter extends DataProducerFilter
 {
+	boolean started = false;
+	
 	float sum = 0;
+	
+	boolean offsetSet = false;
 	float offset = 0;
 	
 	/* (non-Javadoc)
@@ -17,6 +21,11 @@ public class IntegratingProducerFilter extends DataProducerFilter
 	 */
 	protected float filter(float value)
 	{
+		if(!started && !offsetSet){
+			offset = value;
+			started = true;
+		} 
+		
 		sum += value - offset;
 		return sum;
 	}
@@ -30,7 +39,7 @@ public class IntegratingProducerFilter extends DataProducerFilter
 	    super.reset();
 	    
 	    sum = 0;
-	    
+	    started = false;
 	}
 
 	public float getOffset()
@@ -41,5 +50,11 @@ public class IntegratingProducerFilter extends DataProducerFilter
 	public void setOffset(float offset)
     {
     	this.offset = offset;
+    	offsetSet = true;
     }
+	
+	public boolean isOffsetSet()
+	{
+		return offsetSet;
+	}
 }
