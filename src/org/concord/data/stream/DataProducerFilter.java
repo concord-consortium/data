@@ -38,6 +38,10 @@ public abstract class DataProducerFilter extends DefaultDataProducer
 				notifyDataStreamEvent(dataEvent.getType());
 			}
 		};
+		
+		// make sure values has enough space for our data
+		// this array is the same one used in dataEvent.data
+		values = new float [100];
 	}
 
 	/* (non-Javadoc)
