@@ -23,8 +23,10 @@ public class OTIntegratingProducerFilterController extends OTDataProducerFilterC
 		
 		OTIntegratingProducerFilter otFilter = (OTIntegratingProducerFilter) otObject;
 		IntegratingProducerFilter filter = (IntegratingProducerFilter) realObject;
-		
-		filter.setOffset(otFilter.getOffset());
+
+		if(otFilter.isResourceSet("offset")){
+			filter.setOffset(otFilter.getOffset());
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -37,7 +39,9 @@ public class OTIntegratingProducerFilterController extends OTDataProducerFilterC
 	    OTIntegratingProducerFilter otFilter = (OTIntegratingProducerFilter) otObject;
 	    IntegratingProducerFilter filter = (IntegratingProducerFilter) realObject;
 		
-	    otFilter.setOffset(filter.getOffset());
+	    if(filter.isOffsetSet()){
+	    	otFilter.setOffset(filter.getOffset());
+	    }
 	}
 	
 }
