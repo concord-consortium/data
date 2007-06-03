@@ -1,14 +1,11 @@
 package org.concord.data.state;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -16,10 +13,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import org.concord.framework.otrunk.OTChangeEvent;
 import org.concord.framework.otrunk.OTChangeListener;
@@ -38,13 +31,25 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
  *
  */
 
+/*
+ * Last modification information:
+ * $Revision: 1.5 $
+ * $Date: 2007-06-03 06:49:51 $
+ * $Author: swang $
+ *
+ * Licence Information
+ * Copyright 2004 The Concord Consortium 
+*/
+
 public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 	private OTUnitValue otObject;
 	private OTUnitValueViewConfig viewConfig;
 	private JComponent newComponent;
 	private boolean editable;
 	
-	private String unitValueFormat = "[0-9]*\\.?[0-9]* +[a-zA-Z][0-9a-zA-Z]*";
+	private String unitValueFormat = "\\d+\\.?\\d* +\\w*";
+	private String valueFormat = "\\d+\\.?\\d*";
+	private DecimalFormat nf;
 
 	public JComponent getComponent(OTObject otObject, boolean editable) {
 		this.otObject = (OTUnitValue)otObject;
@@ -66,13 +71,15 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 		if(viewConfig != null) {
 			precision = viewConfig.getPrecision();
 		}
-		final DecimalFormat nf = (DecimalFormat)NumberFormat.getNumberInstance();
+		nf = (DecimalFormat)NumberFormat.getNumberInstance();
 	    nf.setMinimumFractionDigits(precision);
 	    nf.setMaximumFractionDigits(precision);
 	    
 	    if(Float.isNaN(otObject.getValue())) {
-	    	if(editable)
+	    	if(editable) {
 	    		tf = new JTextField("NaN");
+	    		addListeners((JTextField)tf);
+	    	}
 	    	else
 	    		tf = new JLabel("NaN");
 	    } else {
@@ -81,19 +88,7 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 						" " + otObject.getUnit());
 		    	((JTextField)tf).setColumns(((JTextField)tf).getText().length());
 		    	((JTextField)tf).setHorizontalAlignment(JTextField.CENTER);
-		    	tf.addMouseListener(new MouseAdapter() {
-		    		public void mouseClicked(MouseEvent e) {
-		    			tf.requestFocusInWindow();
-		    		}
-		    		
-		    	});
-		    	tf.addFocusListener(new FocusAdapter() {
-
-					public void focusLost(FocusEvent e) {
-						updateFieldAndValue(e, nf);
-					}
-		    		
-		    	});
+	    		addListeners((JTextField)tf);
 	    	}
 	    	else
 		    	tf = new JLabel(nf.format(otObject.getValue()) + 
@@ -103,27 +98,66 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
     	return tf;
 	}
 	
-	private void updateFieldAndValue(FocusEvent e, DecimalFormat nf) {
-		JTextField tf = (JTextField) e.getSource();
+	private void addListeners(final JTextField tf) {
+		//mouselistener: listen to mouse click
+    	tf.addMouseListener(new MouseAdapter() {
+    		public void mouseClicked(MouseEvent e) {
+    			tf.requestFocusInWindow();
+    		}
+    		
+    	});
+
+    	//focus listener: listen to focus lost
+    	tf.addFocusListener(new FocusAdapter() {
+
+			public void focusLost(FocusEvent e) {
+				updateFieldAndValue(tf);
+			}
+    		
+    	});
+    	
+    	//key listener: listen to Enter press
+    	tf.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+					updateFieldAndValue(tf);
+				}
+			}
+
+    	});
+	}
+	
+	private void updateFieldAndValue(Object obj) {
+		JTextField tf = (JTextField) obj;
 		String text = tf.getText().trim();
 		
-		if(text.matches(unitValueFormat)) {
-			System.out.println("matched");
+		if(text.matches(unitValueFormat) || text.matches(valueFormat)) {
 			updateValue(text);
 			updateView();
-			System.out.println("new value: " + otObject.getValue() + " new Unit: " + otObject.getUnit());
 		} else {
-			System.out.println("unmatched");
-			tf.setText(nf.format(otObject.getValue()) + 
+			if(Float.isNaN(otObject.getValue()))
+				tf.setText("NaN");
+			else {
+				tf.setText(nf.format(otObject.getValue()) + 
 						" " + otObject.getUnit());
+		    	tf.setColumns(tf.getText().length());
+		    	tf.setHorizontalAlignment(JTextField.CENTER);
+			}
 		}
 	}
 	
 	private void updateValue(String text) {
-		String flt = text.substring(0, text.indexOf(' '));
-		String unit = text.substring(text.lastIndexOf(' ')+1);
-		otObject.setValue(Float.valueOf(flt).floatValue());
-		otObject.setUnit(unit);
+		
+		int index = text.indexOf(' ');
+		if(index == -1) {
+			otObject.setValue(Float.valueOf(text).floatValue());
+			otObject.setUnit("");
+		} else {
+			String flt = text.substring(0, index);
+			String unit = text.substring(text.lastIndexOf(' ')+1);
+			otObject.setValue(Float.valueOf(flt).floatValue());
+			otObject.setUnit(unit);
+		}
 		otObject.notifyOTChange();
 	}
 
@@ -140,6 +174,7 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 		public void stateChanged(OTChangeEvent e) {
 			if(e.getProperty() != null && (e.getProperty().equals("value")
 					|| e.getProperty().equals("unit"))) {
+				System.out.println(" in unit value: " + e.getProperty());
 				updateView();
 			}
 		}
