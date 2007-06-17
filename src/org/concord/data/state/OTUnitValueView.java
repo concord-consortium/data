@@ -33,8 +33,8 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
 
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2007-06-03 06:49:51 $
+ * $Revision: 1.6 $
+ * $Date: 2007-06-17 11:56:29 $
  * $Author: swang $
  *
  * Licence Information
@@ -47,9 +47,10 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 	private JComponent newComponent;
 	private boolean editable;
 	
-	private String unitValueFormat = "\\d+\\.?\\d* +\\w*";
-	private String valueFormat = "\\d+\\.?\\d*";
+	private String unitValueFormat = "\\d+(\\.?\\d*){0,1}( +\\w*){0,1}";
 	private DecimalFormat nf;
+	
+	private String originalText;
 
 	public JComponent getComponent(OTObject otObject, boolean editable) {
 		this.otObject = (OTUnitValue)otObject;
@@ -95,6 +96,7 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 						" " + otObject.getUnit());
 	    }
 	    
+	    if(tf instanceof JTextField) originalText = ((JTextField)tf).getText();
     	return tf;
 	}
 	
@@ -130,37 +132,17 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 	private void updateFieldAndValue(Object obj) {
 		JTextField tf = (JTextField) obj;
 		String text = tf.getText().trim();
-		
-		if(text.matches(unitValueFormat) || text.matches(valueFormat)) {
-			updateValue(text);
-			updateView();
+
+		UnitValueEvaluator uve = new UnitValueEvaluator(text);
+		if(uve.isValidUnitValue()) {
+			otObject.setValue(uve.getValue());
+			otObject.setUnit(uve.getUnit());
+			otObject.notifyOTChange();
 		} else {
-			if(Float.isNaN(otObject.getValue()))
-				tf.setText("NaN");
-			else {
-				tf.setText(nf.format(otObject.getValue()) + 
-						" " + otObject.getUnit());
-		    	tf.setColumns(tf.getText().length());
-		    	tf.setHorizontalAlignment(JTextField.CENTER);
-			}
+			tf.setText(originalText);
 		}
 	}
 	
-	private void updateValue(String text) {
-		
-		int index = text.indexOf(' ');
-		if(index == -1) {
-			otObject.setValue(Float.valueOf(text).floatValue());
-			otObject.setUnit("");
-		} else {
-			String flt = text.substring(0, index);
-			String unit = text.substring(text.lastIndexOf(' ')+1);
-			otObject.setValue(Float.valueOf(flt).floatValue());
-			otObject.setUnit(unit);
-		}
-		otObject.notifyOTChange();
-	}
-
 	public void viewClosed() {
 		otObject.removeOTChangeListener(otChangeListener);
 	}
@@ -174,7 +156,6 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 		public void stateChanged(OTChangeEvent e) {
 			if(e.getProperty() != null && (e.getProperty().equals("value")
 					|| e.getProperty().equals("unit"))) {
-				System.out.println(" in unit value: " + e.getProperty());
 				updateView();
 			}
 		}
