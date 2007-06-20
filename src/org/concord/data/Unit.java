@@ -146,8 +146,8 @@ public final class Unit implements DataDimension{
 	public final static int UNIT_CODE_LINEAR_VEL_MILLISECOND = 65;
 	public final static int UNIT_CODE_KILOMETER			= 66;
 	public final static int UNIT_CODE_LINEAR_VEL_KMH	= 67;
-	
-	public final static int UNIT_TABLE_LENGTH           = 68;
+	public final static int UNIT_CODE_ACCEL				= 68;
+	public final static int UNIT_TABLE_LENGTH           = 69;
 
 	public final static int UNIT_CAT_UNKNOWN			= 0;
 	public final static int UNIT_CAT_LENGTH				= 1;
@@ -236,6 +236,10 @@ public final class Unit implements DataDimension{
 	} 
 
 	public String getDimension(){return abbreviation;}
+	
+	public String getNameAndAbreviation(){
+		return catNames[unitCategory] + " (" + abbreviation + ")";
+	}
 	
 	public void setDimension(String dimension){abbreviation = dimension;}
 	
@@ -520,6 +524,10 @@ public final class Unit implements DataDimension{
 							  0.0014641288f,0.0f,false,true); 
 		case UNIT_CODE_LUX :
 			return new Unit("lux","lx",true,UNIT_CAT_LIGHT,UNIT_CODE_LUX,UNIT_CODE_LUX,
+							  (byte)0,(byte)1,(byte)-3,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
+							  0.0014641288f,0.0f,false,true);
+		case UNIT_CODE_ACCEL :
+			return new Unit("meter second squared","m/s/s",true,UNIT_CAT_ACCELERATION,UNIT_CODE_ACCEL,UNIT_CODE_ACCEL,
 							  (byte)0,(byte)1,(byte)-3,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  0.0014641288f,0.0f,false,true);
 		}
