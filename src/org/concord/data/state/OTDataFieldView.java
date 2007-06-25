@@ -42,6 +42,8 @@ import org.concord.data.ui.DataFlowControlToolBar;
 import org.concord.data.ui.DataStoreLabel;
 import org.concord.data.ui.DataValueLabel;
 import org.concord.framework.data.stream.DataProducer;
+import org.concord.framework.data.stream.WritableDataStore;
+import org.concord.framework.otrunk.OTControllerService;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.view.OTJComponentView;
 
@@ -55,6 +57,9 @@ public class OTDataFieldView
 	implements OTJComponentView, ActionListener 
 {
 	OTDataField otDataField;
+    protected OTControllerService controllerService;
+    WritableDataStore dataStore;
+    
 	protected DataValueLabel dataField;
 	JButton saveButton = new JButton("Save");
 		
@@ -64,9 +69,13 @@ public class OTDataFieldView
 	public JComponent getComponent(OTObject otObject, boolean editable) 
 	{
 		this.otDataField = (OTDataField)otObject;
+    	controllerService = otDataField.getOTObjectService().createControllerService();
+		
 		OTDataStore otDataStore = otDataField.getDataStore();
+		dataStore = (WritableDataStore) controllerService.getRealObject(otDataStore);
+		
 		DataStoreLabel dataStoreField = 
-			new DataStoreLabel(otDataStore,0);
+			new DataStoreLabel(dataStore,0);
 
 		if(!editable) {
 			return dataStoreField;
@@ -101,7 +110,7 @@ public class OTDataFieldView
      */
     public void viewClosed()
     {
-        // TODO Auto-generated method stub
+    	controllerService.dispose();
     }
     	
 	/* (non-Javadoc)
@@ -110,7 +119,7 @@ public class OTDataFieldView
 	public void actionPerformed(ActionEvent e) 
 	{
 		float currentValue = dataField.getValue();
-		otDataField.getDataStore().setValueAt(0, 0, new Float(currentValue));
+		dataStore.setValueAt(0, 0, new Float(currentValue));
 	}
 
 
