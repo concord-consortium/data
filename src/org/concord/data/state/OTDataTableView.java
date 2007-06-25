@@ -1,8 +1,8 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2007-04-05 02:58:52 $
- * $Author: imoncada $
+ * $Revision: 1.2 $
+ * $Date: 2007-06-25 18:59:12 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -13,6 +13,7 @@ import javax.swing.JComponent;
 
 import org.concord.data.ui.DataTablePanel;
 import org.concord.framework.data.stream.DataStore;
+import org.concord.framework.otrunk.OTControllerService;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.view.OTJComponentView;
 
@@ -30,6 +31,7 @@ public class OTDataTableView
 	implements OTJComponentView
 {
 	protected OTDataTable otTable;
+    protected OTControllerService controllerService;
 	
 	/**
 	 * @see org.concord.framework.otrunk.view.OTJComponentView#getComponent(org.concord.framework.otrunk.OTObject, boolean)
@@ -37,11 +39,15 @@ public class OTDataTableView
 	public JComponent getComponent(OTObject otObject, boolean editable)
 	{
 		otTable = (OTDataTable)otObject;
+    	controllerService = otTable.getOTObjectService().createControllerService();
+
 		
 		DataTablePanel table = new DataTablePanel();
 		
 		DataStore dataStore;
-		dataStore = otTable.getDataStore();
+		OTDataStore otDataStore;
+		otDataStore = otTable.getDataStore();
+		dataStore = (DataStore) controllerService.getRealObject(otDataStore);
 		table.getTableModel().addDataStore(dataStore);
 		
 		return table;
@@ -52,8 +58,7 @@ public class OTDataTableView
 	 */
 	public void viewClosed()
 	{
-		// TODO Auto-generated method stub
-
+		controllerService.dispose();
 	}
 
 }
