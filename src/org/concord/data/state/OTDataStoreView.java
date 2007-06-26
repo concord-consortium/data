@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2007-06-25 18:59:12 $
+ * $Revision: 1.2 $
+ * $Date: 2007-06-26 19:07:51 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -43,10 +43,12 @@ import org.concord.data.stream.ProducerDataStore;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
+import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.WritableArrayDataStore;
 import org.concord.framework.otrunk.OTChangeEvent;
 import org.concord.framework.otrunk.OTChangeListener;
 import org.concord.framework.otrunk.OTObjectList;
+import org.concord.framework.otrunk.OTObjectService;
 import org.concord.framework.otrunk.OTResourceList;
 
 
@@ -359,6 +361,59 @@ public class OTDataStoreView extends ProducerDataStore
 		chDesc.setUnit(unit);
 
 		return chDesc;
+	}
+	
+	protected void updateDataDescription(DataStreamDescription desc) 
+	{
+		super.updateDataDescription(desc);
+		
+		// Save all the dataChannelDescriptions
+		if(desc == null){
+			return;
+		}
+		
+		try {
+			otDataStore.getChannelDescriptions().removeAll();
+			
+			OTObjectService objService = otDataStore.getOTObjectService();
+			for(int i=0; i<desc.getChannelsPerSample(); i++){
+				// We might have to deal with the virtual dt stuff here			
+				OTDataChannelDescription otDCDesc = 
+					(OTDataChannelDescription) objService.createObject(OTDataChannelDescription.class);
+				DataChannelDescription dCDesc = desc.getChannelDescription(i);
+
+				otDCDesc.setName(dCDesc.getName());
+				if(dCDesc.getUnit() != null){
+					otDCDesc.setUnit(dCDesc.getUnit().getDimension());
+				}
+
+				float absMax = dCDesc.getAbsoluteMax();
+				if(!Float.isNaN(absMax)){
+					otDCDesc.setAbsoluteMax(absMax);
+				}
+				float absMin = dCDesc.getAbsoluteMin();
+				if(!Float.isNaN(absMin)){
+					otDCDesc.setAbsoluteMin(absMin);
+				}
+				float recMax = dCDesc.getRecommendMax();
+				if(!Float.isNaN(recMax)){
+					otDCDesc.setRecommendMax(recMax);
+				}
+				float recMin = dCDesc.getRecommendMin();
+				if(!Float.isNaN(recMin)){
+					otDCDesc.setRecommendMin(recMin);					
+				}
+
+				if(dCDesc.isUsePrecision()){
+					otDCDesc.setPrecision(dCDesc.getPrecision());
+				}
+				
+				otDataStore.getChannelDescriptions().add(otDCDesc);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/* (non-Javadoc)
