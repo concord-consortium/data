@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2007-05-22 17:26:53 $
+ * $Revision: 1.6 $
+ * $Date: 2007-06-26 19:07:51 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -162,8 +162,7 @@ public class ProducerDataStore extends AbstractDataStore
 			this.dataProducer.removeDataListener(dataListener);
 		}
 		
-		this.dataProducer = dataProducer;
-		if (this.dataProducer != null){
+		if (dataProducer != null){
 			// Updating the data description can invalidate the data
 			// which is already in the dataStore.  It will print a warning
 			// in that case.
@@ -171,14 +170,19 @@ public class ProducerDataStore extends AbstractDataStore
 			// The solution to this problem is to not call this method
 			// (setDataProducer) 
 			// until the old data has been cleared from the datastore.
-			updateDataDescription(this.dataProducer.getDataDescription());
+			
+			// Our data producer should not be set until after this method is called
+			// Otherwise the method cannot compare previous data description correctly.
+			updateDataDescription(dataProducer.getDataDescription());
 			
 			// If there is still data in the data store when the new data starts coming in
 			// it is not clear what should happen.  Probably the old data should be
 			// converted if possible.  Changing from no dt to a dt will be hard it will
 			// mean the data will have to be stored without a dt.
-			this.dataProducer.addDataListener(dataListener);
+			dataProducer.addDataListener(dataListener);
 		}
+
+		this.dataProducer = dataProducer;
 	}
 
 	
@@ -307,15 +311,56 @@ public class ProducerDataStore extends AbstractDataStore
 	    return numberOfProducerChannels;
 	}
 	
-	public final static boolean dataStreamDescriptionEquals(
-		DataStreamDescription desc1, DataStreamDescription desc2)
+	public boolean dataStreamDescriptionEquals(
+		DataStreamDescription desc2)
 	{
+		DataStreamDescription desc1 = dataStreamDesc;
+		
 		if(desc1 == desc2){
 			return true;
 		}
 		
 		if(desc1 == null){
-			return false;
+			// This datastore doesn't have a dataStreamDescription, but the relavent parts
+			// can be compared to see if they match.
+			
+			// should compare desc2 with the values saved in this producer datastore
+			// 
+	        if(desc2.getDataType() == DataStreamDescription.DATA_SEQUENCE) {
+	        	if(!isUseDtAsChannel()){
+	        		return false;
+	        	}
+	        	
+	        	if(!floatEquals(getDt(), desc2.getDt())){
+	        		return false;
+	        	}
+	        } else {
+	        	if(isUseDtAsChannel()){
+	        		return false;
+	        	}
+	        }
+
+	        if(getTotalNumChannels() != desc2.getChannelsPerSample()){
+	        	return false;
+	        }
+
+	        for(int i=0; i<getTotalNumChannels(); i++){
+	        	DataChannelDescription dsChannelDesc = getDataChannelDescription(i);
+	        	DataChannelDescription descChannelDesc = desc2.getChannelDescription(i);
+	        	if(dsChannelDesc == descChannelDesc){
+	        		continue;
+	        	}
+	        	
+	        	if(dsChannelDesc == null){
+	        		return false;
+	        	}
+
+	        	if(!dsChannelDesc.equals(descChannelDesc)){
+	        		return false;
+	        	}
+	        }
+	        
+	        return true;
 		}
 		
 		return desc1.equals(desc2);
@@ -326,7 +371,7 @@ public class ProducerDataStore extends AbstractDataStore
 		// if we have data stored already then check if the description
 		// matches that data, print a warning if not.
 		if(getTotalNumSamples() > 0 && 
-				!dataStreamDescriptionEquals(this.dataStreamDesc, desc)){
+				!dataStreamDescriptionEquals(desc)){			
 			System.err.println(
 					"Warning: there is data in this datastore, and the DataStreamDescription " +
 					"is being changed");
@@ -403,4 +448,17 @@ public class ProducerDataStore extends AbstractDataStore
     {
         this.dt = dt;
     }
+
+    /**
+	 * Helper method to compare two floats. 
+	 * 
+	 * @param f1
+	 * @param f2
+	 * @return
+	 */
+	public final static boolean floatEquals(float f1, float f2)
+	{
+		return Float.compare(f1, f2) == 0;
+	}
+
 }
