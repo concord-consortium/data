@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2007-06-26 19:07:51 $
+ * $Revision: 1.1 $
+ * $Date: 2007-07-12 18:07:53 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -61,13 +61,13 @@ import org.concord.framework.otrunk.OTResourceList;
  * @author scytacki<p>
  *
  */
-public class OTDataStoreView extends ProducerDataStore
+public class OTDataStoreRealObject extends ProducerDataStore
 	implements WritableArrayDataStore
 {	
 	protected OTDataStore otDataStore;
 	DataStoreEvent changeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_CHANGED);
 	DataStoreEvent removeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_REMOVED);
-	
+		
 	private OTChangeListener myListener = new OTChangeListener(){
 
 		public void stateChanged(OTChangeEvent e) {
@@ -88,6 +88,11 @@ public class OTDataStoreView extends ProducerDataStore
 		}
 		
 	};
+	
+	public OTDataStoreRealObject()
+	{
+		System.err.println("creating OTDataStoreRealObject: " + this);
+	}
 	
 	/**
 	 * 

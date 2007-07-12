@@ -45,7 +45,7 @@ import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.WritableDataStore;
 import org.concord.framework.otrunk.OTControllerService;
 import org.concord.framework.otrunk.OTObject;
-import org.concord.framework.otrunk.view.OTJComponentView;
+import org.concord.framework.otrunk.view.AbstractOTJComponentView;
 
 /**
  * @author scott
@@ -53,8 +53,8 @@ import org.concord.framework.otrunk.view.OTJComponentView;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class OTDataFieldView 
-	implements OTJComponentView, ActionListener 
+public class OTDataFieldView extends AbstractOTJComponentView
+	implements ActionListener 
 {
 	OTDataField otDataField;
     protected OTControllerService controllerService;
@@ -69,7 +69,7 @@ public class OTDataFieldView
 	public JComponent getComponent(OTObject otObject, boolean editable) 
 	{
 		this.otDataField = (OTDataField)otObject;
-    	controllerService = otDataField.getOTObjectService().createControllerService();
+    	controllerService = createControllerService();
 		
 		OTDataStore otDataStore = otDataField.getDataStore();
 		dataStore = (WritableDataStore) controllerService.getRealObject(otDataStore);

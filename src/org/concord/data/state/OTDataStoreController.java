@@ -1,15 +1,16 @@
 package org.concord.data.state;
 
 import org.concord.framework.otrunk.DefaultOTController;
+import org.concord.framework.otrunk.OTObject;
 
 public class OTDataStoreController extends DefaultOTController 
 {
-	public static Class [] realObjectClasses =  {OTDataStoreView.class};	
+	public static Class [] realObjectClasses =  {OTDataStoreRealObject.class};	
 	public static Class otObjectClass = OTDataStore.class;    
 
 	public void loadRealObject(Object realObject) 
 	{
-		OTDataStoreView dsView = (OTDataStoreView) realObject;
+		OTDataStoreRealObject dsView = (OTDataStoreRealObject) realObject;
 		dsView.setOTDataStore((OTDataStore) otObject);
 	}
 
@@ -25,4 +26,12 @@ public class OTDataStoreController extends DefaultOTController
 		// as it goes
 	}
 
+	/**
+	 * The real object returned here can handle being used in multiple places at the 
+	 * same time.  So lets return true.
+	 */
+	public boolean isRealObjectSharable(OTObject otObject, Object realObject) 
+	{
+		return true;
+	}
 }
