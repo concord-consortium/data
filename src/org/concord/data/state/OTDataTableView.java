@@ -1,8 +1,8 @@
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2007-06-30 03:59:21 $
- * $Author: imoncada $
+ * $Revision: 1.4 $
+ * $Date: 2007-07-12 18:07:53 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -20,7 +20,7 @@ import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.otrunk.OTControllerService;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectList;
-import org.concord.framework.otrunk.view.OTJComponentView;
+import org.concord.framework.otrunk.view.AbstractOTJComponentView;
 
 
 /**
@@ -32,8 +32,7 @@ import org.concord.framework.otrunk.view.OTJComponentView;
  * @author imoncada<p>
  *
  */
-public class OTDataTableView
-	implements OTJComponentView
+public class OTDataTableView extends AbstractOTJComponentView
 {
 	protected OTDataTable otTable;
     protected OTControllerService controllerService;
@@ -44,8 +43,7 @@ public class OTDataTableView
 	public JComponent getComponent(OTObject otObject, boolean editable)
 	{
 		otTable = (OTDataTable)otObject;
-    	controllerService = otTable.getOTObjectService().createControllerService();
-
+    	controllerService = createControllerService();
 		
 		DataTablePanel table = new DataTablePanel();
 		

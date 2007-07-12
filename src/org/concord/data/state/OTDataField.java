@@ -29,7 +29,6 @@
  */
 package org.concord.data.state;
 
-import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectInterface;
 
 /**
@@ -40,7 +39,7 @@ import org.concord.framework.otrunk.OTObjectInterface;
  */
 public interface OTDataField extends OTObjectInterface
 {
-	public OTObject getDataProducer();
+	public OTDataProducer getDataProducer();
 	
 	public OTDataStore getDataStore();
 	public void setDataStore(OTDataStore dataStore);	
