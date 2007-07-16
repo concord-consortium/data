@@ -16,4 +16,8 @@ public interface OTUnitValueViewConfig
 	public static int DEFAULT_precision = 2;
 	public int getPrecision();
 	public void setPrecision(int precision);
+	
+	public static boolean DEFAULT_editable = true;
+	public boolean getEditable();
+	public void setEditable(boolean editable);
 }
