@@ -1,5 +1,6 @@
 package org.concord.data.state;
 
+import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -33,9 +34,9 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
 
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2007-06-25 18:59:12 $
- * $Author: scytacki $
+ * $Revision: 1.8 $
+ * $Date: 2007-07-16 18:27:21 $
+ * $Author: aunger $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -61,6 +62,7 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 		this.otObject.addOTChangeListener(otChangeListener);
 	    
 		newComponent.add(getUnitValueView());
+		newComponent.setOpaque(false);
 	    
 	    return newComponent;
 	}
@@ -71,6 +73,7 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 		int precision = 2;
 		if(viewConfig != null) {
 			precision = viewConfig.getPrecision();
+			editable = viewConfig.getEditable();
 		}
 		nf = (DecimalFormat)NumberFormat.getNumberInstance();
 	    nf.setMinimumFractionDigits(precision);
@@ -97,6 +100,7 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 	    }
 	    
 	    if(tf instanceof JTextField) originalText = ((JTextField)tf).getText();
+	    
     	return tf;
 	}
 	
