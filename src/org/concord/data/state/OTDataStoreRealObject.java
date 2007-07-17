@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2007-07-12 18:07:53 $
+ * $Revision: 1.2 $
+ * $Date: 2007-07-17 19:47:54 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -342,11 +342,19 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			return dataStreamDesc.getChannelDescription(numChannel);
 	    }
 	    
-		OTObjectList channelDescriptions = otDataStore.getChannelDescriptions();
+	    // If we are using dt as a channel, then ot channel description at 0 is
+	    // is the DT channel description.  And the ot channel description at 1 is
+	    // the first real channel description.
+	    // The dt channel is requested by passing a numChannel of -1
+	    if(isUseDtAsChannel()){
+	    	numChannel++;
+	    }
+
+	    OTObjectList channelDescriptions = otDataStore.getChannelDescriptions();
 		if(numChannel >= channelDescriptions.size()) {
 			return null;
 		}
-		
+				
 		OTDataChannelDescription otChDesc = 
 			(OTDataChannelDescription)channelDescriptions.get(numChannel);
 		
@@ -368,6 +376,43 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		return chDesc;
 	}
 	
+	protected OTDataChannelDescription createOTDataChannelDescription(DataChannelDescription dCDesc) 
+		throws Exception
+	{
+		OTObjectService objService = otDataStore.getOTObjectService();
+
+		OTDataChannelDescription otDCDesc = 
+			(OTDataChannelDescription) objService.createObject(OTDataChannelDescription.class);
+
+		otDCDesc.setName(dCDesc.getName());
+		if(dCDesc.getUnit() != null){
+			otDCDesc.setUnit(dCDesc.getUnit().getDimension());
+		}
+
+		float absMax = dCDesc.getAbsoluteMax();
+		if(!Float.isNaN(absMax)){
+			otDCDesc.setAbsoluteMax(absMax);
+		}
+		float absMin = dCDesc.getAbsoluteMin();
+		if(!Float.isNaN(absMin)){
+			otDCDesc.setAbsoluteMin(absMin);
+		}
+		float recMax = dCDesc.getRecommendMax();
+		if(!Float.isNaN(recMax)){
+			otDCDesc.setRecommendMax(recMax);
+		}
+		float recMin = dCDesc.getRecommendMin();
+		if(!Float.isNaN(recMin)){
+			otDCDesc.setRecommendMin(recMin);					
+		}
+
+		if(dCDesc.isUsePrecision()){
+			otDCDesc.setPrecision(dCDesc.getPrecision());
+		}
+
+		return otDCDesc;
+	}
+	
 	protected void updateDataDescription(DataStreamDescription desc) 
 	{
 		super.updateDataDescription(desc);
@@ -379,40 +424,18 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		
 		try {
 			otDataStore.getChannelDescriptions().removeAll();
+						
+			if(isUseDtAsChannel()){
+				// if we are using the dt as a channel then the first element in the channelDescriptions list
+				// is the channel description of the dt
+				DataChannelDescription dCDesc = desc.getDtChannelDescription();
+				OTDataChannelDescription otDCDesc = createOTDataChannelDescription(dCDesc);
+				otDataStore.getChannelDescriptions().add(otDCDesc);				
+			}
 			
-			OTObjectService objService = otDataStore.getOTObjectService();
 			for(int i=0; i<desc.getChannelsPerSample(); i++){
-				// We might have to deal with the virtual dt stuff here			
-				OTDataChannelDescription otDCDesc = 
-					(OTDataChannelDescription) objService.createObject(OTDataChannelDescription.class);
 				DataChannelDescription dCDesc = desc.getChannelDescription(i);
-
-				otDCDesc.setName(dCDesc.getName());
-				if(dCDesc.getUnit() != null){
-					otDCDesc.setUnit(dCDesc.getUnit().getDimension());
-				}
-
-				float absMax = dCDesc.getAbsoluteMax();
-				if(!Float.isNaN(absMax)){
-					otDCDesc.setAbsoluteMax(absMax);
-				}
-				float absMin = dCDesc.getAbsoluteMin();
-				if(!Float.isNaN(absMin)){
-					otDCDesc.setAbsoluteMin(absMin);
-				}
-				float recMax = dCDesc.getRecommendMax();
-				if(!Float.isNaN(recMax)){
-					otDCDesc.setRecommendMax(recMax);
-				}
-				float recMin = dCDesc.getRecommendMin();
-				if(!Float.isNaN(recMin)){
-					otDCDesc.setRecommendMin(recMin);					
-				}
-
-				if(dCDesc.isUsePrecision()){
-					otDCDesc.setPrecision(dCDesc.getPrecision());
-				}
-				
+				OTDataChannelDescription otDCDesc = createOTDataChannelDescription(dCDesc);
 				otDataStore.getChannelDescriptions().add(otDCDesc);
 			}
 		} catch (Exception e) {
