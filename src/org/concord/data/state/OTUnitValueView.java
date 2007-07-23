@@ -1,6 +1,5 @@
 package org.concord.data.state;
 
-import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -34,9 +33,9 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
 
 /*
  * Last modification information:
- * $Revision: 1.8 $
- * $Date: 2007-07-16 18:27:21 $
- * $Author: aunger $
+ * $Revision: 1.9 $
+ * $Date: 2007-07-23 15:24:03 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -48,7 +47,9 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 	private JComponent newComponent;
 	private boolean editable;
 	
-	private String unitValueFormat = "\\d+(\\.?\\d*){0,1}( +\\w*){0,1}";
+	// This looks like it was used before but not anymore
+	// I'm keeping it here because it probably took quite a bit of twiddling to get right.
+	// private String unitValueFormat = "\\d+(\\.?\\d*){0,1}( +\\w*){0,1}";
 	private DecimalFormat nf;
 	
 	private String originalText;
