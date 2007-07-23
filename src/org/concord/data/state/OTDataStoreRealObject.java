@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2007-07-17 19:47:54 $
+ * $Revision: 1.3 $
+ * $Date: 2007-07-23 15:22:31 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -88,11 +88,6 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		}
 		
 	};
-	
-	public OTDataStoreRealObject()
-	{
-		System.err.println("creating OTDataStoreRealObject: " + this);
-	}
 	
 	/**
 	 * 
