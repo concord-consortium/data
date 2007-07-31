@@ -33,9 +33,9 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
 
 /*
  * Last modification information:
- * $Revision: 1.9 $
- * $Date: 2007-07-23 15:24:03 $
- * $Author: scytacki $
+ * $Revision: 1.10 $
+ * $Date: 2007-07-31 19:20:43 $
+ * $Author: aunger $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -145,7 +145,7 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 			
 			// This shouldn't be necessary because just setting values in the otObject will through
 			// an event
-			otObject.notifyOTChange(null, null, null);
+			// otObject.notifyOTChange(null, null, null);
 		} else {
 			tf.setText(originalText);
 		}
