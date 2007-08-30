@@ -31,6 +31,7 @@ public class OTDataPackage
 		registry.registerControllerClass(OTPropertyDataProducerController.class);
 		registry.registerControllerClass(OTLinearProducerFilterController.class);
 		registry.registerControllerClass(OTIntegratingProducerFilterController.class);
+		registry.registerControllerClass(OTDifferentiatingProducerFilterController.class);
 		registry.registerControllerClass(OTDataStoreController.class);
 	}
 	

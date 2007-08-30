@@ -18,7 +18,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     private DataProducer source;
 	private DataListener dataListener;
 	private int sourceChannel;
-
+	protected int currentSample;
     
 	public DataProducerFilter(){
 		/*
@@ -43,6 +43,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
 		// this array is the same one used in dataEvent.data
 		values = new float [100];
 		dataEvent.data = values;
+		currentSample = 0;
 	}
 
 	/* (non-Javadoc)
@@ -86,6 +87,8 @@ public abstract class DataProducerFilter extends DefaultDataProducer
         if(source != null) {
             source.reset();
         }
+        
+        currentSample = 0;
     }
 
     /* (non-Javadoc)
@@ -116,35 +119,78 @@ public abstract class DataProducerFilter extends DefaultDataProducer
         int stride = dataEvent.getDataDescription().getNextSampleOffset();
         int channelsPerSample = dataEvent.getDataDescription().getChannelsPerSample();
         
-        // send the event to our listeners
-        // however we need to do the actual filter
-        // here and adjust the values
+        int filteredSamples = 0;
+        int filteredOffset = offset;
+        
+        // do the actual filtering
         for(int i=0; i<numSamples; i++){
         	
         	// initialize the other channels
         	for(int j=0; j<channelsPerSample; j++){
-        		dataEvent.data[offset+j] = dataEvent.data[offset+j];
+        		dataEvent.data[filteredOffset+j] = dataEvent.data[offset+j];
         	}
         	
-        	float value = dataEvent.data[offset + producerChannel];    
+        	float filteredValue = filter(offset, dataEvent.data); 
         	        	
-        	this.dataEvent.data[offset + producerChannel] = 
-        		filter(value);
-        	
         	offset += stride;
+
+        	if(!isFilteredValueValid()){
+        		// the value is not valid so we should not increase the currentSample
+        		// or the filteredOffset
+        		continue;
+        	}
+        	
+        	this.dataEvent.data[filteredOffset + producerChannel] = filteredValue;         	        	
+        	
+        	filteredOffset += stride;
+        	filteredSamples++;
+        	
+        	currentSample++;
 
         }
         
+        dataEvent.setNumSamples(filteredSamples);
         notifyDataReceived();        
     }
 
     
-	/**
+    protected float filter(int sampleStartOffset, float [] values)
+    {
+    	int producerChannel = getTranslatedSourceChannel();
+    	float value = values[sampleStartOffset + producerChannel];
+    	
+    	return filter(value);    	
+    }
+
+    /**
+     * You can optionally override this method if your filter only works with one channel at a time
+     *  
      * @param value
      * @return
      */
-    protected abstract float filter(float value);
+    protected float filter(float value)
+    {
+    	throw new IllegalStateException("The filter(float)  method needs to be overriden " +
+    			"if the filter(int, float []) is not overriden");
+    }
 
+    
+    
+    /**
+     * This method can be overridden to return false when the value returned by 
+     * the filter method should not be used.  It will be called after the filter
+     * method is called. 
+     * 
+     * This will be used for the differentiating filter because it won't have a valid
+     * return value until 2 points have been passed in. 
+     * 
+     * @return
+     */
+    protected boolean isFilteredValueValid()
+    {
+    	return true;
+    }
+    
     /**
      * get the channel number that will be filtered.  This translates
      * the sourceChannel to the actual channel in the source data producer
