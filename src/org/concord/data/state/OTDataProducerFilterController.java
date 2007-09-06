@@ -22,8 +22,7 @@ public class OTDataProducerFilterController extends DefaultOTController
 		OTDataProducerFilter otFilter = (OTDataProducerFilter) otObject;
 		DataProducerFilter filter = (DataProducerFilter) realObject;
 		
-		DataProducer source = 
-			(DataProducer) controllerService.getRealObject(otFilter.getSource());
+		DataProducer source = getSource();
 		filter.setSource(source);		
 		filter.setSourceChannel(otFilter.getSourceChannel());
 	}
@@ -51,4 +50,15 @@ public class OTDataProducerFilterController extends DefaultOTController
 		otFilter.setSourceChannel(filter.getSourceChannel());		
 	}
 
+	/**
+	 * This method can be overridden to provide a different source to the filter.
+	 * @return
+	 */
+	public DataProducer getSource()
+	{
+		OTDataProducerFilter otFilter = (OTDataProducerFilter) otObject;
+		DataProducer source = 
+			(DataProducer) controllerService.getRealObject(otFilter.getSource());
+		return source;
+	}
 }
