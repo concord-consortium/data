@@ -45,6 +45,11 @@ import org.concord.framework.data.stream.DataStoreListener;
 public class DataStoreLabel extends JTextField
 	implements DataStoreListener
 {
+	/**
+	 * Not intended to be serialized, added to remove compile warning.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	DataStore dataStore = null;
 	int channel = 0;
     private float currentValue;

@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.8 $
+ * $Date: 2007-09-06 16:07:09 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -61,10 +61,12 @@ public class PointsDataStore extends DefaultDataStore
 	}
 
 	/**
+	 * This method is useful for debugging.
+	 *  
 	 * @param channel
 	 * @return
 	 */
-	private String getFloatVectorStr(Vector v)
+	public static String getFloatVectorStr(Vector v)
 	{
 		String strS = "[";
 		for (int i=0; i<v.size(); i++){

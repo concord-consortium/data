@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.6 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.7 $
+ * $Date: 2007-09-06 16:07:09 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -63,6 +63,11 @@ import org.concord.framework.simulation.SimulationListener;
 public class DataFlowControlAction extends AbstractAction
 	implements SimulationListener
 {
+	/**
+	 * not intended to be serialized, removes compile warning
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	protected Vector objsFlow;				//DataFlow objects
 	protected int flowControlType = -1;
 	protected boolean autoEnable = true;
@@ -224,7 +229,7 @@ public class DataFlowControlAction extends AbstractAction
 		}
 	}
 	
-	private void checkFlowObjectsValid(int type)
+	protected void checkFlowObjectsValid(int type)
 	{
 		for (int i=0; i<objsFlow.size(); i++){
 			checkFlowObjectValid(type, (DataFlow)objsFlow.elementAt(i));

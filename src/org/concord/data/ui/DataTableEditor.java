@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.6 $
+ * $Date: 2007-09-06 16:07:09 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -55,6 +55,11 @@ import org.concord.framework.data.stream.WritableDataStore;
  */
 public class DataTableEditor extends JPanel
 {
+	/**
+	 * Not intended to be serialized, added to remove compile warning.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	DataTablePanel tablePanel;
 	DataStore dataStore;
 	
@@ -107,6 +112,11 @@ public class DataTableEditor extends JPanel
 	class InputPanel extends JPanel 
 		implements ActionListener
 	{
+		/**
+		 * Not intended to be serialized, added to remove compile warning.
+		 */
+		private static final long serialVersionUID = 1L;
+
 		JTextField f1 = new JTextField("0",3);
 		JTextField f2 = new JTextField("0",3);
 		JTextField f3 = new JTextField(3);

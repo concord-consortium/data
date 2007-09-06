@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.14 $
- * $Date: 2007-04-05 02:58:31 $
- * $Author: imoncada $
+ * $Revision: 1.15 $
+ * $Date: 2007-09-06 16:07:09 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -61,6 +61,11 @@ import org.concord.framework.data.stream.WritableDataStore;
 public class DataTableModel extends AbstractTableModel
 	implements DataStoreListener
 {
+	/**
+	 * Not intended to be serialized, added to remove compile warning.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected Vector dataStores;	//DataStore objects
 	protected int step = 1;
 	protected Vector dataColumns;	//DataColumnDescription objects

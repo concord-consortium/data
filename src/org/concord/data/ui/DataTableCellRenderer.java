@@ -23,9 +23,9 @@
 
 /**
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.6 $
+ * $Date: 2007-09-06 16:07:09 $
+ * $Author: scytacki $
  *
  * Copyright 2004 The Concord Consortium
 */
@@ -49,6 +49,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class DataTableCellRenderer extends DefaultTableCellRenderer
 {
+	/**
+	 * Not intended to be serialized, added to remove compile warning.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected TableCellColorModel tableCellColorModel;
 	
 	/*

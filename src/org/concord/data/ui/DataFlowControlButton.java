@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.5 $
+ * $Date: 2007-09-06 16:07:09 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -52,6 +52,11 @@ import org.concord.framework.data.DataFlow;
  */
 public class DataFlowControlButton extends JButton
 {
+	/**
+	 * Not intended to be serialized, added to remove compile warning.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Default constructor
 	 * Creates an empty button that doesn't do anything

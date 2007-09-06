@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.6 $
- * $Date: 2007-06-26 19:07:51 $
+ * $Revision: 1.7 $
+ * $Date: 2007-09-06 16:07:09 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -223,8 +223,6 @@ public class ProducerDataStore extends AbstractDataStore
         float [] data = dataEvent.getData();
         int numberOfSamples = dataEvent.getNumSamples();
         int eventSampleIndex;
-        Float value;
-        int storeSampleIndex = getTotalNumSamples();		
         eventSampleIndex =  dataEvent.getDataDescription().getDataOffset();
         if(data == null) {
             System.err.println("null data in dataReceived");
