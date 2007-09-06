@@ -29,7 +29,12 @@ import org.concord.data.ConditionValue;
 
 public class ConditionEvent extends EventObject
 {
-    public ConditionEvent(Object object)
+    /**
+	 * Not intended to be serialized, just added to remove compile warning.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public ConditionEvent(Object object)
 	{
 		super(object);
     }

@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.12 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.13 $
+ * $Date: 2007-09-06 16:07:09 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -45,7 +45,6 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 
@@ -71,6 +70,11 @@ import javax.swing.table.TableCellRenderer;
 public class DataTablePanel extends JPanel
 	implements TableModelListener, ComponentListener, MouseListener, ActionListener
 {
+	/**
+	 * Not intended to be serialized, added to remove compile warning.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected JTable table;
 	protected DataTableModel tableModel;
 	protected JScrollPane scrollPane;
@@ -275,7 +279,6 @@ public class DataTablePanel extends JPanel
 			}
 			catch(Exception ex){}
 		} else if (e.getActionCommand().equals(IMPORT_FROM_CLIPBOARD)){
-			InputStream inS;
 			try {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 

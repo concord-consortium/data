@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2005-08-05 16:17:19 $
- * $Author: maven $
+ * $Revision: 1.8 $
+ * $Date: 2007-09-06 16:07:09 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -55,6 +55,11 @@ import org.concord.framework.data.stream.DataStreamEvent;
 public class DataValueLabel extends JTextField
 	implements DataListener
 {
+	/**
+	 * Not intended to be serialized, added to remove compile warning.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected DataProducer dataProducer;
 	protected int channel = 0;				//Default channel is 0
 	private float value;
