@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2007-07-23 15:22:31 $
+ * $Revision: 1.4 $
+ * $Date: 2007-09-10 19:57:46 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -75,7 +75,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			    String op = e.getOperation();
 			    if(OTChangeEvent.OP_ADD == op){
 			    	notifyDataAdded();
-			    } else if(OTChangeEvent.OP_CHANGE == op){
+			    } else if(OTChangeEvent.OP_CHANGE == op || OTChangeEvent.OP_SET == op){
 			    	notifyDataChanged();
 			    } else if(OTChangeEvent.OP_REMOVE == op ||
 			    		OTChangeEvent.OP_REMOVE_ALL == op){
