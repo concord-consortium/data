@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2007-09-10 19:57:46 $
+ * $Revision: 1.5 $
+ * $Date: 2007-09-10 20:03:27 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -198,11 +198,12 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		}
 		
 		/*
-		 * this is taken care of by our listener on the otDataStore
-		if(doNotify) {
-		    notifyDataChanged();
-		}
-		*/		
+		 * This real object doesn't need to send out notifications directly.  Because the line:
+		 * values.set() or values.add() modify the OTResourceList, that causes an event to be 
+		 * sent out by the OTDataStore object.  Which is then caught by our inner class "myListener", 
+		 * and at that point the standard data store event is sent out.
+		 * 
+ 		 */		
 	}	
 
 	
