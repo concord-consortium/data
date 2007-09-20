@@ -33,8 +33,8 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
 
 /*
  * Last modification information:
- * $Revision: 1.11 $
- * $Date: 2007-09-20 22:19:40 $
+ * $Revision: 1.12 $
+ * $Date: 2007-09-20 23:22:45 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -76,28 +76,18 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 			precision = viewConfig.getPrecision();
 			editable = viewConfig.getEditable();
 		}
-		nf = (DecimalFormat)NumberFormat.getNumberInstance();
-	    nf.setMinimumFractionDigits(precision);
-	    nf.setMaximumFractionDigits(precision);
+		nf = createFormatObject(precision);
 	    
-	    if(Float.isNaN(otObject.getValue())) {
-	    	if(editable) {
-	    		tf = new JTextField("???");
-	    		addListeners((JTextField)tf);
-	    	}
-	    	else
-	    		tf = new JLabel("???");
-	    } else {
-	    	if(editable) {
-		    	tf = new JTextField(nf.format(otObject.getValue()) + 
-						" " + otObject.getUnit());
-		    	((JTextField)tf).setColumns(((JTextField)tf).getText().length());
-		    	((JTextField)tf).setHorizontalAlignment(JTextField.CENTER);
-	    		addListeners((JTextField)tf);
-	    	}
-	    	else
-		    	tf = new JLabel(nf.format(otObject.getValue()) + 
-						" " + otObject.getUnit());
+		String strValue = getStringValue(otObject, nf);
+		
+    	if(editable) {
+	    	tf = new JTextField(strValue);
+	    	((JTextField)tf).setColumns(((JTextField)tf).getText().length());
+	    	((JTextField)tf).setHorizontalAlignment(JTextField.CENTER);
+    		addListeners((JTextField)tf);
+    	}
+    	else{
+	    	tf = new JLabel(strValue);
 	    }
 	    
 	    if(tf instanceof JTextField) originalText = ((JTextField)tf).getText();
@@ -173,5 +163,28 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 		newComponent.removeAll();
 		newComponent.add(getUnitValueView());
 		newComponent.validate();
+	}
+	
+	protected static DecimalFormat createFormatObject(int precision)
+	{
+		DecimalFormat format = (DecimalFormat)NumberFormat.getNumberInstance();
+		format.setMinimumFractionDigits(precision);
+	    format.setMaximumFractionDigits(precision);	
+	    
+	    return format;
+	}
+	
+	public static String getStringValue(OTUnitValue otObject, DecimalFormat format)
+	{
+		if (format == null){
+			format = createFormatObject(2);
+		}
+		
+	    if(Float.isNaN(otObject.getValue())){
+	    	return "???";
+	    } 
+	    else {
+		    return format.format(otObject.getValue()) +	" " + otObject.getUnit();
+	    }
 	}
 }
