@@ -33,9 +33,9 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
 
 /*
  * Last modification information:
- * $Revision: 1.10 $
- * $Date: 2007-07-31 19:20:43 $
- * $Author: aunger $
+ * $Revision: 1.11 $
+ * $Date: 2007-09-20 22:19:40 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -82,11 +82,11 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 	    
 	    if(Float.isNaN(otObject.getValue())) {
 	    	if(editable) {
-	    		tf = new JTextField("NaN");
+	    		tf = new JTextField("???");
 	    		addListeners((JTextField)tf);
 	    	}
 	    	else
-	    		tf = new JLabel("NaN");
+	    		tf = new JLabel("???");
 	    } else {
 	    	if(editable) {
 		    	tf = new JTextField(nf.format(otObject.getValue()) + 
