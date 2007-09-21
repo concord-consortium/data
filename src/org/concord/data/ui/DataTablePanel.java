@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.13 $
- * $Date: 2007-09-06 16:07:09 $
+ * $Revision: 1.14 $
+ * $Date: 2007-09-21 02:29:19 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -32,7 +32,8 @@
 */
 package org.concord.data.ui;
 
-import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -40,8 +41,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.ByteArrayOutputStream;
@@ -53,6 +52,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
@@ -68,7 +68,7 @@ import javax.swing.table.TableCellRenderer;
  *
  */
 public class DataTablePanel extends JPanel
-	implements TableModelListener, ComponentListener, MouseListener, ActionListener
+	implements TableModelListener, MouseListener, ActionListener
 {
 	/**
 	 * Not intended to be serialized, added to remove compile warning.
@@ -85,18 +85,18 @@ public class DataTablePanel extends JPanel
 	public DataTablePanel()
 	{
 		super();
+	
+		setLayout(new BorderLayout());
 		
 		tableModel = new DataTableModel();
 		table = new JTable(tableModel);
-				
+	
 		scrollPane = new JScrollPane(table);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
-		add(scrollPane);
-				
-		tableModel.addTableModelListener(this);
+		add(scrollPane, BorderLayout.CENTER);
 		
-		addComponentListener(this);
+		tableModel.addTableModelListener(this);
 		
 		table.addMouseListener(this);
 		scrollPane.getViewport().addMouseListener(this);
@@ -147,52 +147,21 @@ public class DataTablePanel extends JPanel
 	}
 
 
-	/* (non-Javadoc)
+	/**
 	 * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
 	 */
 	public void tableChanged(TableModelEvent e)
 	{
-		//Scroll down automatically
-		table.scrollRectToVisible(table.getCellRect(table.getRowCount()-1, -1, true));	
+		// Scroll down automatically
+		// This has to be invoked later so the table component before we try to scroll it.
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run() {
+				int newRow = table.getRowCount()-1;
+				Rectangle cellRect = table.getCellRect(newRow, 0, true);
+				table.scrollRectToVisible(cellRect);					
+			}
+		});
 	}
-
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
-	 */
-	public void componentHidden(ComponentEvent e)
-	{
-		// Do nothing		
-	}
-
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent)
-	 */
-	public void componentMoved(ComponentEvent e)
-	{
-		// do nothing		
-	}
-
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.ComponentListener#componentResized(java.awt.event.ComponentEvent)
-	 */
-	public void componentResized(ComponentEvent e)
-	{
-		table.setPreferredScrollableViewportSize(new Dimension(getSize().width - 20,getSize().height - 40));
-	}
-
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent)
-	 */
-	public void componentShown(ComponentEvent e)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
