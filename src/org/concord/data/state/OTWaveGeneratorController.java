@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2007-05-23 19:42:08 $
+ * $Revision: 1.2 $
+ * $Date: 2007-09-24 18:21:22 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -37,6 +37,7 @@ import org.concord.data.stream.WaveDataProducer;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.otrunk.DefaultOTController;
+import org.concord.framework.otrunk.OTObject;
 
 
 /**
@@ -95,5 +96,16 @@ public class OTWaveGeneratorController extends DefaultOTController
     	otWave.setSampleTime(dataDescription.getDt());
     	
     	otWave.setTimeScale(waveProducer.getTimeScale());
+    }
+    
+    /**
+     * Allow our read object to be shared, so it can be listened to by multiple graphs at the same
+     * time.
+     * 
+     * @see org.concord.framework.otrunk.DefaultOTController#isRealObjectSharable(org.concord.framework.otrunk.OTObject, java.lang.Object)
+     */
+    public boolean isRealObjectSharable(OTObject otObject, Object realObject) 
+    {
+    	return true;
     }
 }
