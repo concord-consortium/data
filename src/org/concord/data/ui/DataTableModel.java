@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.15 $
- * $Date: 2007-09-06 16:07:09 $
+ * $Revision: 1.16 $
+ * $Date: 2007-09-24 18:36:48 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -46,7 +46,7 @@ import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
-import org.concord.framework.data.stream.DeltaDataStore;
+import org.concord.framework.data.stream.AutoIncrementDataStore;
 import org.concord.framework.data.stream.WritableDataStore;
 
 /**
@@ -107,8 +107,8 @@ public class DataTableModel extends AbstractTableModel
 		
 		//Create a default DataColumnDescription for each channel in the data store
 		int startChannel = 0;
-		if (dataStore instanceof DeltaDataStore){
-			if (((DeltaDataStore)dataStore).isUseDtAsChannel()){
+		if (dataStore instanceof AutoIncrementDataStore){
+			if (((AutoIncrementDataStore)dataStore).isIncrementalChannel(-1)){
 				startChannel = -1;
 			}
 		}

@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2007-09-10 20:03:27 $
+ * $Revision: 1.6 $
+ * $Date: 2007-09-24 18:36:48 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -41,6 +41,7 @@ import org.concord.data.Unit;
 import org.concord.data.stream.DataStoreUtil;
 import org.concord.data.stream.ProducerDataStore;
 import org.concord.framework.data.stream.DataChannelDescription;
+import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
 import org.concord.framework.data.stream.DataStreamDescription;
@@ -53,8 +54,10 @@ import org.concord.framework.otrunk.OTResourceList;
 
 
 /**
- * OTDataStore
- * Class name and description
+ * OTDataStoreRealObject
+ * 
+ * This object is synchronized with a OTDataStore object using the OTDataStoreController class
+ * it partially supports the use of virtual or incrementing channels.  But   
  *
  * Date created: Nov 18, 2004
  *
@@ -128,10 +131,18 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	 */
 	public int getTotalNumChannels() 
 	{
-		int resNumChan = otDataStore.getNumberChannels();
-		if(resNumChan == -1) return 1;
+		int otNumberOfChannels = otDataStore.getNumberChannels();
+		if(otNumberOfChannels == -1) return 1;
 		
-		return resNumChan;
+		// If virtual channels is turned on and there is a dt then
+		// the first channel is not stored directly in the otDataStore.  
+		// the numberChannels property refers to the number of channels actually
+		// in the values property.
+		if(isIncrementalChannel(0)){
+			otNumberOfChannels++;
+		}
+		
+		return otNumberOfChannels;
 	}
 	
 	/* (non-Javadoc)
@@ -139,11 +150,16 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	 */
 	public synchronized int getTotalNumSamples() 
 	{
-		int numChannels = getTotalNumChannels();
+		int dataArrayStride = getDataArrayStride();
+		
+		if(dataArrayStride == 0){
+			System.err.println("Warning OTDataStoreRealObject is being used without initializing the number of channels");
+			return 0;
+		}
 		
 		OTResourceList values = otDataStore.getValues();
 		int size = values.size();
-		return size / numChannels;
+		return size / dataArrayStride;
 	}
 	
 	/* (non-Javadoc)
@@ -152,31 +168,69 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	public synchronized Object getValueAt(int numSample, int numChannel) 
 	{
 		//Special case: when dt is a channel, it's the channel -1
-		if (numChannel == -1){
-			return new Float(numSample * getDt());
+		if (isIncrementalChannel(numChannel)){
+			return new Float(numSample * getIncrement());
 		}
-		
-		int numChannels = getTotalNumChannels();
-		
-		if(numChannel >= numChannels) return null;
-		
-		int index = numSample * numChannels + numChannel;
+	
+		int index = getIndex(numSample, numChannel);
 		if(index >= otDataStore.getValues().size()) {
 			return null;
 		}
-		
+				
 		return otDataStore.getValues().get(index);
 	}
 
-	public void setValueAt(int numSample, int numChannel, Object value) 
+	/**
+	 * This method returns the index into the dataArray of a particular
+	 * channel and sample.  It takes virtual channels into account.  
+	 * 
+	 * @param sampleNumber
+	 * @param channelNumber
+	 * @return
+	 */
+	public int getIndex(int sampleNumber, int channelNumber)
 	{
-	    setValueAt(numSample, numChannel, value, true);
+		if(isIncrementalChannel(0)){
+			// the auto incrementing channel is 0 so we aren't storing that
+			// in the data array, so the channel being searched for should
+			// be reduced by one.
+			if(channelNumber == 0){
+				System.err.println("Trying to lookup the auto increment channel");
+				return Integer.MIN_VALUE;
+			}
+			
+			channelNumber--;
+		}
+		
+		int dataArrayStride = getDataArrayStride();
+		
+		if(channelNumber >= dataArrayStride) {
+			System.err.println("Trying to lookup an invalid channel: " + channelNumber);
+			return Integer.MIN_VALUE;
+		}
+		
+		return sampleNumber * dataArrayStride + channelNumber;		
+	}
+
+	/**
+	 * Return the size of a row in the values list (dataArray).
+	 * 
+	 * @return
+	 */
+	protected int getDataArrayStride()
+	{
+		// this used to always be the totalNumChannels but with virtual
+		// channels this can be one less than that.
+		int numChannels = getTotalNumChannels();
+		
+		if(isIncrementalChannel(0)){
+			return numChannels - 1;
+		}
+		
+		return numChannels;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.concord.framework.data.stream.WritableDataStore#setValueAt(int, int, java.lang.Object)
-	 */
-	public void setValueAt(int numSample, int numChannel, Object value, boolean doNotify) 
+	public void setValueAt(int numSample, int numChannel, Object value) 
 	{
 		OTResourceList values = otDataStore.getValues();
 		int numChannels = getTotalNumChannels();
@@ -187,10 +241,14 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			// if we have existing data then we need to insert a lot of nulls
 			// or something to fill the space.
 			numChannels = numChannel+1;
+			
+			if(isIncrementalChannel(0)){
+				numChannels--;
+			}
 			otDataStore.setNumberChannels(numChannels);
 		}
 		
-		int index = numSample * numChannels + numChannel;
+		int index = getIndex(numSample, numChannel); 
 		if(index >= values.size()) {
 			values.add(index, value);			
 		} else {
@@ -211,10 +269,12 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	{
         otDataStore.setDoNotifyChangeListeners(false);
 
+        // If this datastore is using virtual channels then should
+        // the passed in values actually start at channel 1 not channel 0
 	    for(int i=0;i<values.length;i++) {
 	        int channelNumber = i%numbChannels;
 	        setValueAt(i/numbChannels, channelNumber, 
-	                new Float(values[i]), false);
+	                new Float(values[i]));
 	    }
 	    
 	    
@@ -244,10 +304,15 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			int numChannels = getNumberOfProducerChannels();
 			int firstSample = getTotalNumSamples();
 
+			int firstChannelOffset = 0;
+			if(isIncrementalChannel(0)){
+				firstChannelOffset = 1;
+			}
+			
 		    for(int i=0; i<numberOfSamples; i++) {
 		        for(int j=0; j<numChannels; j++) {
 		            Float value = new Float(values[offset+(i*localNextSampleOffset)+j]);
-		            setValueAt(firstSample + i, j, value, false);
+		            setValueAt(firstSample + i, firstChannelOffset + j, value);
 		        }
 		    }
 		    
@@ -273,13 +338,13 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	public void removeSampleAt(int numSample) 
 	{
 		OTResourceList values = otDataStore.getValues();
-		int numChannels = getTotalNumChannels();
 		
-		int index = numSample * numChannels;
+		int index = getIndex(numSample, 0);
 
         otDataStore.setDoNotifyChangeListeners(false);
 
-        for(int i=0; i<numChannels; i++) {
+		int dataArrayStride = getDataArrayStride();
+        for(int i=0; i<dataArrayStride; i++) {
 		    values.remove(index);
 		}
 
@@ -294,13 +359,13 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	public void insertSampleAt(int numSample)
 	{
 		OTResourceList values = otDataStore.getValues();
-		int numChannels = getTotalNumChannels();
 		
-		int index = numSample * numChannels;
+		int index = getIndex(numSample, 0);
 
         otDataStore.setDoNotifyChangeListeners(false);
 
-        for(int i=0; i<numChannels; i++) {
+        int dataArrayStride = getDataArrayStride();
+        for(int i=0; i<dataArrayStride; i++) {
 		    values.add(index, null);
 		}
 
@@ -309,6 +374,12 @@ public class OTDataStoreRealObject extends ProducerDataStore
         notifyOTValuesChange();
 	}	
 	
+	public void setDataProducer(DataProducer dataProducer) 
+	{
+		super.setDataProducer(dataProducer);
+
+
+	}
 	/* (non-Javadoc)
 	 * @see org.concord.framework.data.stream.WritableDataStore#setDataChannelDescription(int, org.concord.framework.data.stream.DataChannelDescription)
 	 */
@@ -330,29 +401,47 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	        // the data producer it will preserve this info
 			if (dataStreamDesc == null) return null;
 			
-			//Special case: using dt as the channel -1
-			if (numChannel == -1){
+			//Special case: if the channel equals the incrementing channel
+			//  then return the dt channel description.
+			if (isIncrementalChannel(numChannel)){
 				return dataStreamDesc.getDtChannelDescription();
+			}
+			
+			// shift the channel down if the incremental channel is 0
+			// in that case channel 0 of the data store is actually the 
+			// dt channel, and channel 1 of the data store is actually
+			// channel 0 of the dataProducer.
+			if (isIncrementalChannel(0)){
+				numChannel --;
 			}
 			
 			return dataStreamDesc.getChannelDescription(numChannel);
 	    }
 	    
-	    // If we are using dt as a channel, then ot channel description at 0 is
-	    // is the DT channel description.  And the ot channel description at 1 is
+	    // If we have an incremental channel, then ot channel description at index 
+	    // 0 describes the incremental channel, and the ot channel description at 1 is
 	    // the first real channel description.
-	    // The dt channel is requested by passing a numChannel of -1
-	    if(isUseDtAsChannel()){
-	    	numChannel++;
+	    // A caller of this method can request the incremental channel description either
+	    // by passing in -1 or 0 depending of virtualChannels are enabled.
+	    // If virtualChannels are enabled and there is a incremental channel, 
+	    // then the caller passes in 0 to get the incremental description.
+	    // If virtualChannels are not enabled and there is a incremental channel, 
+	    // then the caller passes in -1 to get the incremental description.
+	    int otChannelDescriptionIndex = numChannel;
+
+	    // If -1 is the incremental channel then increase the channel description so
+	    // the correct one in the OT channel descriptions list is used
+	    if(isIncrementalChannel(-1)){
+	    	otChannelDescriptionIndex++;
 	    }
 
 	    OTObjectList channelDescriptions = otDataStore.getChannelDescriptions();
-		if(numChannel >= channelDescriptions.size()) {
+		if(otChannelDescriptionIndex >= channelDescriptions.size()) {
 			return null;
 		}
 				
 		OTDataChannelDescription otChDesc = 
-			(OTDataChannelDescription)channelDescriptions.get(numChannel);
+			(OTDataChannelDescription)channelDescriptions.get(otChannelDescriptionIndex);
 		
 		DataChannelDescription chDesc = new DataChannelDescription();
 		chDesc.setAbsoluteMax(otChDesc.getAbsoluteMax());
@@ -421,7 +510,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		try {
 			otDataStore.getChannelDescriptions().removeAll();
 						
-			if(isUseDtAsChannel()){
+			if(isAutoIncrementing()){
 				// if we are using the dt as a channel then the first element in the channelDescriptions list
 				// is the channel description of the dt
 				DataChannelDescription dCDesc = desc.getDtChannelDescription();
@@ -434,6 +523,13 @@ public class OTDataStoreRealObject extends ProducerDataStore
 				OTDataChannelDescription otDCDesc = createOTDataChannelDescription(dCDesc);
 				otDataStore.getChannelDescriptions().add(otDCDesc);
 			}
+			
+			// initialize the number of samples the datastore is going to be using, if this 
+			// data store is using virtual channels and there is a dt channel this should 
+			// be the actual number of channels - 1.  
+	        int channelsPerSample = desc.getChannelsPerSample();
+	        otDataStore.setNumberChannels(channelsPerSample);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -452,7 +548,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
      * This returns the dt of the datastore.  If there is no 
      * dt it returns Float.NaN
      */
-    public float getDt()
+    public float getIncrement()
     {
         return otDataStore.getDt();
     }
@@ -460,7 +556,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
     /**
      * @return Returns the useDtAsChannel.
      */
-    public boolean isUseDtAsChannel()
+    public boolean isAutoIncrementing()
     {
         return !Float.isNaN(otDataStore.getDt());
     }
@@ -473,7 +569,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
         if(!useDtAsChannel) {
             setDt(Float.NaN);
         } else {
-            if(Float.isNaN(getDt())) {
+            if(Float.isNaN(getIncrement())) {
                 System.err.println("Warning: trying to use dt as a channel without a valid value");
             }
         }
@@ -488,11 +584,13 @@ public class OTDataStoreRealObject extends ProducerDataStore
     {
         otDataStore.setDoNotifyChangeListeners(false);
 
+        // If this data store is using virtual channels what do we do here?
+        // assume the values are starting at channel 1?
         for(int i=0; i<numSamples*nextSampleOffset; 
             i+=nextSampleOffset) {
             for(int j=0;j<numChannels;j++) {
                 Float fValue = new Float(values[offset+i+j]);
-                setValueAt(i/nextSampleOffset, j, fValue, false);
+                setValueAt(i/nextSampleOffset, j, fValue);
             }
         }
 
@@ -501,6 +599,16 @@ public class OTDataStoreRealObject extends ProducerDataStore
         notifyOTValuesChange();
     }
     
+	public void setUseVirtualChannels(boolean flag)
+	{
+		otDataStore.setVirtualChannels(flag);
+	}
+	
+	public boolean useVirtualChannels()
+	{
+	    return otDataStore.isVirtualChannels();
+	}
+
 	/**
 	 * @see org.concord.framework.data.stream.DataStore#addDataStoreListener(org.concord.framework.data.stream.DataStoreListener)
 	 */
