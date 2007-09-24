@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.14 $
- * $Date: 2007-09-21 02:29:19 $
+ * $Revision: 1.15 $
+ * $Date: 2007-09-24 16:56:38 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -33,6 +33,7 @@
 package org.concord.data.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -100,6 +101,8 @@ public class DataTablePanel extends JPanel
 		
 		table.addMouseListener(this);
 		scrollPane.getViewport().addMouseListener(this);
+		setPreferredSize(new Dimension(200, 150));
+		
 	}
 
 	
