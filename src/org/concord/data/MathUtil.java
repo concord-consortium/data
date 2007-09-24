@@ -50,4 +50,19 @@ public final class MathUtil {
     	double c = a/b;
     	return equalWithTolerance(c, 1, 0.00001);
     }
+    
+	/**
+	 * Round a float to a particular power of 10
+	 * 
+	 * @param val	float value to display
+	 */
+	public static float roundPower10(float val, int powerOf10)
+	{
+		double precision = Math.pow(10, powerOf10);
+		double mantisa = Math.floor((val / precision ) + 0.5);
+		float value = (float)(mantisa * precision);
+		return value;
+	}
+
+	
 }
