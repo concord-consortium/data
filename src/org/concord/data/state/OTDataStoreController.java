@@ -28,7 +28,7 @@ public class OTDataStoreController extends DefaultOTController
 
 	/**
 	 * The real object returned here can handle being used in multiple places at the 
-	 * same time.  So lets return true.
+	 * same time.  So if we return true here the number of real objects created will be reduced. 
 	 */
 	public boolean isRealObjectSharable(OTObject otObject, Object realObject) 
 	{
