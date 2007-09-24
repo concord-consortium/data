@@ -23,8 +23,8 @@
 
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2007-09-06 16:07:09 $
+ * $Revision: 1.8 $
+ * $Date: 2007-09-24 18:36:48 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -40,7 +40,7 @@ import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.DataStreamEvent;
-import org.concord.framework.data.stream.DeltaDataStore;
+import org.concord.framework.data.stream.AutoIncrementDataStore;
 
 
 /**
@@ -53,7 +53,7 @@ import org.concord.framework.data.stream.DeltaDataStore;
  *
  */
 public class ProducerDataStore extends AbstractDataStore 
-	implements DeltaDataStore
+	implements AutoIncrementDataStore
 {
 	protected DataProducer dataProducer;
 	
@@ -136,7 +136,7 @@ public class ProducerDataStore extends AbstractDataStore
 
 	public boolean channelsNeedAdjusting()
 	{
-	    return useVirtualChannels() && isUseDtAsChannel();
+	    return useVirtualChannels() && isAutoIncrementing();
 	}
 	
 	/**
@@ -198,7 +198,7 @@ public class ProducerDataStore extends AbstractDataStore
 	    
 		//Special case: when dt is a channel, it's the channel -1
 		if (numChannel == -1){
-			return new Float(numSample * getDt());
+			return new Float(numSample * getIncrement());
 		}
 		
 		return super.getValueAt(numSample, numChannel);
@@ -209,10 +209,12 @@ public class ProducerDataStore extends AbstractDataStore
 	 */
 	public int getTotalNumChannels()
 	{
-		return super.getTotalNumChannels();
-		//if (useDtAsChannel){
-		//	nChannels++;
-		//}
+		int nChannels = super.getTotalNumChannels();
+		if(channelsNeedAdjusting()){
+			return nChannels + 1;
+		}
+		
+		return nChannels;
 	}
 	
 	/**
@@ -325,15 +327,15 @@ public class ProducerDataStore extends AbstractDataStore
 			// should compare desc2 with the values saved in this producer datastore
 			// 
 	        if(desc2.getDataType() == DataStreamDescription.DATA_SEQUENCE) {
-	        	if(!isUseDtAsChannel()){
+	        	if(!isAutoIncrementing()){
 	        		return false;
 	        	}
 	        	
-	        	if(!floatEquals(getDt(), desc2.getDt())){
+	        	if(!floatEquals(getIncrement(), desc2.getDt())){
 	        		return false;
 	        	}
 	        } else {
-	        	if(isUseDtAsChannel()){
+	        	if(isAutoIncrementing()){
 	        		return false;
 	        	}
 	        }
@@ -424,7 +426,7 @@ public class ProducerDataStore extends AbstractDataStore
 	/**
 	 * @return Returns the useDtAsChannel.
 	 */
-	public boolean isUseDtAsChannel()
+	public boolean isAutoIncrementing()
 	{
 		return useDtAsChannel;
 	}
@@ -437,7 +439,15 @@ public class ProducerDataStore extends AbstractDataStore
 		this.useDtAsChannel = useDtAsChannel;
 	}
 	
+	/**
+	 * Leave this method here in case scripts are using it
+     */
 	public float getDt()
+	{
+		return getIncrement();
+	}
+	
+	public float getIncrement()
 	{
 	    return dt;
 	}
@@ -459,4 +469,15 @@ public class ProducerDataStore extends AbstractDataStore
 		return Float.compare(f1, f2) == 0;
 	}
 
+	public boolean isIncrementalChannel(int channelIndex) 
+	{
+		if( isAutoIncrementing()) {
+			if(useVirtualChannels()) {
+				return channelIndex == 0;
+			} else {
+				return channelIndex == -1;
+			}
+		}
+		return false;
+	}
 }
