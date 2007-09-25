@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2007-07-12 18:07:53 $
+ * $Revision: 1.5 $
+ * $Date: 2007-09-25 12:47:17 $
  * $Author: scytacki $
  *
  * Licence Information
@@ -38,9 +38,9 @@ public class OTDataTableView extends AbstractOTJComponentView
     protected OTControllerService controllerService;
 	
 	/**
-	 * @see org.concord.framework.otrunk.view.OTJComponentView#getComponent(org.concord.framework.otrunk.OTObject, boolean)
+	 * @see org.concord.framework.otrunk.view.OTJComponentView#getComponent(org.concord.framework.otrunk.OTObject)
 	 */
-	public JComponent getComponent(OTObject otObject, boolean editable)
+	public JComponent getComponent(OTObject otObject)
 	{
 		otTable = (OTDataTable)otObject;
     	controllerService = createControllerService();

@@ -66,7 +66,7 @@ public class OTDataFieldView extends AbstractOTJComponentView
 	/* (non-Javadoc)
 	 * @see org.concord.framework.otrunk.view.OTJComponentView#getComponent(boolean)
 	 */
-	public JComponent getComponent(OTObject otObject, boolean editable) 
+	public JComponent getComponent(OTObject otObject) 
 	{
 		this.otDataField = (OTDataField)otObject;
     	controllerService = createControllerService();
@@ -76,10 +76,6 @@ public class OTDataFieldView extends AbstractOTJComponentView
 		
 		DataStoreLabel dataStoreField = 
 			new DataStoreLabel(dataStore,0);
-
-		if(!editable) {
-			return dataStoreField;
-		}
 		
 		DataProducer dataProducer = (DataProducer)otDataField.getDataProducer();
 		

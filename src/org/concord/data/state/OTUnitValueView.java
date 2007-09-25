@@ -33,9 +33,9 @@ import org.concord.framework.otrunk.view.OTViewEntryAware;
 
 /*
  * Last modification information:
- * $Revision: 1.12 $
- * $Date: 2007-09-20 23:22:45 $
- * $Author: imoncada $
+ * $Revision: 1.13 $
+ * $Date: 2007-09-25 12:47:17 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -54,9 +54,9 @@ public class OTUnitValueView implements OTViewEntryAware, OTJComponentView {
 	
 	private String originalText;
 
-	public JComponent getComponent(OTObject otObject, boolean editable) {
+	public JComponent getComponent(OTObject otObject) {
 		this.otObject = (OTUnitValue)otObject;
-		this.editable = editable;
+		this.editable = true;
 		
 		newComponent = new JPanel();
 		
