@@ -57,7 +57,7 @@ public class OTDataFlowControlView
 	/* (non-Javadoc)
 	 * @see org.concord.framework.otrunk.view.OTJComponentView#getComponent(boolean)
 	 */
-	public JComponent getComponent(OTObject otObject, boolean editable) 
+	public JComponent getComponent(OTObject otObject) 
 	{
 		this.otObject = (OTDataFlowControl)otObject; 
 		OTObjectList dataFlows = this.otObject.getDataFlows();
