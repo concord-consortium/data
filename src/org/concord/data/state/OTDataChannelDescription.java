@@ -65,4 +65,8 @@ public interface OTDataChannelDescription extends OTObjectInterface
 	public static float DEFAULT_recommendMax = Float.NaN;
 	public float getRecommendMax();
 	public void setRecommendMax(float min);	
+	
+	public static boolean DEFAULT_numericData = true;
+	public boolean getNumericData();
+	public void setNumericData(boolean n);
 }

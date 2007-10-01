@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.16 $
- * $Date: 2007-09-24 18:36:48 $
- * $Author: scytacki $
+ * $Revision: 1.17 $
+ * $Date: 2007-10-01 16:21:36 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -69,6 +69,9 @@ public class DataTableModel extends AbstractTableModel
 	protected Vector dataStores;	//DataStore objects
 	protected int step = 1;
 	protected Vector dataColumns;	//DataColumnDescription objects
+	
+	/** Indicates whether this table will always have an extra empty row for adding new rows */
+	protected boolean newRowAuto = false;	
 	
 	//Hastable that keeps the data stores added with the addDataStore method. If a data store has been added
 	//using this method, then the table model has to display ALYWAYS all its columns
@@ -274,7 +277,12 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public int getRowCount()
 	{
-		return (int)(Math.ceil((double)getTotalNumSamples()/step));
+		int dataRows = (int)(Math.ceil((double)getTotalNumSamples()/step));
+		if (newRowAuto){
+			//Add an extra empty row at the end
+			return dataRows + 1;
+		}
+		return dataRows;
 	}
 
 	/**
@@ -288,6 +296,7 @@ public class DataTableModel extends AbstractTableModel
 		DataStore dataStore = dcol.getDataStore();
 		
 		int indexSample = row*step;
+		
 		//Not all the data stores have the same number of samples
 		if (indexSample >= dataStore.getTotalNumSamples()){
 			return new String();
@@ -406,7 +415,9 @@ public class DataTableModel extends AbstractTableModel
 		if (aValue == oldValue) return;
 		if (aValue != null && aValue.equals(oldValue)) return;
 		if (aValue != null && oldValue != null && aValue.toString().equals(oldValue.toString())) return;
-			
+		
+		System.out.println("set value at "+rowIndex+","+columnIndex+" "+aValue);
+		
 		((WritableDataStore)dataStore).setValueAt(rowIndex, columnIndex, aValue);
 	}
 	
@@ -566,6 +577,18 @@ public class DataTableModel extends AbstractTableModel
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	
+	public boolean isShowLastRowForAddingNew()
+	{
+		return newRowAuto;
+	}
+
+	
+	public void setShowLastRowForAddingNew(boolean newRowAuto)
+	{
+		this.newRowAuto = newRowAuto;
 	}
 }
 

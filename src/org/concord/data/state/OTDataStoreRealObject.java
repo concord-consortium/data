@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.6 $
- * $Date: 2007-09-24 18:36:48 $
- * $Author: scytacki $
+ * $Revision: 1.7 $
+ * $Date: 2007-10-01 16:21:36 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -159,10 +159,14 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		
 		OTResourceList values = otDataStore.getValues();
 		int size = values.size();
-		return size / dataArrayStride;
+		int rows = size / dataArrayStride;
+		if (size % dataArrayStride > 0){
+			rows = rows + 1;
+		}
+		return rows;
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see org.concord.framework.data.stream.DataStore#getValueAt(int, int)
 	 */
 	public synchronized Object getValueAt(int numSample, int numChannel) 
@@ -250,6 +254,12 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		
 		int index = getIndex(numSample, numChannel); 
 		if(index >= values.size()) {
+			System.out.println("add new value at "+index);
+			//Add empty values until we get to the desired index
+			int j = values.size();
+			for (; j < index; j++){
+				values.add(j, null);
+			}
 			values.add(index, value);			
 		} else {
 			values.set(index, value);
@@ -446,7 +456,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		DataChannelDescription chDesc = new DataChannelDescription();
 		chDesc.setAbsoluteMax(otChDesc.getAbsoluteMax());
 		chDesc.setAbsoluteMin(otChDesc.getAbsoluteMin());
-		chDesc.setNumericData(true);
+		chDesc.setNumericData(otChDesc.getNumericData());
 		chDesc.setName(otChDesc.getName());
 		int precision = otChDesc.getPrecision();
 		if(precision != Integer.MAX_VALUE) {
@@ -494,6 +504,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		if(dCDesc.isUsePrecision()){
 			otDCDesc.setPrecision(dCDesc.getPrecision());
 		}
+		otDCDesc.setNumericData(dCDesc.isNumericData());
 
 		return otDCDesc;
 	}

@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2007-06-30 03:59:21 $
+ * $Revision: 1.3 $
+ * $Date: 2007-10-01 16:21:36 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -30,4 +30,6 @@ public interface OTDataTable
 	
 	//List of column descriptions (optional)
 	public OTObjectList getColumns();
+	
+	public boolean getShowLastRowForAddingNew();	
 }

@@ -1,8 +1,8 @@
 /*
  * Last modification information:
- * $Revision: 1.5 $
- * $Date: 2007-09-25 12:47:17 $
- * $Author: scytacki $
+ * $Revision: 1.6 $
+ * $Date: 2007-10-01 16:21:36 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -52,6 +52,10 @@ public class OTDataTableView extends AbstractOTJComponentView
 		otDataStore = otTable.getDataStore();
 		dataStore = (DataStore) controllerService.getRealObject(otDataStore);
 		table.getTableModel().addDataStore(dataStore);
+		
+		if (otTable.isResourceSet("showLastRowForAddingNew")){
+			table.getTableModel().setShowLastRowForAddingNew(otTable.getShowLastRowForAddingNew());
+		}
 		
 		updateOTColumns(table.getTableModel(), dataStore, otTable.getColumns());
 		
