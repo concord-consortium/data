@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.7 $
- * $Date: 2007-10-01 16:21:36 $
- * $Author: imoncada $
+ * $Revision: 1.8 $
+ * $Date: 2007-10-02 01:07:22 $
+ * $Author: scytacki $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -334,12 +334,12 @@ public class OTDataStoreRealObject extends ProducerDataStore
 
 	protected void notifyOTValuesChange()
 	{
-		otDataStore.notifyOTChange("values", OTChangeEvent.OP_CHANGE, null);		
+		otDataStore.notifyOTChange("values", OTChangeEvent.OP_CHANGE, null, null);		
 	}
 	
 	protected void notifyOTValuesRemove()
 	{
-		otDataStore.notifyOTChange("values", OTChangeEvent.OP_REMOVE, null);		
+		otDataStore.notifyOTChange("values", OTChangeEvent.OP_REMOVE, null, null);		
 	}
 
 	/**
