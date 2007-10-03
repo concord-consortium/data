@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2007-09-26 00:00:18 $
+ * $Revision: 1.2 $
+ * $Date: 2007-10-03 19:23:46 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.concord.data.state.ui.UnitEditPanel;
+import org.concord.framework.otrunk.OTChangeEvent;
 import org.concord.framework.otrunk.OTResourceList;
 import org.concord.swing.CustomDialog;
 
@@ -189,8 +190,14 @@ public class OTUnitValueEditView extends OTUnitValueView
 		if (retVal == JOptionPane.OK_OPTION){
 			//Change unit
 			OTUnitValue newValue = editUnitPanel.getNewValue();
+			
+			//Do an atomic change
+			otObject.setDoNotifyChangeListeners(false);
 			otObject.setValue(newValue.getValue());
 			otObject.setUnit(newValue.getUnit());
+			otObject.setDoNotifyChangeListeners(true);
+			otObject.notifyOTChange("unit", OTChangeEvent.OP_CHANGE, otObject, null);
+			//
 			
 			String strMsg = editUnitPanel.getErrorMessage();
 			if (strMsg != null){
