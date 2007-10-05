@@ -23,9 +23,9 @@
 
 /*
  * Last modification information:
- * $Revision: 1.8 $
- * $Date: 2007-10-02 01:07:22 $
- * $Author: scytacki $
+ * $Revision: 1.9 $
+ * $Date: 2007-10-05 14:45:50 $
+ * $Author: imoncada $
  *
  * Licence Information
  * Copyright 2004 The Concord Consortium 
@@ -254,7 +254,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		
 		int index = getIndex(numSample, numChannel); 
 		if(index >= values.size()) {
-			System.out.println("add new value at "+index);
+			//System.out.println("add new value at "+index);
 			//Add empty values until we get to the desired index
 			int j = values.size();
 			for (; j < index; j++){
