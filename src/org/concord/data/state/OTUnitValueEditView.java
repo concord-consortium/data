@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.2 $
- * $Date: 2007-10-03 19:23:46 $
+ * $Revision: 1.3 $
+ * $Date: 2007-10-09 21:50:51 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -17,6 +17,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -56,13 +58,13 @@ public class OTUnitValueEditView extends OTUnitValueView
 	protected boolean selected;
 	
 	protected boolean useComboBox = true;
+	protected boolean autoSelectable = false;
 	
 	protected OTResourceList unitSelectionList;
 	
 	public OTUnitValueEditView()
 	{
 		super();
-		selected = false;
 	}
 	
 	/**
@@ -70,15 +72,14 @@ public class OTUnitValueEditView extends OTUnitValueView
 	 */
 	protected JComponent getUnitValueView()
 	{
-		String strValue = getStringValue(otObject, nf, false); 
-		
-		valueLabel = new JLabel(strValue);
-		unitLabel = new JLabel(otObject.getUnit());
+		valueLabel = new JLabel();
+		unitLabel = new JLabel();
 		
 		viewPanel = new JPanel();
 		
 		if (useComboBox){
-			setupUnitSelection(otObject);
+			unitSelection = new JComboBox();
+			unitSelection.setOpaque(false);	
 			
 			unitPanel = new JPanel();
 			unitLayout = new CardLayout();
@@ -86,11 +87,13 @@ public class OTUnitValueEditView extends OTUnitValueView
 			unitPanel.add(unitLabel, "view");
 			unitPanel.add(unitSelection, "edit");
 			
-			viewPanel.setLayout(new GridLayout(1,2));
-			
+			//viewPanel.setLayout(new GridLayout(1,2));
+			//viewPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+			viewPanel.setLayout(new BoxLayout(viewPanel, BoxLayout.X_AXIS));
+
 			viewPanel.add(valueLabel);
+			viewPanel.add(Box.createHorizontalStrut(10));
 			viewPanel.add(unitPanel);
-			
 		}
 		else{
 			unitsChangeButton = new JButton("...");
@@ -110,21 +113,30 @@ public class OTUnitValueEditView extends OTUnitValueView
 		}		
 		
 		viewPanel.setOpaque(true);
-		viewPanel.addMouseListener(this);
-				
+		
+		setSelected(autoSelectable);
+		
+		if (!autoSelectable){
+			viewPanel.addMouseListener(this);
+		}
+		
+		updateView();
+		
 		return viewPanel;
 	}
 	
 	/**
 	 * @see org.concord.data.state.OTUnitValueView#updateView()
 	 */
-/*	protected void updateView()
+	protected void updateView()
 	{
 		String strValue = getStringValue(otObject, nf, false); 
 		
 		valueLabel.setText(strValue);
-		unitLabel.setText(otObject.getUnit());
-	}*/
+		unitLabel.setText(" " + otObject.getUnit());
+		
+		fillUnitSelection();
+	}
 
 	/**
 	 * 
@@ -132,6 +144,9 @@ public class OTUnitValueEditView extends OTUnitValueView
 	private void setSelected(boolean b)
 	{
 		selected = b;
+		
+		if (unitLayout == null) return;
+		
 		if (selected){
 //			viewPanel.setBackground(Color.gray);
 			unitLayout.show(unitPanel, "edit");
@@ -157,6 +172,8 @@ public class OTUnitValueEditView extends OTUnitValueView
 	 */
 	public void mousePressed(MouseEvent e)
 	{
+		if (autoSelectable) return;
+		
 		setSelected(!isSelected());
 	}
 
@@ -173,13 +190,14 @@ public class OTUnitValueEditView extends OTUnitValueView
 		//Check that they selected a different unit
 		if (newUnit.equals(otObject.getUnit())) return;
 		
-		//Special case when they didn't have a unit originally		
-		if (otObject.getUnit().equals("")){
+		//Special case when they didn't have a unit or a value originally 
+		//then it doesn't matter what the conversion rate is
+		if (otObject.getUnit().equals("") || Float.isNaN(otObject.getValue())){
 			//Just change unit, don't bother showing dialog
 			otObject.setUnit(newUnit);
 			return;
 		}
-
+		
 		//UnitEditPanel editUnitPanel = new UnitEditPanel(otObject);
 		UnitEditPanel editUnitPanel = new UnitEditPanel(otObject, newUnit);
 		
@@ -211,15 +229,10 @@ public class OTUnitValueEditView extends OTUnitValueView
 			updateView();
 		}
 	}
-
-	protected void setupUnitSelection(OTUnitValue value)
-	{
-		unitSelection = new JComboBox();
-		unitSelection.setOpaque(false);	
-		
-		fillUnitSelection();
-	}
 	
+	/**
+	 * Fills the combo box with all the possible units to choose
+	 */
 	protected void fillUnitSelection()
 	{
 		unitSelection.removeActionListener(this);
@@ -239,6 +252,10 @@ public class OTUnitValueEditView extends OTUnitValueView
 		unitSelection.addActionListener(this);
 	}
 	
+	/**
+	 * Sets the list that will be used when selecting the unit from the combo box
+	 * @param list
+	 */
 	public void setUnitSelectionList(OTResourceList list)
 	{
 		unitSelectionList = list;
