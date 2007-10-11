@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.4 $
- * $Date: 2007-10-11 21:18:41 $
+ * $Revision: 1.5 $
+ * $Date: 2007-10-11 22:27:23 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -59,7 +59,7 @@ public class OTUnitValueEditView extends OTUnitValueView
 	
 	protected boolean useComboBox = true;
 	protected boolean autoSelectable = false;
-	protected boolean mouseSelectionEnabled = false;
+	protected boolean mouseSelectionEnabled = true;
 	
 	protected OTResourceList unitSelectionList;
 	
