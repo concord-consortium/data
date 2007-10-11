@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.3 $
- * $Date: 2007-10-09 21:50:51 $
+ * $Revision: 1.4 $
+ * $Date: 2007-10-11 21:18:41 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -59,6 +59,7 @@ public class OTUnitValueEditView extends OTUnitValueView
 	
 	protected boolean useComboBox = true;
 	protected boolean autoSelectable = false;
+	protected boolean mouseSelectionEnabled = false;
 	
 	protected OTResourceList unitSelectionList;
 	
@@ -116,7 +117,7 @@ public class OTUnitValueEditView extends OTUnitValueView
 		
 		setSelected(autoSelectable);
 		
-		if (!autoSelectable){
+		if (mouseSelectionEnabled && !autoSelectable){
 			viewPanel.addMouseListener(this);
 		}
 		
@@ -141,7 +142,7 @@ public class OTUnitValueEditView extends OTUnitValueView
 	/**
 	 * 
 	 */
-	private void setSelected(boolean b)
+	public void setSelected(boolean b)
 	{
 		selected = b;
 		
