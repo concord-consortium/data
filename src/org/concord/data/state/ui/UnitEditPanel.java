@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2007-09-26 00:00:18 $
+ * $Revision: 1.2 $
+ * $Date: 2007-10-14 06:30:03 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -46,7 +46,7 @@ public class UnitEditPanel extends JPanel
 			"Current Value: ", 
 			"Change units to: ", 
 			"Conversion rate:", 
-			"How many $unit2$ on 1 $unit1$? ", 
+			"How many $unit2$ in 1 $unit1$? ", 
 			"New Value: "};
 	
 	protected OTUnitValue value;
