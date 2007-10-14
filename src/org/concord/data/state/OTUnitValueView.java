@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.14 $
- * $Date: 2007-09-26 00:00:18 $
+ * $Revision: 1.15 $
+ * $Date: 2007-10-14 06:30:03 $
  * $Author: imoncada $
  *
  * Licence Information
@@ -211,7 +211,7 @@ public class OTUnitValueView
 		}
 
 		if(Float.isNaN(otObject.getValue())){
-			return "???";
+			return "---";
 		} 
 		else {
 			strValue = format.format(otObject.getValue());			
