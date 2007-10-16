@@ -1,7 +1,7 @@
 /*
  * Last modification information:
- * $Revision: 1.1 $
- * $Date: 2007-10-16 21:03:17 $
+ * $Revision: 1.2 $
+ * $Date: 2007-10-16 21:13:47 $
  * $Author: sfentress $
  *
  * Licence Information
@@ -134,7 +134,6 @@ public class OTDataTableEditView extends AbstractOTJComponentView
 					otDataStore = otTable.getDataStore();
 					String title = titleField.getText();
 					
-					System.out.println("set!");
 					if (otDataStore.getChannelDescriptions().size() > index && otDataStore.getChannelDescriptions().get(index) != null){
 						otDataStore.getChannelDescriptions().get(index).setName(title);
 					} else {
@@ -161,9 +160,7 @@ public class OTDataTableEditView extends AbstractOTJComponentView
 	 */
 	protected void updateOTColumns(DataTableModel tableModel, DataStore dataStore, OTObjectList columns)
 	{
-		System.out.println("updating");
 		for (int i = 0; i < columns.size(); i++){
-			System.out.println("updating column "+i);
 			OTDataColumnDescription otColDesc = (OTDataColumnDescription)columns.get(i); 
 			if (otColDesc == null) continue;
 			DataColumnDescription colDesc = tableModel.getDataColumn(dataStore, i);
@@ -173,7 +170,6 @@ public class OTDataTableEditView extends AbstractOTJComponentView
 				colDesc.setLabel(label);
 			}
 			if (otColDesc.isResourceSet("color")){
-				System.out.println("set color to "+otColDesc.getColor());
 				colDesc.setColor(new Color(otColDesc.getColor()));
 			}
 		}
