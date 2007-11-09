@@ -59,6 +59,8 @@ public class OTDataTableView extends AbstractOTJComponentView
 		
 		updateOTColumns(table.getTableModel(), dataStore, otTable.getColumns());
 		
+		table.useDefaultHeaderRenderer();
+		
 		return table;
 	}
 
