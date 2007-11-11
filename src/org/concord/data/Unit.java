@@ -147,7 +147,8 @@ public final class Unit implements DataDimension{
 	public final static int UNIT_CODE_KILOMETER			= 66;
 	public final static int UNIT_CODE_LINEAR_VEL_KMH	= 67;
 	public final static int UNIT_CODE_ACCEL				= 68;
-	public final static int UNIT_TABLE_LENGTH           = 69;
+	public final static int UNIT_CODE_OHMS				= 69;
+	public final static int UNIT_TABLE_LENGTH           = 70;
 
 	public final static int UNIT_CAT_UNKNOWN			= 0;
 	public final static int UNIT_CAT_LENGTH				= 1;
@@ -237,9 +238,13 @@ public final class Unit implements DataDimension{
 
 	public String getDimension(){return abbreviation;}
 	
+	public String getName() { return name; };
+	
 	public String getNameAndAbreviation(){
 		return catNames[unitCategory] + " (" + abbreviation + ")";
 	}
+	
+	public int getCategory() { return unitCategory; }
 	
 	public void setDimension(String dimension){abbreviation = dimension;}
 	
@@ -509,6 +514,10 @@ public final class Unit implements DataDimension{
 		case UNIT_CODE_VOLT :
 			return new Unit("volt","V",true,UNIT_CAT_ELECTRICITY,UNIT_CODE_VOLT,UNIT_CODE_VOLT,
 							  (byte)2,(byte)1,(byte)-3,(byte)-1,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
+							  1f,0.0f,false,true); 
+		case UNIT_CODE_OHMS :
+			return new Unit("ohm","Ohms",true,UNIT_CAT_ELECTRICITY,UNIT_CODE_OHMS,UNIT_CODE_OHMS,
+							  (byte)2,(byte)1,(byte)-3,(byte)-2,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,
 							  1f,0.0f,false,true); 
 		case UNIT_CODE_COULOMB :
 			return new Unit("coulomb","Q",true,UNIT_CAT_ELECTRICITY,UNIT_CODE_COULOMB,UNIT_CODE_COULOMB,
@@ -796,5 +805,25 @@ System.out.println("koeffA: "+koeffA);
         if(!MathUtil.equalWithTolerance(unit.koeffA,koeffA,1e-4f)) return false;
         if(!MathUtil.equalWithTolerance(unit.koeffB,koeffB,1e-4f)) return false;
         return true;
+    }
+    
+    public static Unit createUnitFromBasic(String name, String prefix, Unit baseUnit, int order)
+    {
+    	if (prefix == null){
+    		prefix = getPrefixStringForUnit(baseUnit, order);
+    	}
+    	if (name == null){
+    		name = prefix + baseUnit.getName();
+    	}
+    	double factor = getPrefixKoeffForUnit(baseUnit, order);
+    	float kA = (float)(baseUnit.koeffA * factor);
+    	float kB = baseUnit.koeffB;
+    	
+    	Unit newUnit = new Unit(name, prefix + baseUnit.getDimension(), true, baseUnit.getCategory(), 
+    			UNIT_CODE_UNKNOWN, baseUnit.code, baseUnit.meter, baseUnit.kg, baseUnit.sec, baseUnit.amper,
+    			baseUnit.kelvin, baseUnit.candela, baseUnit.mole, baseUnit.radian, baseUnit.steradian,
+    			kA, kB, baseUnit.dimLess, baseUnit.doMetricPrefix);
+    	
+    	return newUnit;
     }
 }
