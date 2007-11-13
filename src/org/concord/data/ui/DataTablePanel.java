@@ -327,8 +327,8 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	    adaptee.getTableCellRendererComponent(table, obj,
 	        isSelected, hasFocus, row, column);
 	    setForeground(adaptee.getForeground());
-	    setBackground(new Color(230,230,230));
-	    setBorder(BorderFactory.createLineBorder(Color.black));
+	    setBackground(new Color(240,240,240));
+	    setBorder(BorderFactory.createLineBorder(new Color(200,200,240)));
 	    setFont(adaptee.getFont());
 	    setText(adaptee.getText());
 
