@@ -126,6 +126,9 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		table.addMouseListener(this);
 		scrollPane.getViewport().addMouseListener(this);
 		setPreferredSize(new Dimension(200, 150));
+		
+		System.out.println("here");
+	//	scrollPane.getVerticalScrollBar().setValue(0);
 
 	}
 
@@ -185,12 +188,15 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	 * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
 	 */
 	public void tableChanged(TableModelEvent e) {
-		// Scroll down automatically
-		// This has to be invoked later so the table component before we try to
-		// scroll it.
+		// Scroll down to currently selected row.
+		// FIXME: This will not support auto-scrolling when data is being fed in automatically.
+		// However, for the time being it is more important that it does not keep scrolling to the
+		// bottom when a user is entering data.
+		final int changedRow = e.getLastRow();
+		DataTableModel model = (DataTableModel) e.getSource();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				int newRow = table.getRowCount() - 1;
+				int newRow = table.getSelectedRow() - 1;
 				Rectangle cellRect = table.getCellRect(newRow, 0, true);
 				table.scrollRectToVisible(cellRect);
 			}
