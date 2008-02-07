@@ -209,8 +209,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		int dataArrayStride = getDataArrayStride();
 		
 		if(channelNumber >= dataArrayStride) {
-			System.err.println("Trying to lookup an invalid channel: " + channelNumber);
-			return Integer.MIN_VALUE;
+			throw new IndexOutOfBoundsException("Trying to lookup an invalid channel: " + channelNumber);
 		}
 		
 		return sampleNumber * dataArrayStride + channelNumber;		
