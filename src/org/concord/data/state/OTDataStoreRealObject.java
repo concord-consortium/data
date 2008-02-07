@@ -478,6 +478,10 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		OTDataChannelDescription otDCDesc = 
 			(OTDataChannelDescription) objService.createObject(OTDataChannelDescription.class);
 
+		if(dCDesc == null){
+			return otDCDesc;
+		}
+		
 		otDCDesc.setName(dCDesc.getName());
 		if(dCDesc.getUnit() != null){
 			otDCDesc.setUnit(dCDesc.getUnit().getDimension());
@@ -530,6 +534,10 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			
 			for(int i=0; i<desc.getChannelsPerSample(); i++){
 				DataChannelDescription dCDesc = desc.getChannelDescription(i);
+				if(dCDesc == null){
+					System.err.println("Warning: null data channel description: " + i);
+				} 
+
 				OTDataChannelDescription otDCDesc = createOTDataChannelDescription(dCDesc);
 				otDataStore.getChannelDescriptions().add(otDCDesc);
 			}

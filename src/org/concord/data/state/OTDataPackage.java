@@ -24,6 +24,7 @@ public class OTDataPackage
 			(OTControllerRegistry) otrunk.getService(OTControllerRegistry.class);
 
 		registry.registerControllerClass(OTWaveGeneratorController.class);
+		registry.registerControllerClass(OTMultiWaveGeneratorController.class);
 		registry.registerControllerClass(OTPropertyDataProducerController.class);
 		registry.registerControllerClass(OTPropertyDataProducerController.class);
 		registry.registerControllerClass(OTLinearProducerFilterController.class);
