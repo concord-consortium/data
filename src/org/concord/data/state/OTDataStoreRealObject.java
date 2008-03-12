@@ -330,6 +330,24 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		
 		notifyOTValuesChange();
 	}
+	
+	protected void replaceSamples(float [] values, 
+        int numberOfSamples)
+{
+	synchronized(otDataStore) {
+        otDataStore.setDoNotifyChangeListeners(false);
+        
+        int numChannels = getNumberOfProducerChannels();
+        for(int i=0; i<numberOfSamples; i++) {
+            Float value = new Float(values[i]);
+            addValue(i, 0, value);
+        }
+	    
+        otDataStore.setDoNotifyChangeListeners(true);
+	}
+	
+	notifyOTValuesChange();
+}
 
 	protected void notifyOTValuesChange()
 	{
