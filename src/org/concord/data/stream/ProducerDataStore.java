@@ -67,6 +67,8 @@ public class ProducerDataStore extends AbstractDataStore
 	private DataListener dataListener;
 
     private boolean useVirtualChannels;
+
+	private int totalSample;
 	
 	public ProducerDataStore()
 	{
@@ -223,16 +225,32 @@ public class ProducerDataStore extends AbstractDataStore
     protected void dataReceived(DataStreamEvent dataEvent)
     {
         float [] data = dataEvent.getData();
+        int[] intData = dataEvent.getIntData();
         int numberOfSamples = dataEvent.getNumSamples();
         int eventSampleIndex;
         eventSampleIndex =  dataEvent.getDataDescription().getDataOffset();
-        if(data == null) {
+        if(data == null && intData == null) {
             System.err.println("null data in dataReceived");
             System.err.println("  num samples: " + numberOfSamples);
             return;
         }
-        
-        addSamples(data, eventSampleIndex, numberOfSamples, nextSampleOffset);		
+        // if there is int data, convert int data into
+        // float data (to prevent all other methods from having to
+        // modify themselves to support int data)
+       if (intData != null){
+        	data = new float[intData.length];
+        	for (int i = 0; i < intData.length; i++) {
+	            data[i] = intData[i];
+            }
+        }
+       
+       // If data received, add new data to end. If data replaced, replace
+       // current data with new data.
+       if (dataEvent.getType() == DataStreamEvent.DATA_RECEIVED){
+    	   addSamples(data, eventSampleIndex, numberOfSamples, nextSampleOffset);
+       } else if (dataEvent.getType() == DataStreamEvent.DATA_REPLACED){
+    	   replaceSamples(data, numberOfSamples);
+       }
     }
     
     /**
@@ -244,6 +262,9 @@ public class ProducerDataStore extends AbstractDataStore
         notifyChannelDescChanged();
     }
 	
+	// Add data. NOTE: If OTDataStoreRealObject is being used, this method
+	// will not be called, but instead the equivalent method in OTDataStoreRealObject
+	// will be used.
 	protected synchronized void addSamples(float [] values, int offset, 
 	        int numberOfSamples, int localNextSampleOffset)
 	{
@@ -268,6 +289,26 @@ public class ProducerDataStore extends AbstractDataStore
 
 		notifyDataAdded();	    
 	}
+	
+	// Replace data. NOTE: If OTDataStoreRealObject is being used, this method
+	// will not be called, but instead the equivalent method in OTDataStoreRealObject
+	// will be used.
+	protected synchronized void replaceSamples(float [] values, int numberOfSamples)
+{
+		System.out.println("replacing samples");
+    for(int i=0; i<numberOfSamples; i++)
+	{
+	    synchronized (this){
+	        for(int j=0; j<numberOfProducerChannels; j++)
+	        {
+	            Float value = new Float(values[j]);
+	            addValue(0, j, value);
+	        }
+	    }
+	}
+
+	notifyDataAdded();	    
+}
 	
 	/* (non-Javadoc)
      * @see org.concord.framework.data.stream.AbstractDataStore#getTotalNumSamples()
