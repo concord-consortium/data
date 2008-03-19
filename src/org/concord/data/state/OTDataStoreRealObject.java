@@ -474,6 +474,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		chDesc.setAbsoluteMax(otChDesc.getAbsoluteMax());
 		chDesc.setAbsoluteMin(otChDesc.getAbsoluteMin());
 		chDesc.setNumericData(otChDesc.getNumericData());
+		chDesc.setLocked(otChDesc.getLocked());
 		chDesc.setName(otChDesc.getName());
 		int precision = otChDesc.getPrecision();
 		if(precision != Integer.MAX_VALUE) {
