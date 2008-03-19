@@ -114,6 +114,8 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 
 		tableModel = new DataTableModel();
 		table = new JTable(tableModel);
+		
+		table.setGridColor(Color.LIGHT_GRAY);
 
 		scrollPane = new JScrollPane(table);
 		scrollPane
