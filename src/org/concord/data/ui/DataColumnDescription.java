@@ -53,6 +53,7 @@ public class DataColumnDescription
 	protected boolean visible = true;
 	protected Color color;
 	protected String label;
+	protected boolean locked = false;
 	
 	/**
 	 * 
@@ -126,5 +127,20 @@ public class DataColumnDescription
 	public void setLabel(String label)
 	{
 		this.label = label;
+	}
+	
+	/**
+	 * @return Whether the student may edit the contents of the column
+	 */
+	public boolean isLocked(){
+		return locked;
+	}
+	
+	/**
+	 * 
+	 * @param locked Whether the student may edit the contents of the column
+	 */
+	public void setLocked(boolean locked){
+		this.locked = locked;
 	}
 }
