@@ -199,6 +199,7 @@ public class DataTableModel extends AbstractTableModel
 		DataChannelDescription channelDesc = dataStore.getDataChannelDescription(dataStoreColumn);
 		if (channelDesc != null){
 			dcol.setLabel(channelDesc.getName());
+			dcol.setLocked(channelDesc.isLocked());
 		}
 		return addDataColumn(dcol);
 	}
@@ -349,6 +350,14 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public boolean isCellEditable(int rowIndex, int columnIndex)
 	{
+		// First check the DataColumnDescription. If the cell is in a column that is
+		// set to be locked, the cell is locked no matter what.
+		DataColumnDescription colDesc = (DataColumnDescription)dataColumns.elementAt(columnIndex);
+		if (colDesc.isLocked()){
+			return false;
+		}
+		
+		// If the column is not locked...
 		//The cell is editable if the data store of the column is Writable
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
 		if (dcol == null) return false;
