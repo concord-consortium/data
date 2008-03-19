@@ -17,7 +17,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -89,8 +92,40 @@ public class OTDataTableEditView extends AbstractOTJComponentView
 		optionsPanel.add(updateButton);
 		optionsPanel.add(warningLabel);
 		
+		JPanel lockedPanel = new JPanel();
+		for (int i = 0; i < otDataStore.getNumberChannels(); i++) {
+			final int columnNumber = i;
+			final JCheckBox lockedBox = new JCheckBox();
+			if (table.getTableModel().getDataColumn(dataStore, columnNumber).isLocked()){
+				lockedBox.setSelected(true);
+			}
+			lockedBox.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent arg0)
+                {
+					OTDataChannelDescription otChannelDesc = (OTDataChannelDescription) otDataStore.getChannelDescriptions().get(columnNumber);
+	                if (lockedBox.isSelected()){
+	                	otChannelDesc.setLocked(true);
+
+	                	// set locked directly on the tablemodel here, so authors have immediate feedback
+	                	// without reloading the model
+	                	table.getTableModel().getDataColumn(dataStore, columnNumber).setLocked(true);
+	                } else {
+	                	otChannelDesc.setLocked(false);
+	                	table.getTableModel().getDataColumn(dataStore, columnNumber).setLocked(false);
+	                }
+                }});
+	        lockedPanel.add(lockedBox);
+	        lockedPanel.add(Box.createGlue());
+        }
 		
-		tableWrapper.add(optionsPanel, BorderLayout.SOUTH);
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+		bottomPanel.add(lockedPanel);
+		bottomPanel.add(optionsPanel);
+		
+		
+		tableWrapper.add(bottomPanel, BorderLayout.SOUTH);
 		
 		createTitles();
 		
