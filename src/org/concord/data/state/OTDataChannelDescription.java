@@ -69,4 +69,10 @@ public interface OTDataChannelDescription extends OTObjectInterface
 	public static boolean DEFAULT_numericData = true;
 	public boolean getNumericData();
 	public void setNumericData(boolean n);
+	
+	// This is used by the OTDataTable to lock
+	// individual columns
+	public static boolean DEFAULT_locked = false;
+	public boolean getLocked();
+	public void setLocked(boolean locked);
 }
