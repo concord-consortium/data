@@ -127,7 +127,6 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		scrollPane.getViewport().addMouseListener(this);
 		setPreferredSize(new Dimension(200, 150));
 		
-		System.out.println("here");
 	//	scrollPane.getVerticalScrollBar().setValue(0);
 
 	}
