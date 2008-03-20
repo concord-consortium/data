@@ -44,4 +44,10 @@ public interface OTDataStore extends OTObjectInterface {
 	public static boolean DEFAULT_virtualChannels = false;
 	public boolean isVirtualChannels();
 	public void setVirtualChannels(boolean flag);
+	
+	/**
+	 * We can provide a name if this data store is going to be shared
+	 */
+	public String getName();
+	public void setName(String name);
 }
