@@ -27,6 +27,7 @@ public interface OTDataTable
 {
 	//For now, I will support only one data store (it's easier :p)
 	public OTDataStore getDataStore();
+	public void setDataStore(OTDataStore dataStore);
 	
 	//List of column descriptions (optional)
 	public OTObjectList getColumns();
