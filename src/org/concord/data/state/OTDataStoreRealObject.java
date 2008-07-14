@@ -179,8 +179,10 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		int index = getIndex(numSample, numChannel);
 		if(index >= otDataStore.getValues().size()) {
 			return null;
+		} else if (index < 0){
+			return null;
 		}
-				
+			
 		return otDataStore.getValues().get(index);
 	}
 
