@@ -29,6 +29,8 @@ public class DataStrictXStepFilter extends AbstractDataStoreFilter
 	private float lastLowX = Float.NEGATIVE_INFINITY;
 	private float smallestX;
 	private float xValue;
+	
+	public static String PROP_X_STEP = "set x step";
 
 	public DataStrictXStepFilter()
 	{
@@ -39,7 +41,12 @@ public class DataStrictXStepFilter extends AbstractDataStoreFilter
         throws IllegalArgumentException
     {
 	    processData();
-	    xStep = range / numSamples;
+	    if (getFilterDescription().getProperty(PROP_X_STEP) != null){
+	    	xStep = Float.parseFloat(getFilterDescription().getProperty(PROP_X_STEP));
+	    	numSamples = (int) (range / xStep);
+	    } else {
+	    	xStep = range / numSamples;
+	    }
 	    
 	    outputDataStore = new DefaultDataStore();
 	    
