@@ -2,17 +2,13 @@ package org.concord.data.stream;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.Vector;
 
 import javax.swing.Timer;
 
 import org.concord.data.state.DefaultDataStoreFilterDescription;
 import org.concord.data.state.filter.DataStrictXStepFilter;
 import org.concord.framework.data.stream.DataStore;
-import org.concord.framework.data.stream.DefaultDataStore;
 import org.concord.framework.data.stream.DefaultMultipleDataProducer;
-import com.sun.tools.javac.comp.Lower;
 
 public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer implements ActionListener
 {
