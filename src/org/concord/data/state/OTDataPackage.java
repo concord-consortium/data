@@ -33,6 +33,7 @@ public class OTDataPackage
 		registry.registerControllerClass(OTHoltsMethodSmoothingController.class);
 		registry.registerControllerClass(OTDataStoreController.class);
 		registry.registerControllerClass(OTTimerDataStoreDataProducerController.class);
+		registry.registerControllerClass(OTFloatDataReceiverController.class);
 	}
 	
 	public Class [] getOTClasses() 
@@ -50,7 +51,8 @@ public class OTDataPackage
 				OTPropertyDataProducer.class,
 				OTUnitValue.class,
 				OTWaveGenerator.class,
-				OTTimerDataStoreDataProducer.class
+				OTTimerDataStoreDataProducer.class,
+				OTFloatDataReceiver.class
 		};
 	}
 
