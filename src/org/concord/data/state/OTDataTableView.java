@@ -45,7 +45,7 @@ public class OTDataTableView extends AbstractOTJComponentView
 		otTable = (OTDataTable)otObject;
     	controllerService = createControllerService();
 		
-		DataTablePanel table = new DataTablePanel();
+		DataTablePanel table = new DataTablePanel(otTable.getVisibleRows());
 		
 		DataStore dataStore;
 		OTDataStore otDataStore;
