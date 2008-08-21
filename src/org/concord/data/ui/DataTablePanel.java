@@ -107,7 +107,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	/**
 	 * 
 	 */
-	public DataTablePanel() {
+	public DataTablePanel(int visibleRows) {
 		super();
 
 		setLayout(new BorderLayout());
@@ -127,10 +127,18 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 
 		table.addMouseListener(this);
 		scrollPane.getViewport().addMouseListener(this);
-		setPreferredSize(new Dimension(200, 150));
+		setPreferredSize(new Dimension(200, getHeightNeeded(visibleRows)));
 		
 	//	scrollPane.getVerticalScrollBar().setValue(0);
 
+	}
+	
+	public DataTablePanel() {
+		this(9);
+	}
+
+	public int getHeightNeeded(int rows){
+		return (rows * 17) + 20;
 	}
 
 	/**
