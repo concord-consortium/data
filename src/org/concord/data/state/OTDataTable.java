@@ -33,4 +33,8 @@ public interface OTDataTable
 	public OTObjectList getColumns();
 	
 	public boolean getShowLastRowForAddingNew();	
+	
+	public int getVisibleRows();
+	public void setVisibleRows(int visibleRows);
+	public static int DEFAULT_visibleRows = 9;
 }
