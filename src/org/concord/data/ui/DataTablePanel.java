@@ -44,6 +44,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
@@ -93,7 +95,7 @@ import java.util.*;
  * 
  */
 public class DataTablePanel extends JPanel implements TableModelListener,
-		MouseListener, ActionListener {
+		MouseListener, ActionListener, FocusListener {
 	/**
 	 * Not intended to be serialized, added to remove compile warning.
 	 */
@@ -126,6 +128,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		tableModel.addTableModelListener(this);
 
 		table.addMouseListener(this);
+		table.addFocusListener(this);
 		scrollPane.getViewport().addMouseListener(this);
 		setPreferredSize(new Dimension(200, getHeightNeeded(visibleRows)));
 		
@@ -407,5 +410,22 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	    return maximum_height;
 	  }
 	}
+
+	public void focusGained(FocusEvent arg0)
+    {
+	    // TODO Auto-generated method stub
+	    
+    }
+
+	public void focusLost(FocusEvent e)
+    {
+	    if (e.isTemporary())
+	    	return;
+	    
+	    CellEditor editor = table.getCellEditor();
+	    if (editor != null){
+	    	editor.stopCellEditing();
+	    }
+    }
 
 }
