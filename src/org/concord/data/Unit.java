@@ -169,7 +169,7 @@ public final class Unit implements DataDimension{
 	public final static int UNIT_CAT_TABLE_LENGTH		= 16;
 
 	public static String[] catNames = {"Unknown", 
-									   "Length",
+									   "Distance",
 									   "Mass",
 									   "Time",
 									   "Temperature",
