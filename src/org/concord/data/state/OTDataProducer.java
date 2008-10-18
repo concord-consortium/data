@@ -10,7 +10,7 @@ import org.concord.framework.otrunk.OTObjectInterface;
  *
  */
 public interface OTDataProducer
-    extends OTObjectInterface
+    extends OTDataFlow
 {
 
 }
