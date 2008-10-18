@@ -2,7 +2,7 @@ package org.concord.data.ui;
 
 import javax.swing.JComponent;
 
-import org.concord.framework.data.stream.DataProducer;
+import org.concord.framework.data.DataFlow;
 import org.concord.framework.otrunk.OTControllerService;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.view.OTControllerServiceFactory;
@@ -20,8 +20,8 @@ public class OTDataFlowControlToolBarView extends DataFlowControlToolBar
 	{
 		OTDataFlowControlToolBar otToolBar = (OTDataFlowControlToolBar) otObject;
 		OTControllerService cs = createControllerService();
-		DataProducer dataProducer = (DataProducer) cs.getRealObject(otToolBar.getDataProducer());
-		addDataFlowObject(dataProducer);
+		DataFlow dataFlowObj = (DataFlow) cs.getRealObject(otToolBar.getDataProducer());
+		addDataFlowObject(dataFlowObj);
 		return this;
 	}
 
