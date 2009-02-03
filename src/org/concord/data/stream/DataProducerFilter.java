@@ -84,6 +84,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
      */
     public void reset()
     {
+    	super.reset();
         if(source != null) {
             source.reset();
         }
@@ -96,6 +97,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
      */
     public void stop()
     {
+    	super.stop();
         if(source != null) {
             source.stop();
         }
@@ -106,6 +108,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
      */
     public void start()
     {
+    	super.start();
         if(source != null) {
             source.start();
         }
