@@ -58,18 +58,21 @@ public abstract class TimerDataProducer extends DefaultDataProducer
     
 	public void reset()
 	{
+		super.reset();
 		currentTime = 0;
 		stop();
 	}
 	
 	public void stop()
 	{
+		super.stop();
 		if(timer == null) return;
 		timer.stop();
 	}
 	
 	public void start()
 	{
+		super.start();
 		if(timer == null) {
 			float dt = getDataDescription().getDt();
 			int tt = (int)((1000f * dt) * getTimeScale());				
