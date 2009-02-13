@@ -43,7 +43,7 @@ public class OTDataTableView extends AbstractOTJComponentView
 	public JComponent getComponent(OTObject otObject)
 	{
 		otTable = (OTDataTable)otObject;
-    	controllerService = createControllerService();
+    	controllerService = createControllerService(otObject);
 		
 		DataTablePanel table = new DataTablePanel(otTable.getVisibleRows());
 		
