@@ -69,7 +69,7 @@ public class OTDataFieldView extends AbstractOTJComponentView
 	public JComponent getComponent(OTObject otObject) 
 	{
 		this.otDataField = (OTDataField)otObject;
-    	controllerService = createControllerService();
+    	controllerService = createControllerService(otObject);
 		
 		OTDataStore otDataStore = otDataField.getDataStore();
 		dataStore = (WritableDataStore) controllerService.getRealObject(otDataStore);
