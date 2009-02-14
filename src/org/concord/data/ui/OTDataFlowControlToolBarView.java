@@ -15,10 +15,11 @@ public class OTDataFlowControlToolBarView extends DataFlowControlToolBar
 {
 
 	private OTViewContext viewContext;
+	private OTDataFlowControlToolBar otToolBar;
 
 	public JComponent getComponent(OTObject otObject)
 	{
-		OTDataFlowControlToolBar otToolBar = (OTDataFlowControlToolBar) otObject;
+		otToolBar = (OTDataFlowControlToolBar) otObject;
 		OTControllerService cs = createControllerService();
 		DataFlow dataFlowObj = (DataFlow) cs.getRealObject(otToolBar.getDataProducer());
 		addDataFlowObject(dataFlowObj);
@@ -36,7 +37,8 @@ public class OTDataFlowControlToolBarView extends DataFlowControlToolBar
 		OTControllerServiceFactory controllerServiceFactory = 
 			(OTControllerServiceFactory) viewContext.getViewService(OTControllerServiceFactory.class);
 		
-    	OTControllerService controllerService = controllerServiceFactory.createControllerService();
+    	OTControllerService controllerService = 
+    		controllerServiceFactory.createControllerService(otToolBar.getOTObjectService());
     	controllerService.addService(OTViewContext.class, viewContext);
 
     	return controllerService;
