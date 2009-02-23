@@ -48,6 +48,7 @@ import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.WritableArrayDataStore;
 import org.concord.framework.otrunk.OTChangeEvent;
 import org.concord.framework.otrunk.OTChangeListener;
+import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectList;
 import org.concord.framework.otrunk.OTObjectService;
 import org.concord.framework.otrunk.OTResourceList;
@@ -487,6 +488,8 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		String unitStr = otChDesc.getUnit();
 		Unit unit = Unit.findUnit(unitStr);
 		chDesc.setUnit(unit);
+		
+		chDesc.getPossibleValues().addAll(otChDesc.getPossibleValues());
 
 		return chDesc;
 	}
@@ -497,7 +500,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		OTObjectService objService = otDataStore.getOTObjectService();
 
 		OTDataChannelDescription otDCDesc = 
-			(OTDataChannelDescription) objService.createObject(OTDataChannelDescription.class);
+			objService.createObject(OTDataChannelDescription.class);
 
 		if(dCDesc == null){
 			return otDCDesc;
@@ -529,6 +532,12 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			otDCDesc.setPrecision(dCDesc.getPrecision());
 		}
 		otDCDesc.setNumericData(dCDesc.isNumericData());
+		
+		for (Object o : dCDesc.getPossibleValues()) {
+			if (o instanceof OTObject) {
+				otDCDesc.getPossibleValues().add((OTObject)o);
+			}
+		}
 
 		return otDCDesc;
 	}

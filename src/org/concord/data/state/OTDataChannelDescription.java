@@ -30,6 +30,7 @@
 package org.concord.data.state;
 
 import org.concord.framework.otrunk.OTObjectInterface;
+import org.concord.framework.otrunk.OTResourceList;
 
 /**
  * @author scott
@@ -75,4 +76,8 @@ public interface OTDataChannelDescription extends OTObjectInterface
 	public static boolean DEFAULT_locked = false;
 	public boolean getLocked();
 	public void setLocked(boolean locked);
+	
+	// This is used by the OTDataTable to display
+	// a combo box/list instead of a normal text field
+	public OTResourceList getPossibleValues();
 }

@@ -33,6 +33,7 @@
 package org.concord.data.ui;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import org.concord.framework.data.stream.DataStore;
 
@@ -54,6 +55,7 @@ public class DataColumnDescription
 	protected Color color;
 	protected String label;
 	protected boolean locked = false;
+	protected ArrayList<Object> possibleValues = new ArrayList<Object>();
 	
 	/**
 	 * 
@@ -142,5 +144,20 @@ public class DataColumnDescription
 	 */
 	public void setLocked(boolean locked){
 		this.locked = locked;
+	}
+	
+	/**
+	 * Set the possible values for this column.
+	 * @param values
+	 */
+	public void setPossibleValues(ArrayList<Object> values) {
+		this.possibleValues = values;
+	}
+	
+	/**
+	 * @return the possible values for this column
+	 */
+	public ArrayList<Object> getPossibleValues() {
+		return this.possibleValues;
 	}
 }

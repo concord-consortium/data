@@ -11,11 +11,15 @@ package org.concord.data.state;
 
 import java.awt.Color;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.table.TableColumn;
 
 import org.concord.data.ui.DataColumnDescription;
 import org.concord.data.ui.DataTableModel;
 import org.concord.data.ui.DataTablePanel;
+import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.otrunk.OTControllerService;
 import org.concord.framework.otrunk.OTObject;
@@ -60,6 +64,27 @@ public class OTDataTableView extends AbstractOTJComponentView
 		updateOTColumns(table.getTableModel(), dataStore, otTable.getColumns());
 		
 		table.useDefaultHeaderRenderer();
+		
+		for (int i = 0; i < dataStore.getTotalNumChannels(); i++) {
+			// if the column has a specific set of possible values, render those with a combobox
+			DataChannelDescription dcc = dataStore.getDataChannelDescription(i);
+			if (dcc.getPossibleValues().size() > 0) {
+				TableColumn tCol = table.getTable().getColumnModel().getColumn(i);
+				JComboBox cb = new JComboBox();
+				for (Object o : dcc.getPossibleValues()) {
+					cb.addItem(o);
+				}
+				// if we're loading an OTObjectList, use the CustomDetail*Renderer classes to make them readable
+//				try {
+//					Method m = OTObject.class.getMethod("getName",(Class[]) null);
+//					cb.setRenderer(new CustomDetailListCellRenderer(m));
+//					tCol.setCellRenderer(new CustomDetailTableCellRenderer(m));
+//				} catch (Exception e) {
+//					
+//				}
+				tCol.setCellEditor(new DefaultCellEditor(cb));
+			}
+		}
 		
 		return table;
 	}
