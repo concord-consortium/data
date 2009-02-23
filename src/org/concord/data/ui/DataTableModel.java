@@ -42,11 +42,11 @@ import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
 import org.concord.data.stream.DataStoreUtil;
+import org.concord.framework.data.stream.AutoIncrementDataStore;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreListener;
-import org.concord.framework.data.stream.AutoIncrementDataStore;
 import org.concord.framework.data.stream.WritableDataStore;
 
 /**
@@ -200,6 +200,7 @@ public class DataTableModel extends AbstractTableModel
 		if (channelDesc != null){
 			dcol.setLabel(channelDesc.getName());
 			dcol.setLocked(channelDesc.isLocked());
+			dcol.setPossibleValues(channelDesc.getPossibleValues());
 		}
 		return addDataColumn(dcol);
 	}
@@ -381,6 +382,7 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
 	{
+		System.err.println("trying to set value: " + aValue);
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
 		if (dcol == null) return;
 		
