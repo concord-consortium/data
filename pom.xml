@@ -15,6 +15,19 @@
   <description>
      Implementations of the data interfaces from Framework and other data related classes.
   </description>
+  
+  <build>
+  <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+  </plugins>
+  </build>
 
   <dependencies>
     <dependency>
@@ -30,7 +43,7 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
-
+  
   <!--this is required to find out the parent pom -->
   <repositories>
     <repository>
