@@ -15,7 +15,7 @@ import org.concord.framework.data.stream.DefaultDataProducer;
  */
 public abstract class DataProducerFilter extends DefaultDataProducer
 {
-    private DataProducer source;
+    protected DataProducer source;
 	private DataListener dataListener;
 	private int sourceChannel;
 	protected int currentSample;
@@ -98,7 +98,9 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     public void stop()
     {
     	super.stop();
+    	System.out.println("stop?");
         if(source != null) {
+        	System.out.println("stopping "+source);
             source.stop();
         }
     }

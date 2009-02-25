@@ -34,6 +34,7 @@ public class OTDataPackage
 		registry.registerControllerClass(OTDataStoreController.class);
 		registry.registerControllerClass(OTTimerDataStoreDataProducerController.class);
 		registry.registerControllerClass(OTFloatDataReceiverController.class);
+		registry.registerControllerClass(OTTimeLimitDataProducerFilterController.class);
 	}
 	
 	public Class [] getOTClasses() 
@@ -52,7 +53,8 @@ public class OTDataPackage
 				OTUnitValue.class,
 				OTWaveGenerator.class,
 				OTTimerDataStoreDataProducer.class,
-				OTFloatDataReceiver.class
+				OTFloatDataReceiver.class,
+				OTTimeLimitDataProducerFilter.class
 		};
 	}
 
