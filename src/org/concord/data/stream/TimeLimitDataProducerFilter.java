@@ -100,8 +100,6 @@ public class TimeLimitDataProducerFilter extends DataProducerFilter
     	float value = values[sampleStartOffset + producerChannel];
     	if (usingDt){
     		totalTime += (int) (dt * 1000f);
-    		System.out.println("total Time = "+totalTime+", val = "+value);
-    		System.out.println("  offset = "+source.getDataDescription().getDataOffset());
     		if (totalTime > timeLimit){
     			stopDataProducer();
     		}
