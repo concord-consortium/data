@@ -48,42 +48,29 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.CellEditor;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-
-
-import javax.swing.*;
-import javax.swing.table.*;
-import java.awt.*;
-import java.util.*;
+import javax.swing.table.TableColumnModel;
 
 /**
  * DataTablePanel Class name and description
@@ -423,7 +410,8 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	    	return;
 	    
 	    CellEditor editor = table.getCellEditor();
-	    if (editor != null){
+	    // check to see if we're the editor. If not, we're only acting as the renderer
+	    if (editor != null && editor == this){
 	    	editor.stopCellEditing();
 	    }
     }
