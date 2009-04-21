@@ -38,6 +38,8 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -61,6 +63,7 @@ import org.concord.framework.data.stream.WritableDataStore;
 public class DataTableModel extends AbstractTableModel
 	implements DataStoreListener
 {
+	private static final Logger logger = Logger.getLogger(DataTableModel.class.getCanonicalName());
 	/**
 	 * Not intended to be serialized, added to remove compile warning.
 	 */
@@ -236,7 +239,7 @@ public class DataTableModel extends AbstractTableModel
 	public void setDataColumnPosition(DataColumnDescription dcol, int newPosition)
 	{
 		if (newPosition < 0 || newPosition >= dataColumns.size()){
-			System.err.println("DataTableModel setDataColumnPosition failed: Position "+newPosition+" not valid.");
+			logger.warning("DataTableModel setDataColumnPosition failed: Position "+newPosition+" not valid.");
 			return;
 		}
 		
@@ -382,7 +385,7 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
 	{
-		System.err.println("trying to set value: " + aValue);
+		logger.finer("trying to set value: " + aValue);
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
 		if (dcol == null) return;
 		
@@ -427,7 +430,7 @@ public class DataTableModel extends AbstractTableModel
 		if (aValue != null && aValue.equals(oldValue)) return;
 		if (aValue != null && oldValue != null && aValue.toString().equals(oldValue.toString())) return;
 		
-		System.out.println("set value at "+rowIndex+","+columnIndex+" "+aValue);
+		logger.finer("set value at "+rowIndex+","+columnIndex+" "+aValue);
 		
 		((WritableDataStore)dataStore).setValueAt(rowIndex, columnIndex, aValue);
 	}
@@ -586,7 +589,7 @@ public class DataTableModel extends AbstractTableModel
 		try {
 			DataStoreUtil.loadData(dataReader, (WritableDataStore)dataStore, false);					
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Couldn't load data into data store", e);
 		}
 	}
 
