@@ -56,6 +56,13 @@ public abstract class TimerDataProducer extends DefaultDataProducer
 	private float currentTime = 0;
 	private float timeScale = 1;
     
+	public TimerDataProducer() {
+	}
+	
+	public TimerDataProducer(float dt) {
+		getDataDescription().setDt(dt);
+	}
+
 	public void reset()
 	{
 		super.reset();
