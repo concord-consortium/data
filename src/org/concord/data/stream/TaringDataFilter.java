@@ -57,7 +57,6 @@ public class TaringDataFilter
     private boolean doingTare = false;
     private DataStreamEvent dataEvent;
     private DataListener dataListener;
-    private boolean running = false;
 
     protected float tareOffset = 0;
     protected int tareChannel = 0;
@@ -229,7 +228,6 @@ public class TaringDataFilter
         if(source != null) {
             source.reset();
         }
-        running = false;
     }
 
     /* (non-Javadoc)
@@ -240,7 +238,6 @@ public class TaringDataFilter
         if(source != null) {
             source.stop();
         }
-        running = false;
     }
 
     /* (non-Javadoc)
@@ -250,7 +247,6 @@ public class TaringDataFilter
     {
         if(source != null) {
             source.start();
-            running = true;
         }
     }
 
@@ -281,6 +277,17 @@ public class TaringDataFilter
 	}
 	
 	public boolean isRunning() {
-		return running;
+		if(source != null){
+			return source.isRunning();
+		}
+		return false;
+	}
+
+	public boolean isInInitialState() {
+		if(source != null){
+			return source.isInInitialState();
+		}
+		
+		return true;
 	}
 }
