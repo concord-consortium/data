@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import org.concord.data.Unit;
 import org.concord.data.stream.DataStoreUtil;
@@ -68,6 +69,9 @@ import org.concord.framework.otrunk.OTResourceList;
 public class OTDataStoreRealObject extends ProducerDataStore
 	implements WritableArrayDataStore
 {	
+	private static final Logger logger = Logger
+			.getLogger(OTDataStoreRealObject.class.getCanonicalName());
+	
 	protected OTDataStore otDataStore;
 	DataStoreEvent changeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_CHANGED);
 	DataStoreEvent removeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_REMOVED);
@@ -158,11 +162,14 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			return 0;
 		}
 		
+		// scytacki: it is an interesting question if the a data store should return it has
+		// a sample even if it is partial sample.  Because there isn't a way to tell if a sample
+		// is complete or not it seems safer to only report complete samples.
 		OTResourceList values = otDataStore.getValues();
 		int size = values.size();
 		int rows = size / dataArrayStride;
 		if (size % dataArrayStride > 0){
-			rows = rows + 1;
+			logger.finest("requesting the number of samples while the data store has a partial sample");
 		}
 		return rows;
 	}
@@ -410,14 +417,32 @@ public class OTDataStoreRealObject extends ProducerDataStore
 
 
 	}
-	/* (non-Javadoc)
+	
+	/**
+	 * This is currently the only way to set the number of channels.
+	 * 
 	 * @see org.concord.framework.data.stream.WritableDataStore#setDataChannelDescription(int, org.concord.framework.data.stream.DataChannelDescription)
 	 */
+	@Override
 	public void setDataChannelDescription(int channelIndex,
 			DataChannelDescription desc) 
 	{
-		// FIXME this is not supported yet
-		//throw new UnsupportedOperationException("org.concord.framework.data.stream.WritableDataStore.setDataChannelDescription not supported yet");
+		// FIXME this is not fully supported yet
+		
+		// if 0 is the auto increment channel then the number of channels of this data store is
+		// one less because it doesn't store data for the incremental channel.
+		if(isIncrementalChannel(0)){
+			channelIndex--;
+		}
+		if(channelIndex < otDataStore.getNumberChannels()){
+			return;
+		}
+		
+		if(getTotalNumSamples() > 0){
+			logger.warning("There is data in the data store and the number of channels is being changed");
+		}
+		
+		otDataStore.setNumberChannels(channelIndex+1);
 	}
 	
 	/* (non-Javadoc)
@@ -552,7 +577,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		}
 		
 		try {
-			otDataStore.getChannelDescriptions().removeAll();
+			otDataStore.getChannelDescriptions().clear();
 						
 			if(isAutoIncrementing()){
 				// if we are using the dt as a channel then the first element in the channelDescriptions list
