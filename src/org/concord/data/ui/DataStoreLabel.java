@@ -98,6 +98,11 @@ public class DataStoreLabel extends JTextField
 	{
 	}
 	
+	public void dispose()
+	{
+		dataStore.removeDataStoreListener(this);
+	}
+
 	private void updateValue()
 	{
 		int numSamples = dataStore.getTotalNumSamples();
