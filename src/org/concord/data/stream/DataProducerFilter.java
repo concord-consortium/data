@@ -3,6 +3,8 @@
  */
 package org.concord.data.stream;
 
+import java.util.logging.Logger;
+
 import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
@@ -15,6 +17,9 @@ import org.concord.framework.data.stream.DefaultDataProducer;
  */
 public abstract class DataProducerFilter extends DefaultDataProducer
 {
+	private static final Logger logger = Logger
+			.getLogger(DataProducerFilter.class.getCanonicalName());
+	
     protected DataProducer source;
 	private DataListener dataListener;
 	private int sourceChannel;
@@ -34,7 +39,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
 			public void dataStreamEvent(DataStreamEvent dataEvent)
 			{
 				updateDescription();
-				// need to check for description updates
+
 				notifyDataStreamEvent(dataEvent.getType());
 			}
 		};
@@ -84,7 +89,8 @@ public abstract class DataProducerFilter extends DefaultDataProducer
      */
     public void reset()
     {
-    	super.reset();
+    	// we count on the source to send the appropriate events so we don't need 
+    	// to call the super method
         if(source != null) {
             source.reset();
         }
@@ -97,10 +103,10 @@ public abstract class DataProducerFilter extends DefaultDataProducer
      */
     public void stop()
     {
-    	super.stop();
-    	System.out.println("stop?");
+    	// we count on the source to send the appropriate events so we don't need 
+    	// to call the super method
         if(source != null) {
-        	System.out.println("stopping "+source);
+        	logger.finer("stopping "+source);
             source.stop();
         }
     }
@@ -110,7 +116,8 @@ public abstract class DataProducerFilter extends DefaultDataProducer
      */
     public void start()
     {
-    	super.start();
+    	// we count on the source to send the appropriate events so we don't need 
+    	// to call the super method
         if(source != null) {
             source.start();
         }
@@ -240,4 +247,21 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     	return sourceChannel;
     }
     
+    @Override
+    public boolean isRunning() {
+    	if(source == null){
+    		return false;
+    	}
+    	
+    	return source.isRunning();
+    }
+    
+    @Override
+    public boolean isInInitialState() {
+    	if(source == null){
+    		return true;
+    	}
+    	
+    	return source.isInInitialState();
+    }
 }
