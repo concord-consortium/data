@@ -42,8 +42,6 @@ import javax.swing.Icon;
 import org.concord.framework.data.DataFlow;
 import org.concord.framework.data.DataFlowCapabilities;
 import org.concord.framework.simulation.Simulation;
-import org.concord.framework.simulation.SimulationEvent;
-import org.concord.framework.simulation.SimulationListener;
 
 
 /**
@@ -61,7 +59,6 @@ import org.concord.framework.simulation.SimulationListener;
  *
  */
 public class DataFlowControlAction extends AbstractAction
-	implements SimulationListener
 {
 	/**
 	 * not intended to be serialized, removes compile warning
@@ -209,10 +206,13 @@ public class DataFlowControlAction extends AbstractAction
 		objsFlow.addElement(objFlow);
 		if (objFlow instanceof Simulation){
 			Simulation objSim = (Simulation)objFlow;
-			objSim.addSimulationListener(this);
+			setEnabled(true);
+			// FIXME temporary hack until the new Startable interface is complete
+			//objSim.addSimulationListener(this);
 		}
 		
-		enableAction(flowControlType, getSimulationState());		
+		// FIXME temporary hack until the new Startable interface is complete
+		//enableAction(flowControlType, getSimulationState());		
 		
 		//Check
 		checkFlowObjectValid(flowControlType, objFlow);
@@ -244,7 +244,8 @@ public class DataFlowControlAction extends AbstractAction
 	{
 		if (objFlow instanceof Simulation){
 			Simulation objSim = (Simulation)objFlow;
-			objSim.removeSimulationListener(this);
+			// FIXME temporary hack until Startable Interace is complete
+			// objSim.removeSimulationListener(this);
 		}
 		objsFlow.removeElement(objFlow);
 	}
@@ -282,7 +283,8 @@ public class DataFlowControlAction extends AbstractAction
 				if (objFlow instanceof Simulation){
 					
 					Simulation objSim = (Simulation)objFlow;
-					if (objSim.getSimulationState() == Simulation.SIM_RUN_STATE){
+					
+					if (objSim.isRunning()){
 						objSim.stop();
 					}
 					else{
@@ -332,72 +334,6 @@ public class DataFlowControlAction extends AbstractAction
 		return false;
 	}
 	
-	private void enableAction(int type, int simState)
-	{
-		if (!autoEnable) return;
-		if (type == FLOW_CONTROL_NONE) return;
-		
-		//If there is no info about simulation state, 
-		// check the capabilities of the data flow objects
-		if (simState == Simulation.SIM_UNDEF_STATE){
-			setEnabled(checkCapabilities(type));
-			return;
-		}
-		
-		if (type == FLOW_CONTROL_START){
-		//If the simulation state is in RUN state, it should be disabled
-			if (simState == Simulation.SIM_RUN_STATE){
-				setEnabled(false);
-			}
-			else{
-				setEnabled(true);
-			}
-		}
-		else if (type == FLOW_CONTROL_STOP){
-		//Only if the simulation state is in RUN state, it should be enabled
-			if (simState == Simulation.SIM_RUN_STATE){
-				setEnabled(true);
-			}
-			else{
-				setEnabled(false);
-			}
-		}
-		else if (type == FLOW_CONTROL_RESET){
-		//If the simulation state is in RESET state, it should be disabled
-			if (simState == Simulation.SIM_RESET_STATE){
-				setEnabled(false);
-			}
-			else{
-				setEnabled(true);
-			}
-		}
-		else if (type == FLOW_CONTROL_START_STOP){
-		//Always enabled
-			setEnabled(true);
-		}
-	}
-	
-	private int getSimulationState()
-	{
-		int sim = Simulation.SIM_UNDEF_STATE;
-		int s = Simulation.SIM_UNDEF_STATE;
-		for (int i=0; i<objsFlow.size(); i++){
-			if (objsFlow.elementAt(i) instanceof Simulation){
-				Simulation objSim = (Simulation)objsFlow.elementAt(i);
-				s = objSim.getSimulationState();
-				if (sim == Simulation.SIM_UNDEF_STATE){
-					sim = s;
-				}
-				else{
-					if (s != sim){
-						return Simulation.SIM_UNDEF_STATE;
-					}
-				}
-			}
-		}
-		return sim;
-	}
-	
 	/**
 	 * Gets the type of action (start, stop, run)
 	 * @return Returns the flowControlType.
@@ -424,30 +360,6 @@ public class DataFlowControlAction extends AbstractAction
 		this.flowControlType = type;	
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concord.framework.simulation.SimulationListener#simulationStarted(org.concord.framework.simulation.SimulationEvent)
-	 */
-	public void simulationStarted(SimulationEvent evt)
-	{
-		enableAction(flowControlType, evt.getSimulationState());		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concord.framework.simulation.SimulationListener#simulationStopped(org.concord.framework.simulation.SimulationEvent)
-	 */
-	public void simulationStopped(SimulationEvent evt)
-	{
-		enableAction(flowControlType, evt.getSimulationState());		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concord.framework.simulation.SimulationListener#simulationReset(org.concord.framework.simulation.SimulationEvent)
-	 */
-	public void simulationReset(SimulationEvent evt)
-	{
-		enableAction(flowControlType, evt.getSimulationState());		
-	}
-	
 	/**
 	 * @return Returns the autoEnable.
 	 */
@@ -467,7 +379,8 @@ public class DataFlowControlAction extends AbstractAction
 	{
 		this.autoEnable = autoEnable;
 		if (autoEnable){
-			enableAction(flowControlType, getSimulationState());
+			// FIXME temporary hack until the new Startable interface is complete
+			//enableAction(flowControlType, getSimulationState());
 		}
 		else{
 			setEnabled(true);
