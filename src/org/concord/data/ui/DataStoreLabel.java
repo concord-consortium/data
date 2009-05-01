@@ -96,6 +96,9 @@ public class DataStoreLabel extends JTextField
 	 */
 	public void dataRemoved(DataStoreEvent evt) 
 	{
+		if(evt.getSource().getTotalNumSamples() == 0){
+			clear();
+		}
 	}
 	
 	public void dispose()
@@ -141,6 +144,12 @@ public class DataStoreLabel extends JTextField
 		currentValue = val;
 
 		setText(Float.toString(val));
+	}
+
+	private void clear()
+	{
+		currentValue = Float.NaN;
+		setText("");
 	}
 	
 }
