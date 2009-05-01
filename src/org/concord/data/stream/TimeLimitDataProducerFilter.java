@@ -105,12 +105,5 @@ public class TimeLimitDataProducerFilter extends DataProducerFilter
     		}
     	}
     	return value;    	
-    }
-    
-    protected float filter(float value)
-    {
-    	
-    	return value;
-    }
-	
+    }	
 }
