@@ -10,6 +10,8 @@ import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.DataStreamEvent;
 import org.concord.framework.data.stream.DefaultDataProducer;
+import org.concord.framework.startable.StartableEvent;
+import org.concord.framework.startable.StartableListener;
 
 /**
  * @author scott
@@ -24,6 +26,8 @@ public abstract class DataProducerFilter extends DefaultDataProducer
 	private DataListener dataListener;
 	private int sourceChannel;
 	protected int currentSample;
+
+	private StartableListener startableListener;
     
 	public DataProducerFilter(){
 		/*
@@ -44,6 +48,16 @@ public abstract class DataProducerFilter extends DefaultDataProducer
 			}
 		};
 		
+		this.startableListener = new StartableListener() {
+
+			public void startableEvent(StartableEvent event) {
+				StartableEvent clone = event.clone();
+				clone.setStartable(DataProducerFilter.this);
+				notifyStartableListeners(clone);				
+			}
+			
+		};
+		
 		// make sure values has enough space for our data
 		// this array is the same one used in dataEvent.data
 		values = new float [100];
@@ -58,6 +72,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     {
         if(this.source != null) {
             this.source.removeDataListener(dataListener);
+            this.source.removeStartableListener(startableListener);
         }
         this.source = source;
 
@@ -67,6 +82,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
         
         updateDescription();
         this.source.addDataListener(dataListener);
+        this.source.addStartableListener(startableListener);
     }
 
     protected void updateDescription()
