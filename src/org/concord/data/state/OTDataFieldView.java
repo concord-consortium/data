@@ -38,9 +38,9 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.concord.data.ui.DataFlowControlToolBar;
 import org.concord.data.ui.DataStoreLabel;
 import org.concord.data.ui.DataValueLabel;
+import org.concord.data.ui.StartableToolBar;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.WritableDataStore;
 import org.concord.framework.otrunk.OTControllerService;
@@ -89,7 +89,8 @@ public class OTDataFieldView extends AbstractOTJComponentView
 		
 		// fieldPanel.add(fieldLabelPanel, BorderLayout.CENTER);
 		
-		DataFlowControlToolBar toolBar = new DataFlowControlToolBar(dataProducer);
+		StartableToolBar toolBar = new StartableToolBar();
+		toolBar.setStartable(dataProducer);
 		toolBar.setFloatable(false);
 		fieldLabelPanel.add(toolBar);
 		
