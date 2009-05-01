@@ -46,12 +46,14 @@ import org.concord.framework.data.stream.DataStreamEvent;
  */
 public class WaveDataProducer extends TimerDataProducer
 {
+	protected float amplitude = 1f;
+	
 	/**
 	 * @see org.concord.data.stream.TimerDataProducer#getFunction(float)
 	 */
 	protected float getValue(float t)
 	{
-		return (float)(Math.sin(t));
+		return (float)(amplitude * Math.sin(t));
 	}
 	
 	public Object getCopy() {
@@ -61,8 +63,16 @@ public class WaveDataProducer extends TimerDataProducer
 		producer.dataEvent = (DataStreamEvent)this.dataEvent.clone(new DataStreamEvent());
 		producer.values = this.values;
 		producer.setTimeScale(this.getTimeScale());
-		
+		producer.amplitude = amplitude;
 		
 		return producer;
+	}
+	
+	public void setAmplitude(float amplitude) {
+		this.amplitude = amplitude;
+	}
+	
+	public float getAmplitude() {
+		return amplitude;
 	}
 }

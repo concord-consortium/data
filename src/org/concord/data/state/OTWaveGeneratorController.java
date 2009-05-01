@@ -72,7 +72,8 @@ public class OTWaveGeneratorController extends DefaultOTController
         chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_METER));
         chDesc.setName("distance");
         
-        waveProducer.setTimeScale(otWave.getTimeScale());	    
+        waveProducer.setTimeScale(otWave.getTimeScale());
+        waveProducer.setAmplitude(otWave.getAmplitude());
     }
 
 	/* (non-Javadoc)
