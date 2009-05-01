@@ -27,7 +27,7 @@ public class StartableActionProvider
 		}			
 	};
 
-	protected Action startAction = new AbstractAction("Start"){		
+	protected Action startAction = new AbstractAction(StartableInfo.DEFAULT_START_VERB){		
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
@@ -35,7 +35,7 @@ public class StartableActionProvider
 		}
 	};
 
-	protected Action stopAction= new AbstractAction("Stop"){
+	protected Action stopAction= new AbstractAction(StartableInfo.DEFAULT_STOP_VERB){
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
@@ -43,7 +43,7 @@ public class StartableActionProvider
 		}
 	};
 	
-	protected Action resetAction= new AbstractAction("Reset"){
+	protected Action resetAction= new AbstractAction(StartableInfo.DEFAULT_RESET_VERB){
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
@@ -51,7 +51,7 @@ public class StartableActionProvider
 		}
 	};
 	
-	protected Action startStopAction= new AbstractAction("Start/Stop"){
+	protected Action startStopAction= new AbstractAction(StartableInfo.DEFAULT_START_STOP_VERB){
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
@@ -95,7 +95,7 @@ public class StartableActionProvider
 	 * @param evt
 	 */
 	protected void updateActions(StartableEvent event)
-	{				
+	{
 		if(event != null && event.getType() != StartableEventType.UPDATED){
 			switch(event.getType()){
 				case RESET:
@@ -136,12 +136,13 @@ public class StartableActionProvider
 			}
 		} else {
 			StartableInfo info = startable.getStartableInfo();
+
 			boolean enabled = true;
+			boolean sendsEvents = false;
 			if(info != null) {
 				enabled = info.enabled;
-				if (info.resetVerb != null){
-					resetAction.putValue(Action.NAME, info.resetVerb);
-				}
+				sendsEvents = info.sendsEvents;
+				updateStrings(info);
 			} 
 			
 			if (!enabled){
@@ -149,6 +150,11 @@ public class StartableActionProvider
 				stopAction.setEnabled(false);
 				resetAction.setEnabled(false);
 				startStopAction.setEnabled(false);
+			} else if(!sendsEvents){
+				startAction.setEnabled(true);
+				stopAction.setEnabled(true);
+				resetAction.setEnabled(true);
+				startStopAction.setEnabled(true);				
 			} else {
 				startAction.setEnabled(!startable.isRunning());
 				stopAction.setEnabled(startable.isRunning());
@@ -162,6 +168,58 @@ public class StartableActionProvider
 
 			}
 		}
+	}
+
+	protected String getStartVerb(StartableInfo info) {
+		if(info.startVerb == null){
+			return StartableInfo.DEFAULT_START_VERB;
+		} else {
+			return info.startVerb;
+		}
+	}
+	
+	protected String getStopVerb(StartableInfo info) {
+		if(info.stopVerb == null){
+			return StartableInfo.DEFAULT_STOP_VERB;
+		} else {
+			return info.stopVerb;
+		}
+	}
+
+	protected String getResetVerb(StartableInfo info) {
+		if(info.resetVerb == null){
+			return StartableInfo.DEFAULT_RESET_VERB;
+		} else {
+			return info.resetVerb;
+		}
+	}
+	
+	protected String getStartStopVerb(StartableInfo info){
+		if(info.resetVerb == null){
+			return StartableInfo.DEFAULT_START_STOP_VERB;
+		} else {
+			return info.startStopVerb;
+		}		
+	}
+	
+	protected void updateStrings(StartableInfo info){
+		if(info.startStopLabel != null){
+			startAction.putValue(Action.SHORT_DESCRIPTION, 
+					getStartVerb(info) + " " + info.startStopLabel);
+			stopAction.putValue(Action.SHORT_DESCRIPTION, 
+					getStopVerb(info) + " " + info.startStopLabel);
+			startStopAction.putValue(Action.SHORT_DESCRIPTION, 
+					getStartStopVerb(info) + " " + info.startStopLabel);
+		}
+
+		if(info.resetLabel != null){
+			resetAction.putValue(Action.SHORT_DESCRIPTION, getResetVerb(info) + " " + info.resetLabel);
+		}
+
+		startAction.putValue(Action.NAME, getStartVerb(info));
+		stopAction.putValue(Action.NAME, getStopVerb(info));
+		resetAction.putValue(Action.NAME, getResetVerb(info));		
+		startStopAction.putValue(Action.NAME, getStartStopVerb(info));		
 	}
 
 }
