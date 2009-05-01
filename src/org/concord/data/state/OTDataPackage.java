@@ -21,7 +21,7 @@ public class OTDataPackage
 	public void initialize(OTrunk otrunk)
 	{
 		OTControllerRegistry registry = 
-			(OTControllerRegistry) otrunk.getService(OTControllerRegistry.class);
+			otrunk.getService(OTControllerRegistry.class);
 
 		registry.registerControllerClass(OTWaveGeneratorController.class);
 		registry.registerControllerClass(OTMultiWaveGeneratorController.class);
@@ -37,12 +37,11 @@ public class OTDataPackage
 		registry.registerControllerClass(OTTimeLimitDataProducerFilterController.class);
 	}
 	
-	public Class [] getOTClasses() 
+	public Class<?> [] getOTClasses() 
 	{
-		return new Class [] {
+		return new Class<?> [] {
 				OTDataChannelDescription.class,
 				OTDataField.class,
-				OTDataFlowControl.class,
 				OTDataProducer.class,
 				OTDataProducerFilter.class,
 				OTDataStore.class,
@@ -58,7 +57,7 @@ public class OTDataPackage
 		};
 	}
 
-	public Class[] getPackageDependencies() 
+	public Class<? extends OTPackage> [] getPackageDependencies() 
 	{
 		return null;
 	}
