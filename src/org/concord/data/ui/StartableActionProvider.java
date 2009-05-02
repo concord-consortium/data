@@ -18,6 +18,8 @@ public class StartableActionProvider
 	private static final Logger logger = Logger
 			.getLogger(StartableActionProvider.class.getCanonicalName());
 	
+	private static final StartableInfo defaultInfo = new StartableInfo();
+	
 	protected Startable startable;
 
 	protected StartableListener listener = new StartableListener(){
@@ -88,85 +90,113 @@ public class StartableActionProvider
 		startable.addStartableListener(listener);
 	}	
 	
+	class ActionUpdater implements Runnable
+	{
+		Boolean running;
+		Boolean inInitialState;
+		StartableInfo info;
+		
+		public void run() {
+			// TODO Auto-generated method stub
+			if(info.canRestartWithoutReset){
+				startAction.setEnabled(!isRunning());
+			} else {
+				startAction.setEnabled(!isRunning() && isInIntialState());
+			}
+			stopAction.setEnabled(isRunning());
+
+			if(info.canResetWhileRunning){
+				resetAction.setEnabled(!isInIntialState());
+			} else {
+				resetAction.setEnabled(!isInIntialState() && !isRunning());
+			}
+
+			// enable this incase it was disabled before
+			startStopAction.setEnabled(true);					
+		}		
+		
+		public boolean isRunning()
+		{
+			if(running != null){
+				return running;
+			}
+			
+			return startable.isRunning();
+		}
+		
+		public boolean isInIntialState()
+		{
+			if(inInitialState != null){
+				return inInitialState;
+			}
+			
+			return startable.isInInitialState();
+		}
+	}
+	
 	/**
-	 * During the time of the event the state of the simulation has not been updated yet
-	 * so we maintain our own version.
+	 * FIXME this could be simplified a lot if the timing of the events and the availability of
+	 * isRunning() and isInInitialState() were consistent
 	 * 
 	 * @param evt
 	 */
 	protected void updateActions(StartableEvent event)
 	{
-		if(event != null && event.getType() != StartableEventType.UPDATED){
+		StartableInfo info;
+		if(startable.getStartableInfo() != null){
+			info = startable.getStartableInfo();
+		} else {
+			info = defaultInfo;
+		}
+
+		ActionUpdater updater = new ActionUpdater();
+		updater.info = info;
+		
+		if(event != null){
 			switch(event.getType()){
 				case RESET:
-					
-					// FIXME invoke later is used incase the startable doesnt' update isRunning 
-					// right away.  It would be better if the startable either:
-					//   - sent a boolean with the event about its running state
-					//   - made sure isRunning was correctly updated before notifying the listeners
-					//   - sent a stop event along with reset, if the reset calls stop
-					EventQueue.invokeLater(new Runnable(){
-						public void run() {
-							// TODO need to handle the info conditions for the reset button.
-							// there is a condition in the info to tweak this
-							resetAction.setEnabled(!startable.isInInitialState());
+					// override this because we know we are in the initial state
+					updater.inInitialState = true;
 
-							startAction.setEnabled(!startable.isRunning());
-							stopAction.setEnabled(startable.isRunning());						
-						}
-					});
-					
+					// FIXME we don't know about running in this case so we have to rely on
+					// isRunning which might not return the correct value at this point
 					break;
 				case STARTED:
-					startAction.setEnabled(false);
-					stopAction.setEnabled(true);
-					// TODO need to handle the info conditions for the reset button.
-					resetAction.setEnabled(true);
+					// override this because we know we are running
+					updater.running = true;
+					
+					// override this because we know we are not in the initial state if we are started
+					updater.inInitialState = false;
 					break;
 				case STOPPED:
-					startAction.setEnabled(true);
-					stopAction.setEnabled(false);
-					// TODO need to handle the info conditions for the reset button.
-					// Also there is an issue of timing here. Sometimes stop is called
-					// when reset is called so a stop event might come in after a reset
-					// event.  The order of these should be clarified.  There is a condition
-					// in the info to clarify this.
-					resetAction.setEnabled(true);					
+					// override this because we know we are running
+					updater.running = false;
+
+					// FIXME we don't know if we are in the initial state so we have to rely on
+					// isInitialState which might not return the correct value at this point
 					break;	
 			}
-		} else {
-			StartableInfo info = startable.getStartableInfo();
+		} 
+		
 
-			boolean enabled = true;
-			boolean sendsEvents = false;
-			if(info != null) {
-				enabled = info.enabled;
-				sendsEvents = info.sendsEvents;
-				updateStrings(info);
-			} 
+		if(event == null || event.getType() == StartableEventType.UPDATED) {
+			updateStrings(info);
+		} 
 			
-			if (!enabled){
-				startAction.setEnabled(false);
-				stopAction.setEnabled(false);
-				resetAction.setEnabled(false);
-				startStopAction.setEnabled(false);
-			} else if(!sendsEvents){
-				startAction.setEnabled(true);
-				stopAction.setEnabled(true);
-				resetAction.setEnabled(true);
-				startStopAction.setEnabled(true);				
-			} else {
-				startAction.setEnabled(!startable.isRunning());
-				stopAction.setEnabled(startable.isRunning());
-
-				// TODO need to handle the startable info conditions for the 
-				// reset button.
-				resetAction.setEnabled(!startable.isInInitialState());
-				
-				// set this to true in case it was changed before.
-				startStopAction.setEnabled(true);
-
-			}
+		if (!info.enabled){
+			startAction.setEnabled(false);
+			stopAction.setEnabled(false);
+			resetAction.setEnabled(false);
+			startStopAction.setEnabled(false);
+		} else if(!info.sendsEvents){
+			startAction.setEnabled(true);
+			stopAction.setEnabled(true);
+			resetAction.setEnabled(true);
+			startStopAction.setEnabled(true);				
+		} else {
+			// Invoke later is used to increase the chance that the startable will
+			// have correctly updated its internal state.
+			EventQueue.invokeLater(updater);
 		}
 	}
 
