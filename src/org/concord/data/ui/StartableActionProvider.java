@@ -159,7 +159,7 @@ public class StartableActionProvider
 					updater.inInitialState = true;
 
 					// FIXME we don't know about running in this case so we have to rely on
-					// isRunning which might not return the correct value at this point
+					// isRunning which might not return the correct value when it is called
 					break;
 				case STARTED:
 					// override this because we know we are running
@@ -173,7 +173,7 @@ public class StartableActionProvider
 					updater.running = false;
 
 					// FIXME we don't know if we are in the initial state so we have to rely on
-					// isInitialState which might not return the correct value at this point
+					// isInitialState which might not return the correct value when it is called
 					break;	
 			}
 		} 
