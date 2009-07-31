@@ -75,7 +75,13 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	protected OTDataStore otDataStore;
 	DataStoreEvent changeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_CHANGED);
 	DataStoreEvent removeEvent = new DataStoreEvent(this, DataStoreEvent.DATA_REMOVED);
-		
+
+	// Because the OTDataStore is slow we need to cache the properties here so access can be faster
+	private int numChannels;
+	private boolean virtualChannels;
+	private float dt;
+	private OTResourceList values;
+	
 	private OTChangeListener myListener = new OTChangeListener(){
 
 		public void stateChanged(OTChangeEvent e) {
@@ -89,10 +95,13 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			    		OTChangeEvent.OP_REMOVE_ALL == op){
 			    	notifyDataRemoved();
 			    }
-			} else {
-				// any other changes are being ignored right now
-				
-			}			
+			} else if("numberChannels".equals(e.getProperty())){
+				numChannels = otDataStore.getNumberChannels();				
+			} else if("virtualChannels".equals(e.getProperty())){
+				virtualChannels = otDataStore.isVirtualChannels();
+			} else if("dt".equals(e.getProperty())){
+				dt = otDataStore.getDt();
+			}
 		}
 		
 	};
@@ -107,7 +116,16 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		// We need to listen to the otDataStore so when it changes we can 
 		// throw a datastore change or remove event
 		otDataStore.addOTChangeListener(myListener);
-
+		
+		// Save these values for performance
+		numChannels = otDataStore.getNumberChannels();				
+		virtualChannels = otDataStore.isVirtualChannels();
+		dt = otDataStore.getDt();
+		
+		// This is typically a bad idea incase the data object changes underneath 
+		// but for performance it is better.
+		values = otDataStore.getValues();
+		
 		String valueStr = otDataStore.getValuesString();
 		if(valueStr == null) return;
 						
@@ -125,7 +143,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	 */
 	public void clearValues() 
 	{
-		otDataStore.getValues().removeAll();
+		values.removeAll();
 		
 		// this will happen when otDataStore notifies our listener that the data was removed
 		// notifyDataRemoved();
@@ -136,7 +154,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	 */
 	public int getTotalNumChannels() 
 	{
-		int otNumberOfChannels = otDataStore.getNumberChannels();
+		int otNumberOfChannels = numChannels;
 		if(otNumberOfChannels == -1) return 1;
 		
 		// If virtual channels is turned on and there is a dt then
@@ -165,7 +183,6 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		// scytacki: it is an interesting question if the a data store should return it has
 		// a sample even if it is partial sample.  Because there isn't a way to tell if a sample
 		// is complete or not it seems safer to only report complete samples.
-		OTResourceList values = otDataStore.getValues();
 		int size = values.size();
 		int rows = size / dataArrayStride;
 		if (size % dataArrayStride > 0){
@@ -185,13 +202,13 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		}
 	
 		int index = getIndex(numSample, numChannel);
-		if(index >= otDataStore.getValues().size()) {
+		if(index >= values.size()) {
 			return null;
 		} else if (index < 0){
 			return null;
 		}
 			
-		return otDataStore.getValues().get(index);
+		return values.get(index);
 	}
 
 	/**
@@ -245,7 +262,6 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	
 	public void setValueAt(int numSample, int numChannel, Object value) 
 	{
-		OTResourceList values = otDataStore.getValues();
 		int numChannels = getTotalNumChannels();
 		
 		if(numChannel >= numChannels) {
@@ -373,9 +389,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	 * @see org.concord.framework.data.stream.WritableDataStore#removeSampleAt(int)
 	 */
 	public void removeSampleAt(int numSample) 
-	{
-		OTResourceList values = otDataStore.getValues();
-		
+	{		
 		int index = getIndex(numSample, 0);
 
         otDataStore.setDoNotifyChangeListeners(false);
@@ -395,8 +409,6 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	 */
 	public void insertSampleAt(int numSample)
 	{
-		OTResourceList values = otDataStore.getValues();
-		
 		int index = getIndex(numSample, 0);
 
         otDataStore.setDoNotifyChangeListeners(false);
@@ -434,7 +446,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		if(isIncrementalChannel(0)){
 			channelIndex--;
 		}
-		if(channelIndex < otDataStore.getNumberChannels()){
+		if(channelIndex < numChannels){
 			return;
 		}
 		
@@ -623,7 +635,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
      */
     public float getIncrement()
     {
-        return otDataStore.getDt();
+    	return dt;
     }
     
     /**
@@ -631,7 +643,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
      */
     public boolean isAutoIncrementing()
     {
-        return !Float.isNaN(otDataStore.getDt());
+        return !Float.isNaN(dt);
     }
     
     /**
@@ -679,7 +691,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	
 	public boolean useVirtualChannels()
 	{
-	    return otDataStore.isVirtualChannels();
+		return virtualChannels;
 	}
 
 	/**
