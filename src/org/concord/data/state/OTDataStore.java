@@ -41,6 +41,10 @@ public interface OTDataStore extends OTObjectInterface {
 	public String getValuesString();
 	public void setValuesString(String values);	
 	
+	public static int DEFAULT_sampleKeepLimit = -1;
+	public int getSampleKeepLimit();
+	public void setSampleKeepLimit(int sampleKeepLimit);
+	
 	public static boolean DEFAULT_virtualChannels = false;
 	public boolean isVirtualChannels();
 	public void setVirtualChannels(boolean flag);
