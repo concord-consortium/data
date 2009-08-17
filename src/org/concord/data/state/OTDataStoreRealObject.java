@@ -81,6 +81,8 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	private boolean virtualChannels;
 	private float dt;
 	private OTResourceList values;
+	private int sampleKeepLimit = -1;	// max samples to retain
+	private int baseSampleOffset = 0;	// if keep limit exceeded, number of samples dropped.
 	
 	private OTChangeListener myListener = new OTChangeListener(){
 
@@ -101,6 +103,8 @@ public class OTDataStoreRealObject extends ProducerDataStore
 				virtualChannels = otDataStore.isVirtualChannels();
 			} else if("dt".equals(e.getProperty())){
 				dt = otDataStore.getDt();
+			} else if ("sampleKeepLimit".equals(e.getProperty())){
+				sampleKeepLimit = otDataStore.getSampleKeepLimit();
 			}
 		}
 		
@@ -118,7 +122,8 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		otDataStore.addOTChangeListener(myListener);
 		
 		// Save these values for performance
-		numChannels = otDataStore.getNumberChannels();				
+		sampleKeepLimit = otDataStore.getSampleKeepLimit();
+		numChannels = otDataStore.getNumberChannels();
 		virtualChannels = otDataStore.isVirtualChannels();
 		dt = otDataStore.getDt();
 		
@@ -188,7 +193,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		if (size % dataArrayStride > 0){
 			logger.finest("requesting the number of samples while the data store has a partial sample");
 		}
-		return rows;
+		return rows + baseSampleOffset;
 	}
 	
 	/**
@@ -239,7 +244,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			throw new IndexOutOfBoundsException("Trying to lookup an invalid channel: " + channelNumber);
 		}
 		
-		return sampleNumber * dataArrayStride + channelNumber;		
+		return (sampleNumber-baseSampleOffset) * dataArrayStride + channelNumber;		
 	}
 
 	/**
@@ -277,8 +282,22 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			otDataStore.setNumberChannels(numChannels);
 		}
 		
-		int index = getIndex(numSample, numChannel); 
-		if(index >= values.size()) {
+		// If sample value fits into current keep space, just record it.
+		// If sample roll past end of keep space limit, shift data down,
+		// dropping oldest sample, and store the new value at the end.
+		// Otherwise, extend the keep space to record the new value.
+		int index = getIndex(numSample, numChannel);
+		if(index < values.size()) {
+			values.set(index, value);
+		} else if (sampleKeepLimit > 0
+				&& (baseSampleOffset+sampleKeepLimit) <= numSample) {
+			int keep = getDataArrayStride();
+			for (int base = 0; keep < values.size(); base++, keep++)
+				values.set(base, values.get(keep));
+			baseSampleOffset++;
+			index = getIndex(numSample, numChannel);
+			values.set(index, value);
+		} else {
 			//System.out.println("add new value at "+index);
 			//Add empty values until we get to the desired index
 			int j = values.size();
@@ -286,8 +305,6 @@ public class OTDataStoreRealObject extends ProducerDataStore
 				values.add(j, null);
 			}
 			values.add(index, value);			
-		} else {
-			values.set(index, value);
 		}
 		
 		/*
