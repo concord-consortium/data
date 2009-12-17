@@ -2,6 +2,7 @@ package org.concord.data.state;
 
 
 import org.concord.framework.otrunk.DefaultOTController;
+import org.concord.framework.otrunk.OTObject;
 
 
 public class OTAlphaDataProducerController extends DefaultOTController
@@ -26,5 +27,10 @@ public class OTAlphaDataProducerController extends DefaultOTController
 	}
 
 	public void saveRealObject(Object realObject) {
+	}
+	
+	public boolean isRealObjectSharable(OTObject otObject, Object realObject) 
+	{
+		return true;
 	}
 }
