@@ -19,7 +19,7 @@ public class AlphaDataProducer extends DefaultMultipleDataProducer
 	implements OTChangeListener
 {
 	private static Random rand = new Random();
-	private float sum = 0;
+	private float sum = 1;
 	
 	public AlphaDataProducer(float dt, int size) {
 		super(dt, size);
@@ -28,15 +28,15 @@ public class AlphaDataProducer extends DefaultMultipleDataProducer
 	public void setSum(float sum) {
 		this.sum = sum;
 	}
+	
+	public void step(){
+		float[] vals = getValues();
+		addValues(vals);
+	}
 
 	public void stateChanged(OTChangeEvent e) {
 		if (e.getProperty().equals("step")) {
-			float[] vals = getValues();
-			for (int i = 0; i < vals.length; ++i) {
-				System.out.print(vals[i] + " ");
-			}
-			System.out.println();
-			addValues(vals);
+			step();
 		}
 	}
 	
