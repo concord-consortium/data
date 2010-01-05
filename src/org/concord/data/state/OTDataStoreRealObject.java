@@ -38,7 +38,6 @@ import java.lang.ref.WeakReference;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.concord.data.Unit;
 import org.concord.data.stream.DataStoreUtil;
 import org.concord.data.stream.ProducerDataStore;
 import org.concord.framework.data.stream.DataChannelDescription;
@@ -49,6 +48,7 @@ import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.WritableArrayDataStore;
 import org.concord.framework.otrunk.OTChangeEvent;
 import org.concord.framework.otrunk.OTChangeListener;
+import org.concord.framework.otrunk.OTControllerService;
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectList;
 import org.concord.framework.otrunk.OTObjectService;
@@ -84,6 +84,8 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	private int sampleKeepLimit = -1;	// max samples to retain
 	private int baseSampleOffset = 0;	// if keep limit exceeded, number of samples dropped.
 	
+	private OTControllerService controllerService;	// we get the controller service from our controller as we're doing our own setup
+	
 	private OTChangeListener myListener = new OTChangeListener(){
 
 		public void stateChanged(OTChangeEvent e) {
@@ -109,6 +111,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		}
 		
 	};
+
 	
 	/**
 	 * 
@@ -527,24 +530,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 		OTDataChannelDescription otChDesc = 
 			(OTDataChannelDescription)channelDescriptions.get(otChannelDescriptionIndex);
 		
-		DataChannelDescription chDesc = new DataChannelDescription();
-		chDesc.setAbsoluteMax(otChDesc.getAbsoluteMax());
-		chDesc.setAbsoluteMin(otChDesc.getAbsoluteMin());
-		chDesc.setNumericData(otChDesc.getNumericData());
-		chDesc.setLocked(otChDesc.getLocked());
-		chDesc.setName(otChDesc.getName());
-		int precision = otChDesc.getPrecision();
-		if(precision != Integer.MAX_VALUE) {
-			chDesc.setPrecision(precision);
-		}
-		chDesc.setRecommendMax(otChDesc.getRecommendMax());
-		chDesc.setRecommendMin(otChDesc.getRecommendMin());
-		String unitStr = otChDesc.getUnit();
-		Unit unit = Unit.findUnit(unitStr);
-		chDesc.setUnit(unit);
-		
-		chDesc.getPossibleValues().addAll(otChDesc.getPossibleValues());
-
+		DataChannelDescription chDesc = (DataChannelDescription) controllerService.getRealObject(otChDesc);
 		return chDesc;
 	}
 	
@@ -800,6 +786,10 @@ public class OTDataStoreRealObject extends ProducerDataStore
 
 			l.dataChannelDescChanged(evt);
 		}
+	}
+
+	public void setControllerService(OTControllerService controllerService) {
+		this.controllerService = controllerService;
 	}
 
 }
