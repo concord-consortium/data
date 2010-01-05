@@ -80,4 +80,10 @@ public interface OTDataChannelDescription extends OTObjectInterface
 	// This is used by the OTDataTable to display
 	// a combo box/list instead of a normal text field
 	public OTResourceList getPossibleValues();
+	
+	// For multi-channel bar graphs, we can set the color of
+	// each channel/bar here.
+	public static int DEFAULT_color = 0x00FF0000;
+	public int getColor();
+	public void setColor(int color);
 }
