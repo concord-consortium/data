@@ -11,6 +11,7 @@ public class OTDataStoreController extends DefaultOTController
 	public void loadRealObject(Object realObject) 
 	{
 		OTDataStoreRealObject dsView = (OTDataStoreRealObject) realObject;
+		dsView.setControllerService(controllerService);
 		dsView.setOTDataStore((OTDataStore) otObject);
 	}
 
