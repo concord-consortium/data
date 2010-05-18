@@ -151,7 +151,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	 */
 	public void clearValues() 
 	{
-		values.removeAll();
+		values.clear();
 		
 		// this will happen when otDataStore notifies our listener that the data was removed
 		// notifyDataRemoved();
