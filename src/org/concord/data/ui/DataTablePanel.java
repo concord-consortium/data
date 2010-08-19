@@ -113,6 +113,8 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		add(scrollPane, BorderLayout.CENTER);
 
 		tableModel.addTableModelListener(this);
+		table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);		// save last cell on loss of focus
+
 
 		table.addMouseListener(this);
 		table.addFocusListener(this);
