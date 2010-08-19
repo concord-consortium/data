@@ -10,10 +10,12 @@
 package org.concord.data.state;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 
 import org.concord.data.ui.DataColumnDescription;
@@ -64,6 +66,14 @@ public class OTDataTableView extends AbstractOTJComponentView
 		updateOTColumns(table.getTableModel(), dataStore, otTable.getColumns());
 		
 		table.useDefaultHeaderRenderer();
+		
+		// Set cell editors so that they only require one click to start editing
+		for (int i = 0; i < table.getTable().getColumnCount(); i++) {
+			JTextField text = new JTextField();
+			text.setFont(text.getFont().deriveFont(12f));
+			table.getTable().getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(text));
+			((DefaultCellEditor)table.getTable().getColumnModel().getColumn(i).getCellEditor()).setClickCountToStart(1);
+		}
 		
 		for (int i = 0; i < dataStore.getTotalNumChannels(); i++) {
 			// if the column has a specific set of possible values, render those with a combobox
