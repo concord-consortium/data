@@ -12,6 +12,7 @@ package org.concord.data.state;
 import java.awt.Color;
 import java.awt.Font;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -70,7 +71,8 @@ public class OTDataTableView extends AbstractOTJComponentView
 		// Set cell editors so that they only require one click to start editing
 		for (int i = 0; i < table.getTable().getColumnCount(); i++) {
 			JTextField text = new JTextField();
-			text.setFont(text.getFont().deriveFont(12f));
+//			text.setFont(text.getFont().deriveFont(12f));
+			text.setBorder(BorderFactory.createEmptyBorder()); 
 			table.getTable().getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(text));
 			((DefaultCellEditor)table.getTable().getColumnModel().getColumn(i).getCellEditor()).setClickCountToStart(1);
 		}
