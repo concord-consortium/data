@@ -7,6 +7,7 @@ import javax.swing.Timer;
 
 import org.concord.data.state.DefaultDataStoreFilterDescription;
 import org.concord.data.state.filter.DataStrictXStepFilter;
+import org.concord.data.state.filter.DataStrictXStepMultiStoreFilter;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DefaultMultipleDataProducer;
 
@@ -15,71 +16,97 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
 	private float lastT = Float.MIN_VALUE;
 	private int currentIndex = 0;
 	private float currentT;
-	private float currentValue;
+	private float[] currentValue;
 	protected Timer timer = null;
-	private float currentTime = 0;
-	private float timeScale = 1;
+	private DataStrictXStepMultiStoreFilter dataStoreFilter;
 	
-	private DataStore dataStore;
+	private DataStore filteredDataStore;
 	
-	public void setDataStore(DataStore dataStore){
-		this.dataStore = dataStore;
-		DataStrictXStepFilter xStep = new DataStrictXStepFilter();
-		DefaultDataStoreFilterDescription desc = new DefaultDataStoreFilterDescription("");
-		desc.setProperty(DataStrictXStepFilter.PROP_X_STEP, "0.1");
-		xStep.setFilterDescription(desc);
-		
-		xStep.setInputDataStore(dataStore);
-		this.dataStore = xStep.getResultDataStore();
+	public void addDataStore(DataStore dataStore){
+	    DataStrictXStepMultiStoreFilter strictXFilter = getStrictXFilter();
+	    strictXFilter.addInputDataStore(dataStore);
+	    filteredDataStore = strictXFilter.getResultDataStore();
 	}
 	
-	public void start()
+	private DataStrictXStepMultiStoreFilter getStrictXFilter() {
+	    if (dataStoreFilter == null) {
+    	    dataStoreFilter = new DataStrictXStepMultiStoreFilter();
+            DefaultDataStoreFilterDescription desc = new DefaultDataStoreFilterDescription("");
+            desc.setProperty(DataStrictXStepFilter.PROP_X_STEP, Float.toString(getDataDescription().getDt()));
+            dataStoreFilter.setFilterDescription(desc);
+	    }
+	    return dataStoreFilter;
+	}
+	
+	public void recalculateDataStores() {
+	    DataStrictXStepMultiStoreFilter strictXFilter = getStrictXFilter();
+	    strictXFilter.recalculate();
+	    filteredDataStore = dataStoreFilter.getResultDataStore();
+	}
+	
+	@Override
+    public void start()
 	{
+	    // recalculate the filtered data in case the original datastore changed
+	    recalculateDataStores();
+	    
 		if(timer == null) {
 	//		float dt = getDataDescription().getDt();
 	//		int tt = (int)((1000f * dt) * getTimeScale());	
-			currentT = ((Float)dataStore.getValueAt(currentIndex, 0)).floatValue();
-			currentValue = ((Float)dataStore.getValueAt(currentIndex, 1)).floatValue();
+		    calculateCurrentValues();
 			timer = new Timer((int)(1000*currentT), this);
 		}
 		timer.start();
+		super.start();
 	}
 	
-	public void reset()
+	@Override
+    public void reset()
 	{
-		currentTime = 0;
-		stop();
+		if (isRunning()) {
+		    stop();
+		}
+		timer = null;
+		currentIndex = 0;
+		super.reset();
 	}
 	
-	public void stop()
+	@Override
+    public void stop()
 	{
 		if(timer == null) return;
 		timer.stop();
+		super.stop();
+	}
+	
+	private float getFloatValue(int sample, int channel) {
+        Float possVal = (Float)filteredDataStore.getValueAt(sample, channel);
+        if (possVal == null) {
+            return Float.NaN;
+        }
+        float val = possVal.floatValue();
+        return val;
+    }
+	
+	private void calculateCurrentValues() {
+	    currentT = getFloatValue(currentIndex, 0);
+	    currentValue = new float[filteredDataStore.getTotalNumChannels()];
+	    for (int i = 0; i < filteredDataStore.getTotalNumChannels(); i++) {
+	        currentValue[i] = getFloatValue(currentIndex, i);
+	    }
 	}
 	
 	public void actionPerformed(ActionEvent e)
 	{		
-		addValues(new float[] {currentT, currentValue});
+		addValues(currentValue);
 		lastT = currentT;
 		currentIndex++;
-		if (currentIndex > dataStore.getTotalNumSamples()-1){
-			timer.stop();
+		if (currentIndex > filteredDataStore.getTotalNumSamples()-1){
+			stop();
 			return;
 		}
-		currentT = ((Float)dataStore.getValueAt(currentIndex, 0)).floatValue();
-		currentValue = ((Float)dataStore.getValueAt(currentIndex, 1)).floatValue();
+		calculateCurrentValues();
 		timer.setDelay((int) (1000*(currentT-lastT)));
-	}
-	
-	private class Pair 
-	{
-		public Float obj1;
-		public Float obj2;
-
-		public Pair(Float obj1, Float obj2){
-			this.obj1 = obj1;
-			this.obj2 = obj2;
-		}
 	}
 
 }
