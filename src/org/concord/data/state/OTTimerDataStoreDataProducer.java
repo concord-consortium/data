@@ -1,10 +1,16 @@
 package org.concord.data.state;
 
+import org.concord.framework.otrunk.OTObjectList;
+
 public interface OTTimerDataStoreDataProducer
     extends OTDataProducer
 {
+    @Deprecated
 	public OTDataStore getDataStore();
+    @Deprecated
 	public void setDataStore(OTDataStore dataStore);
+    
+    public OTObjectList getDataStores();
 	
 	public final static float DEFAULT_sampleTime = 0.1f; 
 	public float getSampleTime();
