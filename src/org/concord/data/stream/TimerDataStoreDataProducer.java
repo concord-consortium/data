@@ -10,6 +10,7 @@ import org.concord.data.state.filter.DataStrictXStepFilter;
 import org.concord.data.state.filter.DataStrictXStepMultiStoreFilter;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DefaultMultipleDataProducer;
+import org.concord.framework.startable.StartableInfo;
 
 public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer implements ActionListener
 {
@@ -21,6 +22,10 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
 	private DataStrictXStepMultiStoreFilter dataStoreFilter;
 	
 	private DataStore filteredDataStore;
+    private boolean endOfStream;
+    private StartableInfo info;
+    
+    private boolean inInitialState = true;
 	
 	public void addDataStore(DataStore dataStore){
 	    DataStrictXStepMultiStoreFilter strictXFilter = getStrictXFilter();
@@ -45,6 +50,11 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
 	}
 	
 	@Override
+	public boolean isInInitialState() {
+	    return inInitialState;
+	}
+	
+	@Override
     public void start()
 	{
 	    // recalculate the filtered data in case the original datastore changed
@@ -57,6 +67,7 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
 			timer = new Timer((int)(1000*currentT), this);
 		}
 		timer.start();
+		inInitialState = false;
 		super.start();
 	}
 	
@@ -68,6 +79,8 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
 		}
 		timer = null;
 		currentIndex = 0;
+		endOfStream = false;
+		inInitialState = true;
 		super.reset();
 	}
 	
@@ -102,11 +115,32 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
 		lastT = currentT;
 		currentIndex++;
 		if (currentIndex > filteredDataStore.getTotalNumSamples()-1){
+		    endOfStream = true;
 			stop();
 			return;
 		}
 		calculateCurrentValues();
 		timer.setDelay((int) (1000*(currentT-lastT)));
 	}
+
+	@Override
+    public boolean isAtEndOfStream() {
+        return this.endOfStream;
+    }
+    
+    @Override
+    public StartableInfo getStartableInfo() {
+        if (info == null) {
+            info = new StartableInfo();
+            info.sendsEvents = true;
+            info.canResetWhileRunning = false;
+            info.canRestartWithoutReset = true;
+            
+            info.startVerb = "Play";
+            info.stopVerb = "Pause";
+            info.resetVerb = "Reset";
+        }
+        return info;
+    }
 
 }
