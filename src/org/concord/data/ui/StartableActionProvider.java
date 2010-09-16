@@ -9,9 +9,9 @@ import javax.swing.Action;
 
 import org.concord.framework.startable.Startable;
 import org.concord.framework.startable.StartableEvent;
+import org.concord.framework.startable.StartableEvent.StartableEventType;
 import org.concord.framework.startable.StartableInfo;
 import org.concord.framework.startable.StartableListener;
-import org.concord.framework.startable.StartableEvent.StartableEventType;
 
 public class StartableActionProvider 
 {
@@ -98,7 +98,10 @@ public class StartableActionProvider
 		
 		public void run() {
 			// TODO Auto-generated method stub
-			if(info.canRestartWithoutReset){
+		    if (startable.isAtEndOfStream()) {
+		        startAction.setEnabled(false);
+		    }
+		    else if(info.canRestartWithoutReset){
 				startAction.setEnabled(!isRunning());
 			} else {
 				startAction.setEnabled(!isRunning() && isInIntialState());
