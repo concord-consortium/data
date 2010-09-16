@@ -68,5 +68,10 @@ public class OTTimerDataStoreDataProducerController extends DefaultOTController
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public boolean isRealObjectSharable(OTObject otObject, Object realObject) {
+	    return true;
+	}
 
 }
