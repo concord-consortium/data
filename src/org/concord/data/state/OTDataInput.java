@@ -2,6 +2,7 @@ package org.concord.data.state;
 
 import org.concord.framework.otrunk.OTObject;
 import org.concord.framework.otrunk.OTObjectInterface;
+import org.concord.framework.otrunk.OTResourceMap;
 
 /**
  * This class is used to add a data producer to a model (or anything else) with
@@ -35,5 +36,7 @@ public interface OTDataInput extends OTObjectInterface {
 	public void setInputChannel(int inputChannel);
 
 	public static int DEFAULT_inputChannel = 0;
+	
+	public OTResourceMap getChannelVariableMap();
 
 }

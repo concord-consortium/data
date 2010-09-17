@@ -141,6 +141,9 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
             }
         }
         Collections.sort(actualXValues);
+        if (actualXValues.size() == 0) {
+            return new ArrayList<Float>();
+        }
         float smallestX = actualXValues.get(0).floatValue();
         if (startAtZero && smallestX > 0) {
             smallestX = 0;
