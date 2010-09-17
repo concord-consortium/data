@@ -15,6 +15,14 @@ public interface OTTimerDataStoreDataProducer
 	public final static float DEFAULT_sampleTime = 0.1f; 
 	public float getSampleTime();
 	public void setSampleTime(float time);
+	
+	public final static boolean DEFAULT_keepExistingXValues = true; 
+    public boolean getKeepExistingXValues();
+    public void setKeepExistingXValues(boolean keep);
+    
+    public final static boolean DEFAULT_startAtZero = true; 
+    public boolean getStartAtZero();
+    public void setStartAtZero(boolean keep);
 
     /**
      * This allows you to speed up or slow down real time

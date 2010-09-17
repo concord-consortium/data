@@ -26,6 +26,9 @@ public class OTTimerDataStoreDataProducerController extends DefaultOTController
         chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_S));
         chDesc.setName("time");
         
+        dataProducer.setStartAtZero(otDataProducer.getStartAtZero());
+        dataProducer.setKeepExistingXValues(otDataProducer.getKeepExistingXValues());
+        
         if (otDataProducer.getDataStore() != null) {
             // for backwards compatibility
             dataProducer.setNumChannels(2);
