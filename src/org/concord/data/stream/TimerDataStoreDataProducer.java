@@ -143,4 +143,12 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
         return info;
     }
 
+    public void setStartAtZero(boolean startAtZero) {
+        getStrictXFilter().setStartAtZero(startAtZero);
+    }
+
+    public void setKeepExistingXValues(boolean keepExistingXValues) {
+        getStrictXFilter().setKeepExistingXValues(keepExistingXValues);
+    }
+
 }

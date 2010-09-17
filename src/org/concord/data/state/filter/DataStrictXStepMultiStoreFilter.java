@@ -2,6 +2,7 @@ package org.concord.data.state.filter;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.concord.data.state.AbstractDataStoreFilter;
@@ -13,9 +14,12 @@ import org.concord.framework.data.stream.DefaultDataStore;
  * 
  * It does this by taking the two original points surrounding
  * each new data point and calculating where the new data point
- * should lie. This will decrease the density of data in previously
+ * should lie.
+ * 
+ * If keepExistingXValues is false, then this will decrease the density of data in previously
  * high-density areas, so may, depending on the data, act as a
- * slight low-pass filter.
+ * slight low-pass filter. It can also act as a slight smoothing filter, when peaks or valleys
+ * fall between 2 calculated x-values.
  * 
  * This filter is based on the DataStrictXStepFilter, modified to
  * support combining N data stores of 2 channels into one
@@ -26,15 +30,12 @@ import org.concord.framework.data.stream.DefaultDataStore;
  */
 public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     private ArrayList<DataStore> inputDataStores = new ArrayList<DataStore>();
-    private float smallestX;
-    private float largestX;
     
-    private int numSamples;
-    private float range;
     private float xStep;
     
-    // private int lastIndex = 0;
-    // private float lastLowX = Float.NEGATIVE_INFINITY;
+    private boolean startAtZero = false;
+    private boolean keepExistingXValues = false;
+    
     private HashMap<DataStore, Integer> lastIndexes = new HashMap<DataStore, Integer>();
     private HashMap<DataStore, Float> lastLowXs = new HashMap<DataStore, Float>();
     
@@ -44,23 +45,15 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     protected void calculateResults() throws IllegalArgumentException {
         // System.out.println("Recalculating results...");
         try {
-            findRange();
+            ArrayList<Float> xValues = findXValues();
 
-            if (getFilterDescription().getProperty(PROP_X_STEP) != null){
-                xStep = Float.parseFloat(getFilterDescription().getProperty(PROP_X_STEP));
-                numSamples = (int) (range / xStep)+1;
-            } else {
-                xStep = range / (numSamples-1);
-            }
-            
             outputDataStore = new DefaultDataStore();
             
-            float xValue = smallestX;
-            
-            for (int sampleNum = 0; sampleNum < numSamples; sampleNum++) {
+            for (int sampleNum = 0; sampleNum < xValues.size(); sampleNum++) {
                 // String formatStr = "Set: %1.4f";
                 // ArrayList<Object> args = new ArrayList<Object>();
                 // args.add(xValue);
+                float xValue = xValues.get(sampleNum);
                 
                 ((DefaultDataStore)outputDataStore).setValueAt(sampleNum, 0, xValue);
                 
@@ -81,8 +74,6 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
                     ((DefaultDataStore)outputDataStore).setValueAt(sampleNum, dataStoreNum+1, newY);
                 }
                 // System.out.println(String.format(formatStr, args.toArray()));
-                
-                xValue = xValue + xStep;
             }
         } catch (UnexpectedNullValueException e) {
             // data set is in the middle of a change and has null x or y values
@@ -104,10 +95,10 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
         int lastIndex = lastIndexes.containsKey(store) ? lastIndexes.get(store) : 0;
         float lastLowX = lastLowXs.containsKey(store) ? lastLowXs.get(store) : Float.NEGATIVE_INFINITY;
         int index = (lastLowX < xValue) ? lastIndex : 0;
-        for (int i = index; i < numSamples; i++) {
+        for (int i = index; i < store.getTotalNumSamples(); i++) {
             try {
                 float lowX = getFloatValue(store, i, 0);
-                if (lowX <= xValue && !(i == numSamples-1)){
+                if (lowX <= xValue && !(i == store.getTotalNumSamples()-1)){
                     float highX = getFloatValue(store, i+1, 0);
                     if (highX > xValue){
                         float lowY = getFloatValue(store, i, 1);
@@ -138,23 +129,52 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
         return val;
     }
     
-    private void findRange() throws UnexpectedNullValueException {
-        smallestX = Float.POSITIVE_INFINITY;
-        largestX = Float.NEGATIVE_INFINITY;
+    private ArrayList<Float> findXValues() throws UnexpectedNullValueException {
+        ArrayList<Float> actualXValues = new ArrayList<Float>();
+        
         for (DataStore dataStore : inputDataStores) {
             int samples = dataStore.getTotalNumSamples();
 
             for (int i = 0; i < samples; i++) {
                 float xValue = getFloatValue(dataStore, i, 0);
-                if (xValue < smallestX){
-                    smallestX = xValue;
-                }
-                if (xValue > largestX){
-                    largestX = xValue;
-                }
+                actualXValues.add(xValue);
             }
         }
-        range = largestX - smallestX;
+        Collections.sort(actualXValues);
+        float smallestX = actualXValues.get(0).floatValue();
+        if (startAtZero && smallestX > 0) {
+            smallestX = 0;
+        }
+        return fillXValues(smallestX, actualXValues);
+    }
+    
+    private ArrayList<Float> fillXValues(float startX, ArrayList<Float> originalPoints) {
+        ArrayList<Float> finalXValues = new ArrayList<Float>();
+        float lastX = originalPoints.get(originalPoints.size()-1);
+        if (getFilterDescription().getProperty(PROP_X_STEP) != null){
+            xStep = Float.parseFloat(getFilterDescription().getProperty(PROP_X_STEP));
+        } else {
+            xStep = 0.1f;
+        }
+        
+        if (keepExistingXValues) {
+            float currentX = startX;
+            for (float nextX : originalPoints) {
+                while (currentX < nextX) {
+                    finalXValues.add(currentX);
+                    currentX += xStep;
+                }
+                currentX = nextX;
+            }
+        } else {
+            float currentX = startX;
+            while (currentX < lastX) {
+                finalXValues.add(currentX);
+                currentX += xStep;
+            }
+        }
+        
+        return finalXValues;
     }
     
     class UnexpectedNullValueException extends Exception {
@@ -173,6 +193,14 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
 
     public void recalculate() {
         calculateResults();
+    }
+
+    public void setStartAtZero(boolean startAtZero) {
+        this.startAtZero = startAtZero;
+    }
+
+    public void setKeepExistingXValues(boolean keepExistingXValues) {
+        this.keepExistingXValues = keepExistingXValues;
     }
 
 }
