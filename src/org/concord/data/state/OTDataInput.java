@@ -25,18 +25,20 @@ public interface OTDataInput extends OTObjectInterface {
 
 	public void setTarget(OTObject target);
 
-	// optional
+	// use channelVariableMap instead
+	@Deprecated
 	public String getInputVariable();
-
+	@Deprecated
 	public void setInputVariable(String inputVariable);
 
-	// optional
+	// use channelVariableMap instead
+	@Deprecated
 	public int getInputChannel();
-
+	@Deprecated
 	public void setInputChannel(int inputChannel);
 
 	public static int DEFAULT_inputChannel = 0;
 	
 	public OTResourceMap getChannelVariableMap();
-
+	public OTResourceMap getChannelFunctionMap();
 }
