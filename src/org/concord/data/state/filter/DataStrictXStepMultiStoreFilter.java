@@ -190,6 +190,7 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     }
     
     public void addInputDataStore(DataStore ds) {
+        if (ds == null) { return; }
         this.inputDataStores.add(ds);
         calculateResults();
     }
