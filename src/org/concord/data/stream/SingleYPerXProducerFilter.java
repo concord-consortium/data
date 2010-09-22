@@ -2,6 +2,7 @@ package org.concord.data.stream;
 
 import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.DataStreamEvent;
+import org.concord.framework.startable.StartableInfo;
 
 public class SingleYPerXProducerFilter extends DataProducerFilter {
     private int timeChannel = 0;
@@ -61,6 +62,22 @@ public class SingleYPerXProducerFilter extends DataProducerFilter {
         if (notify) {
             notifyDataReceived();
         }
+    }
+    
+    @Override
+    public void stop() {
+        // If the most recent X value is valid and we can't start without being refreshed, be sure to flush the data point
+        StartableInfo info = source.getStartableInfo();
+        if (info == null) {
+            info = new StartableInfo();
+        }
+        if ((! Float.isNaN(lastX)) && (! info.canRestartWithoutReset)) {
+            this.dataEvent.data = lastValues;
+            this.dataEvent.setNumSamples(1);
+            lastX = Float.NaN;
+            notifyDataReceived();
+        }
+        super.stop();
     }
     
     public void setTimeChannel(int channel) {
