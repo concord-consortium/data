@@ -103,6 +103,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     /* (non-Javadoc)
      * @see org.concord.framework.data.DataFlow#reset()
      */
+    @Override
     public void reset()
     {
     	// we count on the source to send the appropriate events so we don't need 
@@ -117,6 +118,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     /* (non-Javadoc)
      * @see org.concord.framework.data.DataFlow#stop()
      */
+    @Override
     public void stop()
     {
     	// we count on the source to send the appropriate events so we don't need 
@@ -130,6 +132,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     /* (non-Javadoc)
      * @see org.concord.framework.data.DataFlow#start()
      */
+    @Override
     public void start()
     {
     	// we count on the source to send the appropriate events so we don't need 
@@ -279,5 +282,14 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     	}
     	
     	return source.isInInitialState();
+    }
+    
+    @Override
+    public boolean isAtEndOfStream() {
+        if(source == null){
+            return super.isAtEndOfStream();
+        }
+        
+        return source.isAtEndOfStream();
     }
 }
