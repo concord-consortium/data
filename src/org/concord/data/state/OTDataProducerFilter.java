@@ -13,6 +13,7 @@ public interface OTDataProducerFilter
 	public OTDataProducer getSource();
 	public void setSource(OTDataProducer source);
 	
+	public static int DEFAULT_sourceChannel = 0;
 	public int getSourceChannel();
 	public void setSourceChannel(int channel);
 	
