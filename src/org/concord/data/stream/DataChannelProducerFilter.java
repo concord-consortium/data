@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.DataStreamEvent;
+import org.concord.framework.startable.StartableInfo;
 
 public class DataChannelProducerFilter extends DataProducerFilter {
     ArrayList<Integer> channelsToDiscard = new ArrayList<Integer>();
@@ -62,5 +63,15 @@ public class DataChannelProducerFilter extends DataProducerFilter {
         
         dataEvent.setNumSamples(numSamples);
         notifyDataReceived();        
+    }
+    
+    @Override
+    public StartableInfo getStartableInfo() {
+        return source.getStartableInfo();
+    }
+    
+    @Override
+    public DataStreamDescription getDataDescription() {
+        return dataDesc;
     }
 }
