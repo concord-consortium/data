@@ -83,4 +83,14 @@ public class SingleYPerXProducerFilter extends DataProducerFilter {
     public void setTimeChannel(int channel) {
         this.timeChannel = channel;
     }
+    
+    @Override
+    public StartableInfo getStartableInfo() {
+        return source.getStartableInfo();
+    }
+    
+    @Override
+    public DataStreamDescription getDataDescription() {
+        return dataDesc;
+    }
 }

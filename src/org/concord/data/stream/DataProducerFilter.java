@@ -5,6 +5,7 @@ package org.concord.data.stream;
 
 import java.util.logging.Logger;
 
+import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
@@ -93,6 +94,11 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     	dataDesc.setDataType(srcDesc.getDataType());
     	dataDesc.setDataOffset(srcDesc.getDataOffset());
     	dataDesc.setNextSampleOffset(srcDesc.getNextSampleOffset());
+    	
+        for (int i = 0; i < srcDesc.getChannelsPerSample(); i++) {
+            DataChannelDescription channelDesc = srcDesc.getChannelDescription(i);
+            dataDesc.setChannelDescription(channelDesc, i);
+        }
     }
     
     public DataProducer getSource()
