@@ -37,4 +37,17 @@ public interface OTDataTable
 	public int getVisibleRows();
 	public void setVisibleRows(int visibleRows);
 	public static int DEFAULT_visibleRows = 9;
+	
+	// decimal precision for display.
+	public int getPrecision();
+	public void setPresision(int newPrecision);
+	public static int DONT_FORMAT = -1;
+	public static int DEFAULT_precision = DONT_FORMAT;
+	
+	// allow authors to specify the width of the table
+	public int getWidth();
+	public void setWidth(int newWidth);
+	public static int FULL_WIDTH = 1200;
+	public static int DEFAULT_width = FULL_WIDTH;
+	
 }

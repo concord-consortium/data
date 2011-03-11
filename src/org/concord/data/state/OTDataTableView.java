@@ -10,13 +10,16 @@
 package org.concord.data.state;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
+import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import org.concord.data.ui.DataColumnDescription;
@@ -43,7 +46,23 @@ public class OTDataTableView extends AbstractOTJComponentView
 {
 	protected OTDataTable otTable;
     protected OTControllerService controllerService;
-	
+    
+	private class NumericCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+		private DecimalFormat formatter;
+		private int  maxPrecision;
+		NumericCellRenderer(int precision) {
+			super();
+			maxPrecision = precision;
+		}
+	    public void setValue(Object value) {
+	        if (formatter==null) {
+	            formatter = new DecimalFormat();
+	            formatter.setMaximumFractionDigits(maxPrecision);
+	        }
+	        setText((value == null) ? "" : formatter.format(value));
+	    }
+	}
 	/**
 	 * @see org.concord.framework.otrunk.view.OTJComponentView#getComponent(org.concord.framework.otrunk.OTObject)
 	 */
@@ -67,6 +86,11 @@ public class OTDataTableView extends AbstractOTJComponentView
 		updateOTColumns(table.getTableModel(), dataStore, otTable.getColumns());
 		
 		table.useDefaultHeaderRenderer();
+		if (otTable.getPrecision() != OTDataTable.DONT_FORMAT) {
+			table.setCellRenderer(Object.class, new NumericCellRenderer(otTable.getPrecision()));
+		}
+		table.setTableWidth(otTable.getWidth());
+		
 		
 		// Set cell editors so that they only require one click to start editing
 		for (int i = 0; i < table.getTable().getColumnCount(); i++) {
