@@ -57,6 +57,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.CellEditor;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -91,46 +92,45 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	protected JTable table;
 	protected DataTableModel tableModel;
 	protected JScrollPane scrollPane;
+	protected int visibleRows;
 	private static final String IMPORT_FROM_CLIPBOARD = "Import from Clipboard";
 
 	/**
 	 * 
 	 */
-	public DataTablePanel(int visibleRows) {
+	public DataTablePanel(int _visibleRows) {
 		super();
-
-		setLayout(new BorderLayout());
-
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		this.visibleRows = _visibleRows;
+		
 		tableModel = new DataTableModel();
 		table = new JTable(tableModel);
+		table.setGridColor(Color.GRAY);
 		
-		table.setGridColor(Color.LIGHT_GRAY);
-
 		scrollPane = new JScrollPane(table);
-		scrollPane
-				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-		add(scrollPane, BorderLayout.CENTER);
-
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);		
+		
+		add(scrollPane);
+		
 		tableModel.addTableModelListener(this);
 		table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);		// save last cell on loss of focus
-
 
 		table.addMouseListener(this);
 		table.addFocusListener(this);
 		scrollPane.getViewport().addMouseListener(this);
-		setPreferredSize(new Dimension(200, getHeightNeeded(visibleRows)));
-		
-	//	scrollPane.getVerticalScrollBar().setValue(0);
-
 	}
 	
 	public DataTablePanel() {
 		this(9);
 	}
+	
+	public void setTableWidth(int pixel_width) {
+		scrollPane.setPreferredSize(new Dimension(pixel_width, getHeightNeeded()));
+		setMaximumSize(new Dimension(pixel_width, 500));
+	}
 
-	public int getHeightNeeded(int rows){
-		return (rows * 17) + 20;
+	public int getHeightNeeded(){
+		return (this.visibleRows * 17) + 20;
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 
 	/**
 	 * @param tableModel
-	 *            The tableModel to set.
+	 * The tableModel to set.
 	 */
 	public void setTableModel(DataTableModel tableModel) {
 		this.tableModel = tableModel;
@@ -179,7 +179,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 
 	/**
 	 * @param scrollPane
-	 *            The scrollPane to set.
+	 * The scrollPane to set.
 	 */
 	public void setScrollPane(JScrollPane scrollPane) {
 		this.scrollPane = scrollPane;
@@ -205,55 +205,16 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
+	 * Unimplemented MouseListener event handlers
+	 *
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-	 */
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-	 */
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-	 */
-	public void mousePressed(MouseEvent e) {
-		// isPopupTrigger happens on moused pressed for osx and linux
-		evaluatePopup(e);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-	 */
-	public void mouseReleased(MouseEvent e) {
-		// isPopupTrigger happens on moused released for windows
-		evaluatePopup(e);
-	}
-
+	public void mouseClicked(MouseEvent e) { }
+	public void mouseEntered(MouseEvent e) { }
+	public void mouseExited(MouseEvent e)  { }
+	public void mousePressed(MouseEvent e) { }
+	public void mouseReleased(MouseEvent e){ }
+	
 	private void evaluatePopup(MouseEvent e) {
 		if (e.isPopupTrigger()) {
 			JPopupMenu popup = new JPopupMenu();
@@ -265,7 +226,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 			menuItem.addActionListener(this);
 			popup.add(menuItem);
 
-			popup.show(this, e.getX() + 5, e.getY() + 20);
+			popup.show(table, e.getX() + 5, e.getY() + 20);
 		}
 	}
 
@@ -278,16 +239,12 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		String strVal = "";
 
 		if (e.getActionCommand().equals("Copy")) {
-
 			ByteArrayOutputStream outS = new ByteArrayOutputStream();
 			tableModel.printData(new PrintStream(outS),
 					table.getSelectedRows(), false);
 			strVal = outS.toString();
-
 			try {
-				Clipboard clipboard = Toolkit.getDefaultToolkit()
-						.getSystemClipboard();
-
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(new StringSelection(strVal), null);
 			} catch (Exception ex) {
 			}
@@ -303,7 +260,6 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 				Thread importer = new Thread() {
 					public void run() {
 						StringReader dataReader = new StringReader(data);
-
 						tableModel.loadData(dataReader);
 					}
 				};
@@ -314,25 +270,27 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		}
 	}
 
-	class TextAreaRenderer extends JTextArea
-	    implements TableCellRenderer {
-	  private final DefaultTableCellRenderer adaptee =
-	      new DefaultTableCellRenderer();
+	
+	
+	
+	class TextAreaRenderer extends JTextArea implements TableCellRenderer {
+	  private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 	  /** map from table to map of rows to map of column heights */
 	  private final Map cellSizes = new HashMap();
-
 	  public TextAreaRenderer() {
-		  
 	    setLineWrap(true);
 	    setWrapStyleWord(true);
 	  }
 
-	  public Component getTableCellRendererComponent(//
-	      JTable table, Object obj, boolean isSelected,
-	      boolean hasFocus, int row, int column) {
-	    // set the colours, etc. using the standard for that platform
-	    adaptee.getTableCellRendererComponent(table, obj,
-	        isSelected, hasFocus, row, column);
+	  public Component getTableCellRendererComponent(
+			  JTable table, 
+			  Object obj, 
+			  boolean isSelected,
+			  boolean hasFocus, 
+			  int row, 
+			  int column) {
+	    // set the colors, etc. using the standard for that platform
+	    adaptee.getTableCellRendererComponent(table, obj,isSelected, hasFocus, row, column);
 	    setForeground(adaptee.getForeground());
 	    setBackground(new Color(240,240,240));
 	    setBorder(BorderFactory.createLineBorder(new Color(200,200,240)));
@@ -351,8 +309,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	    return this;
 	  }
 
-	  private void addSize(JTable table, int row, int column,
-	                       int height) {
+	  private void addSize(JTable table, int row, int column,int height) {
 	    Map rows = (Map) cellSizes.get(table);
 	    if (rows == null) {
 	      cellSizes.put(table, rows = new HashMap());
@@ -398,14 +355,14 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	    }
 	    return maximum_height;
 	  }
+	  	  
 	}
 
-	public void focusGained(FocusEvent arg0)
-    {
-	    // TODO Auto-generated method stub
-	    
-    }
-
+	public void setCellRenderer(Class c, TableCellRenderer r) {
+		table.setDefaultRenderer(c,r);
+	}
+	
+	public void focusGained(FocusEvent arg0) { }
 	public void focusLost(FocusEvent e)
     {
 	    if (e.isTemporary())
