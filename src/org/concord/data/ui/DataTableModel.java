@@ -431,7 +431,15 @@ public class DataTableModel extends AbstractTableModel
 		if (aValue != null && oldValue != null && aValue.toString().equals(oldValue.toString())) return;
 		
 		logger.finer("set value at "+rowIndex+","+columnIndex+" "+aValue);
-		
+		// look for null values in the series, and set to something.
+		int num_columns = getColumnCount();
+		for (int i =0; i < num_columns; i++) {
+			Object existingValue = dataStore.getValueAt(rowIndex, i);
+			if(existingValue == null) {
+				Object newValue = new Float(0); // aValue; 
+				((WritableDataStore)dataStore).setValueAt(rowIndex, i, newValue);
+			}
+		}
 		((WritableDataStore)dataStore).setValueAt(rowIndex, columnIndex, aValue);
 	}
 	
