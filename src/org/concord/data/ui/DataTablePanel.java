@@ -31,8 +31,6 @@
  * Copyright 2004 The Concord Consortium 
  */
 package org.concord.data.ui;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -69,9 +67,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.text.JTextComponent;
 
 /**
  * DataTablePanel Class name and description
@@ -82,6 +82,10 @@ import javax.swing.table.TableColumnModel;
  *         <p>
  * 
  */
+/**
+ * @author npaessel
+ *
+ */
 public class DataTablePanel extends JPanel implements TableModelListener,
 		MouseListener, ActionListener, FocusListener {
 	/**
@@ -89,7 +93,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected JTable table;
+	protected SelectAllJTable table;
 	protected DataTableModel tableModel;
 	protected JScrollPane scrollPane;
 	protected int visibleRows;
@@ -104,7 +108,8 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		this.visibleRows = _visibleRows;
 		
 		tableModel = new DataTableModel();
-		table = new JTable(tableModel);
+		table = new SelectAllJTable(tableModel);
+		table.setRowSelectionAllowed(false);
 		table.setGridColor(Color.GRAY);
 		
 		scrollPane = new JScrollPane(table);
@@ -269,10 +274,12 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 			}
 		}
 	}
+	
 
-	
-	
-	
+	/**
+	 * Custom renderer class
+	 *
+	 */
 	class TextAreaRenderer extends JTextArea implements TableCellRenderer {
 	  private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 	  /** map from table to map of rows to map of column heights */
@@ -374,5 +381,28 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	    	editor.stopCellEditing();
 	    }
     }
-
+	
+	
+	/**
+	 * @author npaessel
+	 * A JTable which akss text component editors
+	 * to select all, when entering a new cell.
+	 * 
+	 * @see JTable
+	 * 
+	 */
+	private class SelectAllJTable extends JTable {
+		public SelectAllJTable(DataTableModel tableModel) {
+			super(tableModel);
+		}
+		@Override
+		// Select full text of 
+		public Component prepareEditor(TableCellEditor editor, int row, int column) {
+		    Component c = super.prepareEditor(editor, row, column);
+		    if (c instanceof JTextComponent) {
+		        ((JTextComponent) c).selectAll();
+		    } 
+		    return c;
+		}
+	}
 }
