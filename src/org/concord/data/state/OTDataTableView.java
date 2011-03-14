@@ -60,7 +60,11 @@ public class OTDataTableView extends AbstractOTJComponentView
 	            formatter = new DecimalFormat();
 	            formatter.setMaximumFractionDigits(maxPrecision);
 	        }
-	        setText((value == null) ? "" : formatter.format(value));
+	        try {
+	        	setText((value == null) ? "" : formatter.format(value));
+	        }
+	        // non-numerical / could not format:
+	        catch(IllegalArgumentException e) {}
 	    }
 	}
 	/**
