@@ -44,6 +44,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.ByteArrayOutputStream;
@@ -57,12 +58,14 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.CellEditor;
+import javax.swing.InputMap;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -109,6 +112,12 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		
 		tableModel = new DataTableModel();
 		table = new SelectAllJTable(tableModel);
+	
+		KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+		InputMap map = table.getInputMap(JTable.WHEN_FOCUSED);
+		map.put(enter, "selectNextColumnCell");
+		
+		
 		table.setRowSelectionAllowed(false);
 		table.setGridColor(Color.GRAY);
 		
