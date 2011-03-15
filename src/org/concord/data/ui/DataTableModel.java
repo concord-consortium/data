@@ -309,7 +309,6 @@ public class DataTableModel extends AbstractTableModel
 		DataStore dataStore = dcol.getDataStore();
 	
 		if(row == this.getRowCount() -1) {
-			logger.finer("returning local pending row data");
 			Object[] array = pendingData.get(dataStore);
 			// we are on in incomplete, eg pending row.
 			return array[col];
@@ -400,7 +399,6 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
 	{
-		logger.finer("trying to set value: " + aValue);
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
 		if (dcol == null) return;
 		
@@ -446,25 +444,21 @@ public class DataTableModel extends AbstractTableModel
 		if (aValue != null && oldValue != null && aValue.toString().equals(oldValue.toString())) return;
 		
 		if(rowIndex == this.getRowCount() -1) {
-			logger.finer("writing into last row");
 			Object[] array = pendingData.get(dataStore);
 			// we are on in incomplete, eg pending row.
 			array[columnIndex] = aValue;
 			boolean readyToWrite = true;
 			for(int i = 0; i < array.length; i++) {
-				logger.finer("recording temp value for "+rowIndex+","+columnIndex+" "+aValue);
 				if (array[i] == null) { readyToWrite = false; }
 			}
 			if (readyToWrite) {
-				logger.finer("set value at "+rowIndex+","+columnIndex+" "+aValue);
 				for(int i = 0; i < array.length; i++) {
-					((WritableDataStore)dataStore).setValueAt(rowIndex, i, aValue);
+					((WritableDataStore)dataStore).setValueAt(rowIndex, i, array[i]);
 					array[i] = null; // clear out old pending data
 				}
 			}
 		}
 		else {
-			logger.finer("set value at "+rowIndex+","+columnIndex+" "+aValue);
 			((WritableDataStore)dataStore).setValueAt(rowIndex, columnIndex, aValue);
 		}
 	}
