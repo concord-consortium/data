@@ -36,6 +36,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -69,9 +70,13 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected Vector dataStores;	//DataStore objects
+	protected Vector<DataStore> dataStores;	//DataStore objects
 	protected int step = 1;
-	protected Vector dataColumns;	//DataColumnDescription objects
+	protected Vector<DataColumnDescription> dataColumns;	//DataColumnDescription objects
+
+	// for multi-column, multichanel data
+	// require complete dataset before insert.
+	protected HashMap<DataStore,Object[]> pendingData;
 	
 	/** Indicates whether this table will always have an extra empty row for adding new rows */
 	protected boolean newRowAuto = false;	
@@ -86,9 +91,10 @@ public class DataTableModel extends AbstractTableModel
 	public DataTableModel()
 	{
 		super();
-		dataStores = new Vector();
-		dataColumns = new Vector();
+		dataStores = new Vector<DataStore>();
+		dataColumns = new Vector<DataColumnDescription>();
 		dataStoresWithFullColumns = new Hashtable();
+		pendingData = new HashMap<DataStore,Object[]>();
 	}
 
 	/**
@@ -121,6 +127,7 @@ public class DataTableModel extends AbstractTableModel
 		for (int i = startChannel; i<dataStore.getTotalNumChannels(); i++){
 			addDataColumn(dataStore, i);
 		}
+		pendingData.put(dataStore, new Object[dataStore.getTotalNumChannels()]);
 	}
 	
 	/**
@@ -153,6 +160,7 @@ public class DataTableModel extends AbstractTableModel
 				i = i - 1;
 			}
 		}
+		pendingData.remove(dataStore);
 	}
 	
 	/**
@@ -297,8 +305,15 @@ public class DataTableModel extends AbstractTableModel
 	{
 		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
 		if (dcol == null) return null;
-		
+	
 		DataStore dataStore = dcol.getDataStore();
+	
+		if(row == this.getRowCount() -1) {
+			logger.finer("returning local pending row data");
+			Object[] array = pendingData.get(dataStore);
+			// we are on in incomplete, eg pending row.
+			return array[col];
+		}
 		
 		int indexSample = row*step;
 		
@@ -430,17 +445,28 @@ public class DataTableModel extends AbstractTableModel
 		if (aValue != null && aValue.equals(oldValue)) return;
 		if (aValue != null && oldValue != null && aValue.toString().equals(oldValue.toString())) return;
 		
-		logger.finer("set value at "+rowIndex+","+columnIndex+" "+aValue);
-		// look for null values in the series, and set to something.
-		int num_columns = getColumnCount();
-		for (int i =0; i < num_columns; i++) {
-			Object existingValue = dataStore.getValueAt(rowIndex, i);
-			if(existingValue == null) {
-				Object newValue = new Float(0); // aValue; 
-				((WritableDataStore)dataStore).setValueAt(rowIndex, i, newValue);
+		if(rowIndex == this.getRowCount() -1) {
+			logger.finer("writing into last row");
+			Object[] array = pendingData.get(dataStore);
+			// we are on in incomplete, eg pending row.
+			array[columnIndex] = aValue;
+			boolean readyToWrite = true;
+			for(int i = 0; i < array.length; i++) {
+				logger.finer("recording temp value for "+rowIndex+","+columnIndex+" "+aValue);
+				if (array[i] == null) { readyToWrite = false; }
+			}
+			if (readyToWrite) {
+				logger.finer("set value at "+rowIndex+","+columnIndex+" "+aValue);
+				for(int i = 0; i < array.length; i++) {
+					((WritableDataStore)dataStore).setValueAt(rowIndex, i, aValue);
+					array[i] = null; // clear out old pending data
+				}
 			}
 		}
-		((WritableDataStore)dataStore).setValueAt(rowIndex, columnIndex, aValue);
+		else {
+			logger.finer("set value at "+rowIndex+","+columnIndex+" "+aValue);
+			((WritableDataStore)dataStore).setValueAt(rowIndex, columnIndex, aValue);
+		}
 	}
 	
 	/**
