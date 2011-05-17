@@ -11,6 +11,11 @@ public class SingleYPerXProducerFilter extends DataProducerFilter {
     
     public SingleYPerXProducerFilter() {
         super();
+        clearLastValues();
+    }
+    
+    private void clearLastValues() {
+        lastX = Float.NaN;
         for (int i = 0; i < 100; i++) { lastValues[i] = Float.NaN; }
     }
     
@@ -62,6 +67,12 @@ public class SingleYPerXProducerFilter extends DataProducerFilter {
         if (notify) {
             notifyDataReceived();
         }
+    }
+    
+    @Override
+    public void reset() {
+        clearLastValues();
+        super.reset();
     }
     
     @Override
