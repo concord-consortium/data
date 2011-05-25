@@ -83,7 +83,7 @@ public class DataTableModel extends AbstractTableModel
 	
 	//Hastable that keeps the data stores added with the addDataStore method. If a data store has been added
 	//using this method, then the table model has to display ALYWAYS all its columns
-	private Hashtable dataStoresWithFullColumns;
+	private Hashtable<DataStore, Boolean> dataStoresWithFullColumns;
 
 	/**
 	 * 
@@ -93,7 +93,7 @@ public class DataTableModel extends AbstractTableModel
 		super();
 		dataStores = new Vector<DataStore>();
 		dataColumns = new Vector<DataColumnDescription>();
-		dataStoresWithFullColumns = new Hashtable();
+		dataStoresWithFullColumns = new Hashtable<DataStore, Boolean>();
 		pendingData = new HashMap<DataStore,Object[]>();
 	}
 
@@ -154,7 +154,7 @@ public class DataTableModel extends AbstractTableModel
 		
 		//Remove all columns of the data store 
 		for (int i=0; i<dataColumns.size(); i++){
-			DataColumnDescription colDesc = (DataColumnDescription)dataColumns.elementAt(i);
+			DataColumnDescription colDesc = dataColumns.elementAt(i);
 			if (colDesc.getDataStore() == dataStore){
 				dataColumns.remove(colDesc);
 				i = i - 1;
@@ -233,7 +233,7 @@ public class DataTableModel extends AbstractTableModel
 	public DataColumnDescription getDataColumn(DataStore dataStore, int dataStoreColumn)
 	{
 		for (int i=0; i<dataColumns.size(); i++){
-			DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(i);
+			DataColumnDescription dcol = dataColumns.elementAt(i);
 			if (dcol.getDataStore() == dataStore && dcol.getDataStoreColumn() == dataStoreColumn){
 				return dcol;
 			}
@@ -280,7 +280,7 @@ public class DataTableModel extends AbstractTableModel
 		{
 		int n = 0;
 		for (int i=0; i<dataStores.size(); i++){
-			n = n + ((DataStore)dataStores.elementAt(i)).getTotalNumChannels();
+			n = n + dataStores.elementAt(i).getTotalNumChannels();
 		}
 		return n;
 	}
@@ -303,7 +303,7 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public Object getValueAt(int row, int col)
 	{
-		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
+		DataColumnDescription dcol = dataColumns.elementAt(col);
 		if (dcol == null) return null;
 	
 		DataStore dataStore = dcol.getDataStore();
@@ -331,7 +331,7 @@ public class DataTableModel extends AbstractTableModel
 				if (channelDesc.isUsePrecision()){
 					double precision = Math.pow(10, channelDesc.getPrecision());
 					float retval = (float)(Math.floor(((precision) * ((Float)val).floatValue()) + 0.5) / precision);
-					val = Float.toString(retval);
+					val = new Float(retval);
 				}
 			}
 		} 
@@ -346,7 +346,7 @@ public class DataTableModel extends AbstractTableModel
 	{
 		String strLabel;
 		
-		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(col);
+		DataColumnDescription dcol = dataColumns.elementAt(col);
 		if (dcol == null) return null;
 		
 		DataStore dataStore = dcol.getDataStore();
@@ -361,7 +361,19 @@ public class DataTableModel extends AbstractTableModel
 		return strLabel;
     }
 
-	
+	public Class getColumnClass(int col) {
+		DataColumnDescription dcol = dataColumns.elementAt(col);
+		if (dcol == null) {
+			return String.class;
+		}
+		
+		DataStore dataStore = dcol.getDataStore();
+		DataChannelDescription channelDesc = dataStore.getDataChannelDescription(dcol.getDataStoreColumn());
+		if (channelDesc.isNumericData()) {
+			return Float.class;
+		}
+		return String.class;
+	}
 	
 	/**
 	 * @see javax.swing.table.TableModel#isCellEditable(int, int)
@@ -370,14 +382,14 @@ public class DataTableModel extends AbstractTableModel
 	{
 		// First check the DataColumnDescription. If the cell is in a column that is
 		// set to be locked, the cell is locked no matter what.
-		DataColumnDescription colDesc = (DataColumnDescription)dataColumns.elementAt(columnIndex);
+		DataColumnDescription colDesc = dataColumns.elementAt(columnIndex);
 		if (colDesc.isLocked()){
 			return false;
 		}
 		
 		// If the column is not locked...
 		//The cell is editable if the data store of the column is Writable
-		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
+		DataColumnDescription dcol = dataColumns.elementAt(columnIndex);
 		if (dcol == null) return false;
 		
 		DataStore dataStore = dcol.getDataStore();
@@ -399,7 +411,7 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
 	{
-		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(columnIndex);
+		DataColumnDescription dcol = dataColumns.elementAt(columnIndex);
 		if (dcol == null) return;
 		
 		DataStore dataStore = dcol.getDataStore();
@@ -430,7 +442,8 @@ public class DataTableModel extends AbstractTableModel
 						aValue = new Float(val);
 					}
 					catch(Exception ex){
-						//Don't set the value if it is not a valid number
+						ex.printStackTrace();
+//						//Don't set the value if it is not a valid number
 						return;
 					}
 				}
@@ -489,7 +502,7 @@ public class DataTableModel extends AbstractTableModel
 		int n;
 		int m = 0;
 		for (int i=0; i<dataStores.size(); i++){
-			n = ((DataStore)dataStores.elementAt(i)).getTotalNumSamples();
+			n = dataStores.elementAt(i).getTotalNumSamples();
 			if (n > m){
 				m = n;
 			}
@@ -576,7 +589,7 @@ public class DataTableModel extends AbstractTableModel
 	/**
 	 * @return Returns the dataColumns.
 	 */
-	public Vector getDataColumns()
+	public Vector<DataColumnDescription> getDataColumns()
 	{
 		return dataColumns;
 	}
@@ -596,7 +609,7 @@ public class DataTableModel extends AbstractTableModel
 
 	public boolean isDataStoreWithAllColumns(DataStore dataStore)
 	{
-		Boolean allColumns = (Boolean)dataStoresWithFullColumns.get(dataStore);
+		Boolean allColumns = dataStoresWithFullColumns.get(dataStore);
 		if (allColumns != null && allColumns.booleanValue()){
 			return true;
 		}
@@ -608,7 +621,7 @@ public class DataTableModel extends AbstractTableModel
 	 */
 	public void loadData(Reader dataReader)
 	{
-		DataColumnDescription dcol = (DataColumnDescription)dataColumns.elementAt(0);
+		DataColumnDescription dcol = dataColumns.elementAt(0);
 		if (dcol == null) {
 			throw new RuntimeException("data store doesn't have a single column");
 		}

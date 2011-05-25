@@ -90,9 +90,16 @@ public class OTDataTableView extends AbstractOTJComponentView
 		updateOTColumns(table.getTableModel(), dataStore, otTable.getColumns());
 		
 		table.useDefaultHeaderRenderer();
+		table.setCellRenderer(Object.class, new DefaultTableCellRenderer());
+		table.setCellRenderer(String.class, new DefaultTableCellRenderer());
+		table.setCellRenderer(Float.class, new DefaultTableCellRenderer());
+		table.setCellRenderer(Double.class, new DefaultTableCellRenderer());
+//		table.setCellRenderer(Float.class, new DefaultTableCellRenderer());
 		if (otTable.getPrecision() != OTDataTable.DONT_FORMAT) {
-			table.setCellRenderer(Object.class, new NumericCellRenderer(otTable.getPrecision()));
+			table.setCellRenderer(Float.class, new NumericCellRenderer(otTable.getPrecision()));
+			table.setCellRenderer(Double.class, new NumericCellRenderer(otTable.getPrecision()));
 		}
+		
 		table.setTableWidth(otTable.getWidth());
 		
 		

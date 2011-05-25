@@ -162,9 +162,9 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 		this.tableModel = tableModel;
 	}
 
-	public void setRenderer(TableCellRenderer cellRenderer) {
-		table.setDefaultRenderer(Object.class, cellRenderer);
-	}
+	public void setRenderer(TableCellRenderer cellRenderer)   { table.setDefaultRenderer(Object.class, cellRenderer); }
+	public void setCellRenderer(Class c, TableCellRenderer r) { table.setDefaultRenderer(c,r); }
+	
 	
 	public void setHeaderRenderer(TableCellRenderer cellRenderer) {
 		for (int i = 0; i < table.getColumnCount(); i++) {
@@ -173,8 +173,8 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	}
 	
 	public void useDefaultHeaderRenderer(){
-		TextAreaRenderer cellRenderer = new TextAreaRenderer();
-		setHeaderRenderer(cellRenderer);
+		setHeaderRenderer(new TextAreaRenderer(new Color(240,240,240)));
+		setCellRenderer(String.class, new TextAreaRenderer(new Color(255,255,255)));
 	}
 
 	/**
@@ -293,9 +293,11 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	  private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 	  /** map from table to map of rows to map of column heights */
 	  private final Map cellSizes = new HashMap();
-	  public TextAreaRenderer() {
+	  private Color backgroundColor;
+	  public TextAreaRenderer(Color _backgroundColor) {
 	    setLineWrap(true);
 	    setWrapStyleWord(true);
+	    this.backgroundColor = _backgroundColor;
 	  }
 
 	  public Component getTableCellRendererComponent(
@@ -308,7 +310,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	    // set the colors, etc. using the standard for that platform
 	    adaptee.getTableCellRendererComponent(table, obj,isSelected, hasFocus, row, column);
 	    setForeground(adaptee.getForeground());
-	    setBackground(new Color(240,240,240));
+	    setBackground(this.backgroundColor);
 	    setBorder(BorderFactory.createLineBorder(new Color(200,200,240)));
 	    setFont(adaptee.getFont());
 	    setText(adaptee.getText());
@@ -374,10 +376,7 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	  	  
 	}
 
-	public void setCellRenderer(Class c, TableCellRenderer r) {
-		table.setDefaultRenderer(c,r);
-	}
-	
+
 	public void focusGained(FocusEvent arg0) { }
 	public void focusLost(FocusEvent e)
     {
@@ -394,12 +393,13 @@ public class DataTablePanel extends JPanel implements TableModelListener,
 	
 	/**
 	 * @author npaessel
-	 * A JTable which akss text component editors
+	 * A JTable which asks text component editors
 	 * to select all, when entering a new cell.
 	 * 
 	 * @see JTable
 	 * 
 	 */
+	@SuppressWarnings("serial")
 	private class SelectAllJTable extends JTable {
 		public SelectAllJTable(DataTableModel tableModel) {
 			super(tableModel);
