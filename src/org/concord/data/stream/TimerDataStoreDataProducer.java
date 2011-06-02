@@ -155,7 +155,9 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
 
     public void calculateResultsFired() {
         // the data store got updated... we should probably stop and reset
-        reset();
+        if (! inInitialState) {
+            reset();
+        }
     }
 
 }
