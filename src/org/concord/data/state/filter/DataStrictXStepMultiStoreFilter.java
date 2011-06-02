@@ -4,6 +4,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.concord.data.state.AbstractDataStoreFilter;
 import org.concord.framework.data.stream.DataStore;
@@ -29,6 +31,7 @@ import org.concord.framework.data.stream.DefaultDataStore;
  *
  */
 public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
+    private static final Logger logger = Logger.getLogger(DataStrictXStepMultiStoreFilter.class.getName());
     private ArrayList<DataStore> inputDataStores = new ArrayList<DataStore>();
     
     private float xStep;
@@ -38,12 +41,13 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     
     private HashMap<DataStore, Integer> lastIndexes = new HashMap<DataStore, Integer>();
     private HashMap<DataStore, Float> lastLowXs = new HashMap<DataStore, Float>();
+
+    private boolean calculateResultsNotificationsOn = true;
     
     public static String PROP_X_STEP = "set x step";
 
     @Override
     protected void calculateResults() throws IllegalArgumentException {
-        // System.out.println("Recalculating results...");
         try {
             ArrayList<Float> xValues = findXValues();
 
@@ -74,6 +78,9 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
                     ((DefaultDataStore)outputDataStore).setValueAt(sampleNum, dataStoreNum+1, newY);
                 }
                 // System.out.println(String.format(formatStr, args.toArray()));
+            }
+            if (calculateResultsNotificationsOn) {
+                notifyCalculateResultsFired();
             }
         } catch (UnexpectedNullValueException e) {
             // data set is in the middle of a change and has null x or y values
@@ -192,11 +199,14 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     public void addInputDataStore(DataStore ds) {
         if (ds == null) { return; }
         this.inputDataStores.add(ds);
+        ds.addDataStoreListener(this);
         calculateResults();
     }
 
     public void recalculate() {
+        calculateResultsNotificationsOn = false;
         calculateResults();
+        calculateResultsNotificationsOn = true;
     }
 
     public void setStartAtZero(boolean startAtZero) {
@@ -206,5 +216,27 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     public void setKeepExistingXValues(boolean keepExistingXValues) {
         this.keepExistingXValues = keepExistingXValues;
     }
+    
+    // calculate results notification listeners
+    private ArrayList<DataStrictXStepFilterListener> listeners = new ArrayList<DataStrictXStepFilterListener>();
+    
+    private void notifyCalculateResultsFired() {
+        for (DataStrictXStepFilterListener listener : listeners) {
+            try {
+                listener.calculateResultsFired();
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "Failed to notify listener.", e);
+            }
+        }
+    }
 
+    public void addDataStrictXStepFilterListener(DataStrictXStepFilterListener listener) {
+        if (! listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+
+    public void removeDataStrictXStepFilterListener(DataStrictXStepFilterListener listener) {
+        listeners.remove(listener);
+    }
 }

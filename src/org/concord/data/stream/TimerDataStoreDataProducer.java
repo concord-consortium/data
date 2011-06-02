@@ -7,12 +7,13 @@ import javax.swing.Timer;
 
 import org.concord.data.state.DefaultDataStoreFilterDescription;
 import org.concord.data.state.filter.DataStrictXStepFilter;
+import org.concord.data.state.filter.DataStrictXStepFilterListener;
 import org.concord.data.state.filter.DataStrictXStepMultiStoreFilter;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DefaultMultipleDataProducer;
 import org.concord.framework.startable.StartableInfo;
 
-public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer implements ActionListener
+public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer implements ActionListener, DataStrictXStepFilterListener
 {
 	private float lastT = Float.MIN_VALUE;
 	private int currentIndex = 0;
@@ -39,6 +40,7 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
             DefaultDataStoreFilterDescription desc = new DefaultDataStoreFilterDescription("");
             desc.setProperty(DataStrictXStepFilter.PROP_X_STEP, Float.toString(getDataDescription().getDt()));
             dataStoreFilter.setFilterDescription(desc);
+            dataStoreFilter.addDataStrictXStepFilterListener(this);
 	    }
 	    return dataStoreFilter;
 	}
@@ -149,6 +151,11 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
 
     public void setKeepExistingXValues(boolean keepExistingXValues) {
         getStrictXFilter().setKeepExistingXValues(keepExistingXValues);
+    }
+
+    public void calculateResultsFired() {
+        // the data store got updated... we should probably stop and reset
+        reset();
     }
 
 }
