@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import org.concord.data.state.AbstractDataStoreFilter;
 import org.concord.framework.data.stream.DataStore;
+import org.concord.framework.data.stream.DataStoreEvent;
+import org.concord.framework.data.stream.DataStoreListener;
 import org.concord.framework.data.stream.DefaultDataStore;
 /**
  * This filter takes multiple x-y datasets with non-constant x-steps
@@ -41,10 +43,15 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     
     private HashMap<DataStore, Integer> lastIndexes = new HashMap<DataStore, Integer>();
     private HashMap<DataStore, Float> lastLowXs = new HashMap<DataStore, Float>();
-
-    private boolean calculateResultsNotificationsOn = true;
     
     public static String PROP_X_STEP = "set x step";
+
+    private DataStoreListener dataStoreListener = new DataStoreListener() {
+        public void dataAdded(DataStoreEvent evt) { notifyDataChanged(); }
+        public void dataRemoved(DataStoreEvent evt) { notifyDataChanged(); }
+        public void dataChanged(DataStoreEvent evt) { notifyDataChanged(); }
+        public void dataChannelDescChanged(DataStoreEvent evt) { notifyDataChanged(); }
+    };
 
     @Override
     protected void calculateResults() throws IllegalArgumentException {
@@ -78,9 +85,6 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
                     ((DefaultDataStore)outputDataStore).setValueAt(sampleNum, dataStoreNum+1, newY);
                 }
                 // System.out.println(String.format(formatStr, args.toArray()));
-            }
-            if (calculateResultsNotificationsOn) {
-                notifyCalculateResultsFired();
             }
         } catch (UnexpectedNullValueException e) {
             // data set is in the middle of a change and has null x or y values
@@ -199,14 +203,12 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     public void addInputDataStore(DataStore ds) {
         if (ds == null) { return; }
         this.inputDataStores.add(ds);
-        ds.addDataStoreListener(this);
+        ds.addDataStoreListener(dataStoreListener);
         calculateResults();
     }
 
     public void recalculate() {
-        calculateResultsNotificationsOn = false;
         calculateResults();
-        calculateResultsNotificationsOn = true;
     }
 
     public void setStartAtZero(boolean startAtZero) {
@@ -220,10 +222,10 @@ public class DataStrictXStepMultiStoreFilter extends AbstractDataStoreFilter {
     // calculate results notification listeners
     private ArrayList<DataStrictXStepFilterListener> listeners = new ArrayList<DataStrictXStepFilterListener>();
     
-    private void notifyCalculateResultsFired() {
+    private void notifyDataChanged() {
         for (DataStrictXStepFilterListener listener : listeners) {
             try {
-                listener.calculateResultsFired();
+                listener.dataChanged();
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Failed to notify listener.", e);
             }

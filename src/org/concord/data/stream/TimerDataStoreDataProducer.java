@@ -153,7 +153,7 @@ public class TimerDataStoreDataProducer extends DefaultMultipleDataProducer impl
         getStrictXFilter().setKeepExistingXValues(keepExistingXValues);
     }
 
-    public void calculateResultsFired() {
+    public void dataChanged() {
         // the data store got updated... we should probably stop and reset
         if (! inInitialState) {
             reset();
