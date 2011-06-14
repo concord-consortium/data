@@ -22,4 +22,12 @@ public interface OTWaveGenerator extends OTDataProducer {
     public final static float DEFAULT_amplitude = 1f;
     public float getAmplitude();
     public void setAmplitude(float amplitude);
+    
+    public final static int DEFAULT_precision = -3;
+	public int getPrecision();
+	public void setPrecision(int precision);
+	
+	public final static boolean DEFAULT_usePrecision = true;
+	public boolean getUsePrecision();
+	public void setUsePrecision(boolean flag);
 }

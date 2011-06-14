@@ -71,6 +71,7 @@ public class OTWaveGeneratorController extends DefaultOTController
         chDesc = dataDescription.getChannelDescription(0);
         chDesc.setUnit(Unit.getUnit(Unit.UNIT_CODE_METER));
         chDesc.setName("distance");
+        chDesc.setPrecision(otWave.getPrecision());
         
         waveProducer.setTimeScale(otWave.getTimeScale());
         waveProducer.setAmplitude(otWave.getAmplitude());
@@ -97,6 +98,13 @@ public class OTWaveGeneratorController extends DefaultOTController
     	otWave.setSampleTime(dataDescription.getDt());
     	
     	otWave.setTimeScale(waveProducer.getTimeScale());
+    	
+    	DataChannelDescription channelDescription = waveProducer.getDataDescription().getChannelDescription(0);
+    	boolean usePrecision = channelDescription.isUsePrecision();
+    	otWave.setUsePrecision(usePrecision);
+    	if(usePrecision){
+        	otWave.setPrecision(channelDescription.getPrecision());    	
+    	}
     }
     
     /**
