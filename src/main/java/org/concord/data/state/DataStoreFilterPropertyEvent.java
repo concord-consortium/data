@@ -21,6 +21,7 @@ import java.util.EventObject;
  * @author Ingrid Moncada<p>
  *
  */
+@SuppressWarnings("serial")
 public class DataStoreFilterPropertyEvent extends EventObject
 {
 	public static final int PROPERTY_ADDED = 0;

@@ -30,9 +30,9 @@ public class DefaultDataStoreFilterDescription
 	protected String operation;
 	protected String label;
 	
-	protected Hashtable properties;
+	protected Hashtable<String, String> properties;
 	
-	protected Vector listeners;
+	protected Vector<DataStoreFilterPropertyListener> listeners;
 	
 	public DefaultDataStoreFilterDescription(String operation)
 	{
@@ -43,8 +43,8 @@ public class DefaultDataStoreFilterDescription
 	{
 		this.label = label;
 		this.operation = operation;
-		properties = new Hashtable();
-		listeners = new Vector();
+		properties = new Hashtable<String, String>();
+		listeners = new Vector<DataStoreFilterPropertyListener>();
 		channelX = 0;
 		channelY = 1;
 	}
@@ -105,7 +105,7 @@ public class DefaultDataStoreFilterDescription
 		notifyPropertyChange(name, value, prevStr);
 	}
 
-	public Enumeration getPropertyNames()
+	public Enumeration<String> getPropertyNames()
 	{
 		return properties.keys();
 	}

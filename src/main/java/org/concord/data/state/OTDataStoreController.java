@@ -5,8 +5,8 @@ import org.concord.framework.otrunk.OTObject;
 
 public class OTDataStoreController extends DefaultOTController 
 {
-	public static Class [] realObjectClasses =  {OTDataStoreRealObject.class};	
-	public static Class otObjectClass = OTDataStore.class;    
+	public static Class<?> [] realObjectClasses =  {OTDataStoreRealObject.class};	
+	public static Class<?> otObjectClass = OTDataStore.class;    
 
 	public void loadRealObject(Object realObject) 
 	{

@@ -248,9 +248,9 @@ public final class Unit implements DataDimension{
 	
 	public void setDimension(String dimension){abbreviation = dimension;}
 	
-	public static Vector getCatUnitAbbrev(int index)
+	public static Vector<String> getCatUnitAbbrev(int index)
 	{
-		Vector abbrevs = new Vector();
+		Vector<String> abbrevs = new Vector<String>();
 		for(int i = 1; i < UNIT_TABLE_LENGTH; i++){
 			Unit u = getUnit(i);
 			if(u.unitCategory == index){

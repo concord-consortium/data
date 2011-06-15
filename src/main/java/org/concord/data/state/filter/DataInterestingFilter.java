@@ -9,10 +9,6 @@
 */
 package org.concord.data.state.filter;
 
-import java.awt.Point;
-import java.util.Vector;
-
-import org.concord.data.MathUtil;
 import org.concord.data.state.AbstractDataStoreFilter;
 import org.concord.data.state.DataStoreFilter;
 import org.concord.data.state.DefaultDataStoreFilterDescription;

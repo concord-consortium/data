@@ -1,7 +1,5 @@
 package org.concord.data.state;
 
-import java.util.Arrays;
-
 import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamEvent;
@@ -18,7 +16,7 @@ public class FloatDataReceiver implements DataListener
 	
 	public void setDataProducer(DataProducer dataProducer){
 		this.dataProducer = dataProducer;
-		dataProducer.addDataListener(this);
+		this.dataProducer.addDataListener(this);
 	}
 
 	public void dataReceived(DataStreamEvent dataEvent)

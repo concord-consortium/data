@@ -9,8 +9,8 @@ import org.concord.framework.otrunk.OTObject;
 
 public class OTDataChannelDescriptionController extends DefaultOTController {
 
-	public static Class[] realObjectClasses = { DataChannelDescription.class };
-	public static Class otObjectClass = OTDataChannelDescription.class;
+	public static Class<?>[] realObjectClasses = { DataChannelDescription.class };
+	public static Class<?> otObjectClass = OTDataChannelDescription.class;
 
 	public void loadRealObject(Object realObject) {
 		OTDataChannelDescription otdcd = (OTDataChannelDescription) otObject;

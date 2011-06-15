@@ -7,8 +7,8 @@ import org.concord.framework.otrunk.OTObject;
 
 public class OTAlphaDataProducerController extends DefaultOTController
 {
-	public static Class[] realObjectClasses = { AlphaDataProducer.class };
-	public static Class otObjectClass = OTAlphaDataProducer.class;
+	public static Class<?>[] realObjectClasses = { AlphaDataProducer.class };
+	public static Class<?> otObjectClass = OTAlphaDataProducer.class;
 
 	public void loadRealObject(Object realObject) {
 		OTAlphaDataProducer otdp = (OTAlphaDataProducer) otObject;

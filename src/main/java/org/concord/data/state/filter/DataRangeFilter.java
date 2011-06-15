@@ -13,9 +13,6 @@ import org.concord.data.state.AbstractDataStoreFilter;
 import org.concord.data.state.DataStoreFilter;
 import org.concord.data.state.DataStoreFilterDescription;
 import org.concord.data.state.DataStoreFilterPropertyEvent;
-import org.concord.framework.data.stream.DataStore;
-import org.concord.framework.data.stream.DataStoreEvent;
-import org.concord.framework.data.stream.DataStoreEventNotifier;
 
 /**
  * DataRangeFilter

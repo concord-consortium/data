@@ -10,7 +10,6 @@
 package org.concord.data.state.filter;
 
 import org.concord.framework.data.stream.DataStoreEvent;
-import org.concord.framework.data.stream.DataStoreEventNotifier;
 
 
 /**

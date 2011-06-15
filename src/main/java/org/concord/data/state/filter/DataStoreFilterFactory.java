@@ -29,7 +29,7 @@ public class DataStoreFilterFactory
 	 * @param operation
 	 * @return
 	 */
-	public static Class getAvailableFilterClass(String operation)
+	public static Class<?> getAvailableFilterClass(String operation)
 	{
 		operation.toLowerCase();
 		if (operation.equals("maximum")){

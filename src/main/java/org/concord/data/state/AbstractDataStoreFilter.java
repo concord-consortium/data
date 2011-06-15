@@ -11,6 +11,7 @@ package org.concord.data.state;
 
 import java.util.Vector;
 
+import org.concord.data.state.filter.DataRange;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStoreEvent;
 import org.concord.framework.data.stream.DataStoreEventNotifier;
@@ -31,7 +32,7 @@ public abstract class AbstractDataStoreFilter
 	protected DataStore inputDataStore;
 	protected DataStoreFilterDescription filterDescription;
 		
-	protected Vector ranges;
+	protected Vector<DataRange> ranges;
 	
 	protected DataStore outputDataStore;
 
@@ -47,7 +48,7 @@ public abstract class AbstractDataStoreFilter
 	 */
 	public AbstractDataStoreFilter()
 	{
-		ranges = new Vector();
+		ranges = new Vector<DataRange>();
 	}
 	
 	/**
