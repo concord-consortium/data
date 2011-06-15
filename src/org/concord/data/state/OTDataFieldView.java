@@ -39,7 +39,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.concord.data.ui.DataStoreLabel;
-import org.concord.data.ui.DataValueLabel;
+import org.concord.data.ui.DataProducerDataLabel;
 import org.concord.data.ui.StartableToolBar;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.WritableDataStore;
@@ -60,7 +60,7 @@ public class OTDataFieldView extends AbstractOTJComponentView
     protected OTControllerService controllerService;
     WritableDataStore dataStore;
     
-	protected DataValueLabel dataField;
+	protected DataProducerDataLabel dataField;
 	JButton saveButton = new JButton("Save");
 		
 	/* (non-Javadoc)
@@ -77,9 +77,10 @@ public class OTDataFieldView extends AbstractOTJComponentView
 		DataStoreLabel dataStoreField = 
 			new DataStoreLabel(dataStore,0);
 		
-		DataProducer dataProducer = (DataProducer)otDataField.getDataProducer();
+		OTDataProducer otDataProducer = otDataField.getDataProducer();
+		DataProducer dataProducer = (DataProducer) controllerService.getRealObject(otDataProducer);
 		
-		dataField = new DataValueLabel(dataProducer);
+		dataField = new DataProducerDataLabel(dataProducer);
 
 		JPanel fieldLabelPanel = new JPanel();
 		fieldLabelPanel.setLayout(new BoxLayout(fieldLabelPanel, BoxLayout.X_AXIS));

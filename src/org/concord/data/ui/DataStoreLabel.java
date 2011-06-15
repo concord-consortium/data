@@ -29,8 +29,6 @@
  */
 package org.concord.data.ui;
 
-import javax.swing.JTextField;
-
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataStore;
 import org.concord.framework.data.stream.DataStoreEvent;
@@ -42,7 +40,7 @@ import org.concord.framework.data.stream.DataStoreListener;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class DataStoreLabel extends JTextField
+public class DataStoreLabel extends DataValueLabel
 	implements DataStoreListener
 {
 	/**
@@ -52,22 +50,16 @@ public class DataStoreLabel extends JTextField
 
 	DataStore dataStore = null;
 	int channel = 0;
-    private float currentValue;
 	
 	public DataStoreLabel(DataStore dataStore, int channel)
 	{
+		super();
 		this.dataStore = dataStore;
 		this.channel = channel;
 		dataStore.addDataStoreListener(this);
-		setEditable(false);
 		updateValue();
 	}
 
-	public float getValue()
-	{
-	    return currentValue;
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.concord.framework.data.stream.DataStoreListener#dataAdded(org.concord.framework.data.stream.DataStoreEvent)
 	 */
@@ -89,6 +81,7 @@ public class DataStoreLabel extends JTextField
 	 */
 	public void dataChannelDescChanged(DataStoreEvent evt) 
 	{
+		updateValue();
 	}
 	
 	/* (non-Javadoc)
@@ -109,47 +102,25 @@ public class DataStoreLabel extends JTextField
 	private void updateValue()
 	{
 		int numSamples = dataStore.getTotalNumSamples();
-		if(numSamples == 0) return;
+		if(numSamples == 0) {
+			clear();
+			return;
+		}
 				
 		Float lastValue = 
 			(Float)dataStore.getValueAt(numSamples-1, channel);
 
 		if(lastValue == null) {
 		    System.err.println("DataStoreLabel: null last value");
+		    clear();
 		    return;
 		}
 		setValue(lastValue.floatValue());
 	}
 	
-	/**
-	 * Sets the value of the label. 
-	 * Pays attention to the properties of the channel that is being displayed
-	 * (channel description), specially the precision
-	 * @param val	float value to display
-	 */
-	private void setValue(float val)
+	@Override
+	protected DataChannelDescription getChannelDescription()
 	{
-	    
-		DataChannelDescription channelDesc = 
-			dataStore.getDataChannelDescription(channel);
-		
-		//If the channel has a description, display the value with the correct precision
-		if (channelDesc != null){
-			if (channelDesc.isUsePrecision()){
-				double precision = Math.pow(10, channelDesc.getPrecision());
-				val = (float)(Math.floor((val / (precision)) + 0.5) * precision);
-			}
-		}
-
-		currentValue = val;
-
-		setText(Float.toString(val));
+		return dataStore.getDataChannelDescription(channel);
 	}
-
-	private void clear()
-	{
-		currentValue = Float.NaN;
-		setText("");
-	}
-	
 }
