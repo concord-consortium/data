@@ -49,8 +49,9 @@ public class OTDigitalDisplayView extends AbstractOTJComponentView {
 		}
 	};
 	
-	private OTControllerService controllerService;
-	private OTDigitalDisplay otDigitalDisplay;
+	OTControllerService controllerService;
+	OTDigitalDisplay otDigitalDisplay;
+	DataStoreLabel dataStoreLabel;
 	
 	public JComponent getComponent(OTObject otObject) {
 		otDigitalDisplay = (OTDigitalDisplay)otObject;
@@ -59,7 +60,7 @@ public class OTDigitalDisplayView extends AbstractOTJComponentView {
 		OTDataStore otDataStore = otDigitalDisplay.getDataStore();
 		DataStore dataStore = (DataStore) controllerService.getRealObject(otDataStore);
 		
-		DataStoreLabel dataStoreLabel = new DataStoreLabel(dataStore, getRealChannel());
+		dataStoreLabel = new DataStoreLabel(dataStore, getRealChannel());
 		
 		dataStoreLabel.setFontSize(otDigitalDisplay.getFontSize());
 		dataStoreLabel.setMaximumSize(dataStoreLabel.getPreferredSize());

@@ -1,0 +1,33 @@
+<otrunk>
+  <imports>
+    <import class="org.concord.otrunk.OTSystem" />
+    <import class="org.concord.otrunk.view.OTViewEntry" />
+    <import class="org.concord.otrunk.view.OTViewBundle" />
+    <import class="org.concord.data.state.OTDataStore" />
+    <import class="org.concord.data.state.OTDataChannelDescription" />
+    <import class="org.concord.data.state.OTDigitalDisplay" />
+    <import class="org.concord.data.state.OTWaveGenerator" />
+  </imports>
+  <objects>
+    <OTSystem>
+      <bundles>
+        <OTViewBundle>
+          <viewEntries>
+            <OTViewEntry objectClass="org.concord.data.state.OTDigitalDisplay"
+              viewClass="org.concord.data.state.OTDigitalDisplayView" />
+          </viewEntries>
+        </OTViewBundle>
+      </bundles>
+      <root>
+        <OTDigitalDisplay local_id="digital_display">
+          <dataProducer>
+            <OTWaveGenerator timeScale="0.2" sampleTime="0.3" />
+          </dataProducer>
+          <dataStore>
+            <OTDataStore />
+          </dataStore>
+        </OTDigitalDisplay>
+      </root>
+    </OTSystem>
+  </objects>
+</otrunk>
