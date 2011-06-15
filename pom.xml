@@ -15,9 +15,9 @@
   <description>
      Implementations of the data interfaces from Framework and other data related classes.
   </description>
-  
+
   <build>
-  <plugins>
+    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -26,7 +26,13 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-  </plugins>
+    </plugins>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
   </build>
 
   <dependencies>
