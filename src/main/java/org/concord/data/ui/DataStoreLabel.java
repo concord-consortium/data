@@ -99,6 +99,11 @@ public class DataStoreLabel extends DataValueLabel
 		dataStore.removeDataStoreListener(this);
 	}
 
+	public void setChannel(int channel)
+	{
+		this.channel = channel;
+	}
+	
 	private void updateValue()
 	{
 		int numSamples = dataStore.getTotalNumSamples();

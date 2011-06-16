@@ -35,12 +35,12 @@ package org.concord.data.stream;
 import java.util.Vector;
 
 import org.concord.framework.data.stream.AbstractDataStore;
+import org.concord.framework.data.stream.AutoIncrementDataStore;
 import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataListener;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.DataStreamEvent;
-import org.concord.framework.data.stream.AutoIncrementDataStore;
 
 
 /**
@@ -437,6 +437,8 @@ public class ProducerDataStore extends AbstractDataStore
 			//Add empty vectors until all channels have space
 			channelsValues.addElement(new Vector());
 		}
+		
+		notifyChannelDescChanged();
 	}
 	
 	

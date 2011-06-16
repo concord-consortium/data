@@ -617,6 +617,7 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	        int channelsPerSample = desc.getChannelsPerSample();
 	        otDataStore.setNumberChannels(channelsPerSample);
 
+	        notifyChannelDescChanged();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
