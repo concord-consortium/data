@@ -17,6 +17,6 @@ public interface OTDataProducerFilter
 	public int getSourceChannel();
 	public void setSourceChannel(int channel);
 	
-	public String getUnits();
-	public void setUnits(String units);
+	public OTDataChannelDescription getChannelDescription();
+	public void setChannelDescription(OTDataChannelDescription desc);	
 }

@@ -29,6 +29,8 @@ public abstract class DataProducerFilter extends DefaultDataProducer
 	protected int currentSample;
 
 	private StartableListener startableListener;
+
+	private DataChannelDescription channelDescription;
     
 	public DataProducerFilter(){
 		/*
@@ -96,12 +98,28 @@ public abstract class DataProducerFilter extends DefaultDataProducer
     	dataDesc.setNextSampleOffset(srcDesc.getNextSampleOffset());
     	
         for (int i = 0; i < srcDesc.getChannelsPerSample(); i++) {
-            DataChannelDescription channelDesc = srcDesc.getChannelDescription(i);
-            dataDesc.setChannelDescription(channelDesc, i);
+            DataChannelDescription chDesc = (DataChannelDescription) srcDesc.getChannelDescription(i).getCopy();
+
+            // FIXME this won't correctly handle dt channels.
+            if(i == getTranslatedSourceChannel()){
+            	DataChannelDescription srcChDesc = getChannelDescription();
+            	if(srcChDesc != null){
+            		chDesc = srcChDesc;
+            	}
+            }
+            dataDesc.setChannelDescription(chDesc, i);
         }
     }
     
-    public DataProducer getSource()
+    public DataChannelDescription getChannelDescription() {
+    	return channelDescription;
+	}
+
+	public void setChannelDescription(DataChannelDescription chDesc) {
+		channelDescription = chDesc;
+	}
+
+	public DataProducer getSource()
     {
     	return source;
     }

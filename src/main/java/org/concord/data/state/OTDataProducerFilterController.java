@@ -4,6 +4,7 @@
 package org.concord.data.state;
 
 import org.concord.data.stream.DataProducerFilter;
+import org.concord.framework.data.stream.DataChannelDescription;
 import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.otrunk.DefaultOTController;
 
@@ -25,6 +26,9 @@ public class OTDataProducerFilterController extends DefaultOTController
 		DataProducer source = getSource();
 		filter.setSource(source);		
 		filter.setSourceChannel(otFilter.getSourceChannel());
+		DataChannelDescription chDesc = 
+			(DataChannelDescription) controllerService.getRealObject(otFilter.getChannelDescription());
+		filter.setChannelDescription(chDesc);
 	}
 
 	/* (non-Javadoc)
