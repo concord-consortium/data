@@ -182,7 +182,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
         	
         	// initialize the other channels
         	for(int j=0; j<channelsPerSample; j++){
-        		dataEvent.data[filteredOffset+j] = dataEvent.data[offset+j];
+        		this.dataEvent.data[filteredOffset+j] = dataEvent.data[offset+j];
         	}
         	
         	float filteredValue = filter(offset, dataEvent.data); 
@@ -204,7 +204,7 @@ public abstract class DataProducerFilter extends DefaultDataProducer
 
         }
         
-        dataEvent.setNumSamples(filteredSamples);
+        this.dataEvent.setNumSamples(filteredSamples);
         notifyDataReceived();        
     }
 
