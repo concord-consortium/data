@@ -1,13 +1,17 @@
 package org.concord.data.stream;
 
+import org.concord.framework.data.stream.DataProducer;
 import org.concord.framework.data.stream.DataStreamDescription;
 import org.concord.framework.data.stream.DataStreamEvent;
+import org.concord.framework.startable.StartableEvent;
 import org.concord.framework.startable.StartableInfo;
+import org.concord.framework.startable.StartableListener;
 
 public class SingleYPerXProducerFilter extends DataProducerFilter {
     private int timeChannel = 0;
     private float lastX = Float.NaN;
     private float[] lastValues = new float[100];
+    private boolean resetFromSource = false;
     
     public SingleYPerXProducerFilter() {
         super();
@@ -74,8 +78,12 @@ public class SingleYPerXProducerFilter extends DataProducerFilter {
     
     @Override
     public void reset() {
+    	if (resetFromSource) {
+    		currentSample = 0;
+    	} else {
+    		super.reset();
+    	}
         clearLastValues();
-        super.reset();
     }
     
     @Override
@@ -106,5 +114,19 @@ public class SingleYPerXProducerFilter extends DataProducerFilter {
     @Override
     public DataStreamDescription getDataDescription() {
         return dataDesc;
+    }
+    
+    @Override
+    public void setSource(DataProducer source) {
+    	source.addStartableListener(new StartableListener() {
+			public void startableEvent(StartableEvent event) {
+				if (event.getType().equals(StartableEvent.StartableEventType.RESET)) {
+					resetFromSource = true;
+					SingleYPerXProducerFilter.this.reset();
+					resetFromSource = false;
+				}
+			}
+    	});
+    	super.setSource(source);
     }
 }
