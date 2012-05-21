@@ -211,10 +211,13 @@ public class OTUnitValueEditView extends OTUnitValueView
 			OTUnitValue newValue = editUnitPanel.getNewValue();
 			
 			//Do an atomic change
-			otObject.setDoNotifyChangeListeners(false);
-			otObject.setValue(newValue.getValue());
-			otObject.setUnit(newValue.getUnit());
-			otObject.setDoNotifyChangeListeners(true);
+			try {
+				otObject.setDoNotifyChangeListeners(false);
+				otObject.setValue(newValue.getValue());
+				otObject.setUnit(newValue.getUnit());
+			} finally {
+				otObject.setDoNotifyChangeListeners(true);
+			}
 			otObject.notifyOTChange("unit", OTChangeEvent.OP_CHANGE, otObject, null);
 			//
 			

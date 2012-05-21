@@ -322,18 +322,19 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	
 	public void setValues(int numbChannels,float []values)
 	{
-        otDataStore.setDoNotifyChangeListeners(false);
-
-        // If this datastore is using virtual channels then should
-        // the passed in values actually start at channel 1 not channel 0
-	    for(int i=0;i<values.length;i++) {
-	        int channelNumber = i%numbChannels;
-	        setValueAt(i/numbChannels, channelNumber, 
-	                new Float(values[i]));
-	    }
-	    
-	    
-        otDataStore.setDoNotifyChangeListeners(true);
+		try {
+	        otDataStore.setDoNotifyChangeListeners(false);
+	
+	        // If this datastore is using virtual channels then should
+	        // the passed in values actually start at channel 1 not channel 0
+		    for(int i=0;i<values.length;i++) {
+		        int channelNumber = i%numbChannels;
+		        setValueAt(i/numbChannels, channelNumber, 
+		                new Float(values[i]));
+		    }
+		} finally {
+	        otDataStore.setDoNotifyChangeListeners(true);
+		}
 
         notifyOTValuesChange();
 	}
@@ -354,24 +355,26 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	        int numberOfSamples, int localNextSampleOffset)
 	{
 		synchronized(otDataStore) {
-	        otDataStore.setDoNotifyChangeListeners(false);
-
-			int numChannels = getNumberOfProducerChannels();
-			int firstSample = getTotalNumSamples();
-
-			int firstChannelOffset = 0;
-			if(isIncrementalChannel(0)){
-				firstChannelOffset = 1;
+			try {
+		        otDataStore.setDoNotifyChangeListeners(false);
+	
+				int numChannels = getNumberOfProducerChannels();
+				int firstSample = getTotalNumSamples();
+	
+				int firstChannelOffset = 0;
+				if(isIncrementalChannel(0)){
+					firstChannelOffset = 1;
+				}
+				
+			    for(int i=0; i<numberOfSamples; i++) {
+			        for(int j=0; j<numChannels; j++) {
+			            Float value = new Float(values[offset+(i*localNextSampleOffset)+j]);
+			            setValueAt(firstSample + i, firstChannelOffset + j, value);
+			        }
+			    }
+			} finally {
+				otDataStore.setDoNotifyChangeListeners(true);
 			}
-			
-		    for(int i=0; i<numberOfSamples; i++) {
-		        for(int j=0; j<numChannels; j++) {
-		            Float value = new Float(values[offset+(i*localNextSampleOffset)+j]);
-		            setValueAt(firstSample + i, firstChannelOffset + j, value);
-		        }
-		    }
-		    
-	        otDataStore.setDoNotifyChangeListeners(true);
 		}
 		
 		notifyOTValuesChange();
@@ -381,14 +384,16 @@ public class OTDataStoreRealObject extends ProducerDataStore
 			int numberOfSamples)
 	{
 		synchronized(otDataStore) {
-			otDataStore.setDoNotifyChangeListeners(false);
-
-			for(int i=0; i<numberOfSamples; i++) {
-				Float value = new Float(values[i]);
-				addValue(i, 0, value);
+			try {
+				otDataStore.setDoNotifyChangeListeners(false);
+	
+				for(int i=0; i<numberOfSamples; i++) {
+					Float value = new Float(values[i]);
+					addValue(i, 0, value);
+				}
+			} finally {
+				otDataStore.setDoNotifyChangeListeners(true);
 			}
-
-			otDataStore.setDoNotifyChangeListeners(true);
 		}
 
 		notifyOTValuesChange();
@@ -411,14 +416,16 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	{		
 		int index = getIndex(numSample, 0);
 
-        otDataStore.setDoNotifyChangeListeners(false);
-
-		int dataArrayStride = getDataArrayStride();
-        for(int i=0; i<dataArrayStride; i++) {
-		    values.remove(index);
+		try {
+	        otDataStore.setDoNotifyChangeListeners(false);
+	
+			int dataArrayStride = getDataArrayStride();
+	        for(int i=0; i<dataArrayStride; i++) {
+			    values.remove(index);
+			}
+		} finally {
+			otDataStore.setDoNotifyChangeListeners(true);
 		}
-
-        otDataStore.setDoNotifyChangeListeners(true);
         
         notifyOTValuesRemove();        
 	}
@@ -430,14 +437,16 @@ public class OTDataStoreRealObject extends ProducerDataStore
 	{
 		int index = getIndex(numSample, 0);
 
-        otDataStore.setDoNotifyChangeListeners(false);
-
-        int dataArrayStride = getDataArrayStride();
-        for(int i=0; i<dataArrayStride; i++) {
-		    values.add(index, null);
+		try {
+	        otDataStore.setDoNotifyChangeListeners(false);
+	
+	        int dataArrayStride = getDataArrayStride();
+	        for(int i=0; i<dataArrayStride; i++) {
+			    values.add(index, null);
+			}
+		} finally {
+			otDataStore.setDoNotifyChangeListeners(true);
 		}
-
-        otDataStore.setDoNotifyChangeListeners(true);
         
         notifyOTValuesChange();
 	}	
@@ -670,19 +679,21 @@ public class OTDataStoreRealObject extends ProducerDataStore
     public void setValues(int numChannels, float[] values, int offset,
             int numSamples, int nextSampleOffset)
     {
-        otDataStore.setDoNotifyChangeListeners(false);
-
-        // If this data store is using virtual channels what do we do here?
-        // assume the values are starting at channel 1?
-        for(int i=0; i<numSamples*nextSampleOffset; 
-            i+=nextSampleOffset) {
-            for(int j=0;j<numChannels;j++) {
-                Float fValue = new Float(values[offset+i+j]);
-                setValueAt(i/nextSampleOffset, j, fValue);
-            }
-        }
-
-        otDataStore.setDoNotifyChangeListeners(true);
+    	try {
+	        otDataStore.setDoNotifyChangeListeners(false);
+	
+	        // If this data store is using virtual channels what do we do here?
+	        // assume the values are starting at channel 1?
+	        for(int i=0; i<numSamples*nextSampleOffset; 
+	            i+=nextSampleOffset) {
+	            for(int j=0;j<numChannels;j++) {
+	                Float fValue = new Float(values[offset+i+j]);
+	                setValueAt(i/nextSampleOffset, j, fValue);
+	            }
+	        }
+    	} finally {
+	        otDataStore.setDoNotifyChangeListeners(true);
+    	}
         
         notifyOTValuesChange();
     }
